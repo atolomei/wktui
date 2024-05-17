@@ -1,0 +1,238 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io</groupId>
+  <artifactId>wktui</artifactId>
+  
+
+  <name>wktui</name>
+  <!-- url>http://maven.apache.org</ url -->
+  
+  <version>0.1-beta</version>
+
+  <description>
+		 Wicket Library 
+  </description>
+  
+  <properties>
+
+		<maven-javadoc-plugin-version>3.6.3</maven-javadoc-plugin-version>
+		<maven-jar-plugin-version>3.4.1</maven-jar-plugin-version>
+		
+    	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+ 	  	<wicket-jquery-version>10.0.0-M1</wicket-jquery-version> 		<!--  NOTA 9.13.0 no existe para todos 		-->
+ 	  	<wicket-version>10.0.0</wicket-version>
+ 	  	<wicket-toastr-core>3.0.0</wicket-toastr-core>
+ 	  	
+  </properties>
+  
+
+  <repositories>
+	
+		<repository>
+			<id>my-local-repo</id>
+			<url>file://${basedir}/nonstandardlib/</url>
+		</repository>
+
+		<repository>
+			<id>novamens-releases</id>		
+			<url>https://maven.novamens.com/nexus/content/repositories/releases/</url>
+		</repository>
+		
+		
+		<repository>
+			<id>wicket-menu-release</id>
+			<url>http://wicket-menu.googlecode.com/svn/maven/repo</url>
+		</repository>
+		
+		<repository>
+			<id>wicket-menu-snapshot</id>
+			<url>http://wicket-menu.googlecode.com/svn/maven/snapshot-repo</url>
+		</repository>
+		
+	</repositories>
+	
+	
+	<developers>
+        <developer>
+            <id>atolomei</id>
+            <name>Alejandro Tolomei</name>
+            <email>atolomei@novamens.com</email>
+        </developer>
+    </developers>
+    
+  
+   <dependencies>
+		
+		<!-- s. WICKET ====================================================  -->
+
+		<dependency>
+		    <groupId>org.apache.wicket</groupId>
+		    <artifactId>wicket-core</artifactId>
+		    <version>${wicket-version}</version>
+		    
+		    <exclusions>
+				<exclusion>
+					<artifactId>slf4j-api</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
+		    
+		</dependency>
+
+		<dependency>
+			<groupId>org.wicketstuff</groupId>
+			<artifactId>wicketstuff-annotation</artifactId>
+			<version>${wicket-version}</version>
+		</dependency>
+
+		<!--dependency>
+			<groupId>org.wicketstuff</groupId>
+			<artifactId>wicketstuff-htmlcompressor</artifactId>
+			<version>${wicket-version}</version>					
+		</dependency-->
+		
+		<!--dependency>
+			<The YUI Compressor is a JavaScript compressor which, 
+			in addition to removing comments and white-spaces, obfuscates 
+			local variables using the smallest possible variable name. 
+			This obfuscation is safe, even when using constructs 
+			such as 'eval' or 'with' (although the compression 
+			is not optimal is those cases) Compared to jsmin, 
+			the average savings is around 20%.
+			
+			<groupId>com.yahoo.platform.yui</groupId>
+			<artifactId>yuicompressor</artifactId>
+			 <version>2.4.8</version>
+		</dependency -->
+		
+		<dependency>
+			<groupId>org.apache.wicket</groupId>
+			<artifactId>wicket-extensions</artifactId>
+			<version>${wicket-version}</version>
+			
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-api</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
+			
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.wicket</groupId>
+			<artifactId>wicket-bean-validation</artifactId>
+			<version>${wicket-version}</version>
+		</dependency>
+		
+		<!--dependency>
+			<groupId>org.wicketstuff</groupId>
+			<artifactId>wicketstuff-serializer-fast2</artifactId>
+			<version>${wicket-version}</version>
+		</dependency -->
+		
+		<dependency>
+			<groupId>org.wicketstuff</groupId>
+			<artifactId>wicketstuff-restannotations</artifactId>
+			<version>${wicket-version}</version>
+		</dependency>
+		
+		<dependency>
+			<!-- Use wicketstuff-annotation to use Java Annotations and class path searching to mount your Wicket pages. -->
+			<groupId>org.wicketstuff</groupId>
+			<artifactId>wicketstuff-restannotations-json</artifactId>
+			<version>${wicket-version}</version>
+		</dependency>
+		
+		
+		<!-- Wicket-source displays component instantiation location in an html attribute, speeding the modification of existing wicket pages -->
+		<dependency>
+		    <groupId>net.ftlines.wicket-source</groupId>
+		    <artifactId>wicket-source</artifactId>
+		    <version>7.0.0</version>
+		</dependency>
+
+		
+		<dependency>
+			<groupId>com.googlecode.wicket-jquery-ui</groupId>
+			<artifactId>wicket-jquery-ui</artifactId>
+			<version>${wicket-jquery-version}</version> <!--  7/2022 -->
+		</dependency>
+
+		
+		<dependency>
+			<groupId>com.googlecode.wicket-jquery-ui</groupId>
+			<artifactId>wicket-kendo-ui</artifactId>
+			<version>${wicket-jquery-version}</version> <!--  7/2022 -->
+		</dependency>
+		
+		<dependency>
+			<groupId>com.googlecode.wicket-jquery-ui</groupId>
+			<artifactId>wicket-kendo-ui-theme-default</artifactId>
+			<version>${wicket-jquery-version}</version> <!--  7/2022 -->
+		</dependency>
+		
+
+		<!-- https://mvnrepository.com/artifact/jp.try0.wicket/wicket-toastr-core -->
+		<dependency>
+		    <groupId>jp.try0.wicket</groupId>
+		    <artifactId>wicket-toastr-core</artifactId>
+		    <version>${wicket-toastr-core}</version>
+		</dependency>
+		
+	</dependencies>
+	
+
+	<build>
+			
+		<resources>
+		  <resource>
+		    <directory>src/main/resources</directory>
+		  </resource>
+		  <resource>
+		    <directory>src/main/java</directory>
+		    <includes>
+		      <include>**</include>
+		    </includes>
+		    <excludes>
+		      <exclude>**/*.java</exclude>
+		    </excludes>
+		  </resource>
+		</resources>
+
+			
+		<plugins>
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven-javadoc-plugin-version}</version> 
+				<configuration>
+					<source>${java-version}</source>
+					<links>
+						<link>https://docs.oracle.com/javase/8/docs/api/</link>
+					</links>
+					<encoding>UTF-8</encoding>
+					<notimestamp>true</notimestamp>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+
+
+</project>
