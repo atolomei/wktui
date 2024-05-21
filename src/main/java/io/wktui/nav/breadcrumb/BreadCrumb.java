@@ -1,4 +1,4 @@
-package io.wkyui.breadcrumb;
+package io.wktui.nav.breadcrumb;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +11,9 @@ import org.apache.wicket.model.IModel;
 
 
 import wktui.base.BasePanel;
+import wktui.base.ModelPanel;
 
-public class BreadCrumb<T> extends BasePanel {
+public class BreadCrumb<T> extends ModelPanel<T> {
 
 	
 	private static final long serialVersionUID = 1L;

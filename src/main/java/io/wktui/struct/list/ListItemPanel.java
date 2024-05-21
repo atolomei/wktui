@@ -1,12 +1,13 @@
-package wktui.list;
+package io.wktui.struct.list;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
 import wktui.base.BasePanel;
+import wktui.base.ModelPanel;
 
-public class ListItemPanel<T> extends BasePanel {
+public class ListItemPanel<T> extends ModelPanel<T> {
 
 	private static final long serialVersionUID = 1L;
 

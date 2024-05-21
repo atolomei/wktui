@@ -1,4 +1,4 @@
-package io.wkyui.breadcrumb;
+package io.wktui.nav.breadcrumb;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;

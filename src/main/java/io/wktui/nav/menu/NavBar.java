@@ -9,8 +9,9 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.IModel;
 
 import wktui.base.BasePanel;
+import wktui.base.ModelPanel;
 
-public class NavBar<T> extends BasePanel {
+public class NavBar<T> extends ModelPanel<T> {
 
 	
 	private static final long serialVersionUID = 1L;
@@ -94,6 +95,7 @@ public class NavBar<T> extends BasePanel {
 	}
 	
 	
+	@Override
 	public void onBeforeRender() {
 		super.onBeforeRender();
 		

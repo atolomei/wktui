@@ -1,4 +1,4 @@
-package io.wkyui.breadcrumb;
+package io.wktui.nav.breadcrumb;
 
 
 import org.apache.wicket.model.IDetachable;

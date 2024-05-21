@@ -17,29 +17,13 @@ public abstract class BasePanel extends Panel {
 	
 	private static final long serialVersionUID = 1L;
 	
-	IModel<?> model;
 	
 	public BasePanel(String id) {
-		this(id, null);
-	}
-	
-	public BasePanel(String id, IModel<?> model) {
-		super(id, model);
-		this.model=model;
+			super(id);
 		addListeners();
 	}
 
 	
-	public IModel<?> getModel() {
-		return model;
-	}
-	
-	public void onDetach() {
-		super.onDetach();
-		if (this.model!=null)
-			this.model.detach();
-	}
-
 	
 	@SuppressWarnings("unchecked")
 	public void fireScanAll(FrontEndEvent event) {
