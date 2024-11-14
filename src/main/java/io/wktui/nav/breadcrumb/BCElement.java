@@ -1,16 +1,23 @@
 package io.wktui.nav.breadcrumb;
 
+
+import java.util.logging.Logger;
+
 import org.apache.wicket.markup.html.link.AbstractLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 
+
 /**
  * TODO: onClick doesnt seem to be working
  *
  */
 public class BCElement extends Link<Void> implements IBCElement {
+			
+	static private Logger logger = Logger.getLogger(BCElement.class.getName());
+	
 	private static final long serialVersionUID = 1L;
 	
 	private boolean isNewTab = false;
@@ -79,6 +86,7 @@ public class BCElement extends Link<Void> implements IBCElement {
 	}
 
 	public void onClick() {
+				
 	}
 	
 	@Override
