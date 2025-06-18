@@ -1,10 +1,11 @@
 package io.wktui.struct.list;
 
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
-import wktui.base.BasePanel;
+
 import wktui.base.ModelPanel;
 
 public class ListItemPanel<T> extends ModelPanel<T> {
@@ -18,10 +19,25 @@ public class ListItemPanel<T> extends ModelPanel<T> {
 	@Override
 	public void onInitialize() {
 			super.onInitialize();
-			add( new Label("label", getLabel()));
+			
+			Link<T> link = new Link<T>("link", getModel()) {
+                private static final long serialVersionUID = 1L;
+                @Override
+                public void onClick() {
+                    ListItemPanel.this.onClick();
+                }
+			};
+			
+			add(link);
+			link.add( new Label("label", getLabel()));
 	}
 
-	public IModel<String> getLabel() {
+	protected void onClick() {
+    }
+
+    public IModel<String> getLabel() {
 		return new Model<String>(getModel().getObject().toString());
 	}
+    
+    
 }

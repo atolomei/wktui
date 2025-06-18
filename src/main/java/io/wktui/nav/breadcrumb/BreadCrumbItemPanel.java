@@ -3,13 +3,12 @@ package io.wktui.nav.breadcrumb;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
-
-
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 
 import wktui.base.BasePanel;
 
-public class BreadCrumbItemPanel extends BasePanel {
-				
+public class BreadCrumbItemPanel extends BreadcrumbBasePanel {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -28,7 +27,7 @@ public class BreadCrumbItemPanel extends BasePanel {
 			}
 		};
 		
-		link.add((new Label("label", bce.getLabel())).setEscapeModelStrings(false));
+		link.add((new Label("label", new Model<String>( pad(bce.getLabel().getObject())) )).setEscapeModelStrings(false));
 		
 		 
 		if (bce.getHTMLTitleAttribute()!=null)
@@ -40,11 +39,24 @@ public class BreadCrumbItemPanel extends BasePanel {
 		add(link);
 	}
 	
-	@Override
+	
+    @Override
 	public void onDetach() {
 		super.onDetach();
 		
 		if (this.element!=null)
 			this.element.detach();
 	}
+
+
+    @Override
+    public IModel<String> getLabel() {
+        return new Model<String>(this.element.getLabel().getObject());
+    }
+
+
+    @Override
+    public void onClick() {
+        this.element.onClick();
+    }
 }

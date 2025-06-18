@@ -24,6 +24,9 @@ public abstract class BasePanel extends Panel {
 	}
 
 	
+	public IModel<String> getStringResourceModel( String key) {
+	    return new StringResourceModel(key);
+	}
 	
 	@SuppressWarnings("unchecked")
 	public void fireScanAll(FrontEndEvent event) {

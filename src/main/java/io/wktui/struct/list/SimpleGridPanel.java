@@ -15,7 +15,7 @@ import wktui.base.BasePanel;
 import wktui.base.InvisiblePanel;
 
 
-public class ListPanel<T> extends BasePanel {
+public class SimpleGridPanel<T> extends BasePanel {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -29,23 +29,18 @@ public class ListPanel<T> extends BasePanel {
 	
 	private WebMarkupContainer toolbar;
 	
-	private boolean hasExpander = false;
 	
-	
-	public ListPanel(String id) {
+	public SimpleGridPanel(String id) {
 		super(id);
 		setOutputMarkupId(true);
 	}
 	
-	public ListPanel(String id, List<IModel<T>> list) {
+	public SimpleGridPanel(String id, List<IModel<T>> list) {
         super(id);
         setOutputMarkupId(true);
         setListModel(list);
     }
 	
-	public List<IModel<T>> getList() {
-	    return this.listModel;
-	}
 	
 	@Override
 	public void onInitialize() {
@@ -76,18 +71,8 @@ public class ListPanel<T> extends BasePanel {
 			private static final long serialVersionUID = 1L;
 			@Override
 			protected void populateItem(ListItem<IModel<T>> item) {
-				
-				if (hasExpander()) {
-				    ListItemExpanderPanel<T> panel = new ListItemExpanderPanel<T>("row-element", item.getModelObject());
-					item.add(panel);
-				}					
-				else {
-				    
 				    Panel panel = getListItemPanel(item.getModelObject());
-				    
-					
 					item.add(panel);
-				}
 				item.setOutputMarkupId(true);
 			}
 		};
@@ -99,10 +84,10 @@ public class ListPanel<T> extends BasePanel {
 	    ListItemPanel<T> panel = new ListItemPanel<T>("row-element", modelObject) {
             private static final long serialVersionUID = 1L;
             public IModel<String> getLabel() {
-                return ListPanel.this.getItemLabel(modelObject);
+                return SimpleGridPanel.this.getItemLabel(modelObject);
             }
             protected void onClick() {
-                ListPanel.this.onClick(modelObject);
+                SimpleGridPanel.this.onClick(modelObject);
             }
         };
         return panel;
@@ -115,13 +100,6 @@ public class ListPanel<T> extends BasePanel {
         return new Model<String>(model.getObject().toString());
     }
     
-    public boolean hasExpander() {
-		return this.hasExpander;
-	}
-	
-	public void setHasExpander( boolean b) {
-		this.hasExpander=b;
-	}
 	
 	public IModel<String> getTitle() {
 		return this.title;

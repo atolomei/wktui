@@ -83,7 +83,9 @@ public class DropDownMenu<T> extends BasePanel {
 					item.setIndex(getIndex());
 					
 					panel.setModel(new IModel<T>() {
-						public void setObject(T object) {
+                        private static final long serialVersionUID = 1L;
+                        
+                        public void setObject(T object) {
 							DropDownMenu.this.getModel().setObject(object);
 						}
 						public T getObject() {
