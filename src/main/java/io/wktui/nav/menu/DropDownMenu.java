@@ -22,7 +22,7 @@ public class DropDownMenu<T> extends BasePanel {
 	private ListView<MenuItemFactory<T>> itemsview;
 
 	private boolean sort = false;
-	private boolean popper = true;
+	//private boolean popper = true;
 	
 	
 	public DropDownMenu(String id) {
@@ -121,22 +121,22 @@ public class DropDownMenu<T> extends BasePanel {
 	public void renderHead(IHeaderResponse response) {
 		super.renderHead(response);
 		
-		if (isPopper()) {
-				response.render(OnDomReadyHeaderItem.forScript(
-						"tryBindPopperDropdown( $('#" + this.getMarkupId() + "'));"
-				));
-		}
+		//if (isPopper()) {
+		//		response.render(OnDomReadyHeaderItem.forScript(
+		//				"tryBindPopperDropdown( $('#" + this.getMarkupId() + "'));"
+		//		));
+		//}
 
 	}
 
 	
-	public void setPopper( boolean b) {
-		this.popper=b;
-	}
+	//public void setPopper( boolean b) {
+	//	this.popper=b;
+	//}
 	
-	public boolean isPopper() {
-		return popper;
-	}
+	//public boolean isPopper() {
+	//	return popper;
+	//}
 	
 	public void setModel(IModel<T> model) {
 		this.model = model;
@@ -163,7 +163,6 @@ public class DropDownMenu<T> extends BasePanel {
 	@Override
 	public void onDetach() {
 		super.onDetach();
-		
 		
 		if (this.model!=null) 
 			this.model.detach();

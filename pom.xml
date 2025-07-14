@@ -17,7 +17,11 @@
 
 	<properties>
 
+		<disruptor-version>3.4.4</disruptor-version> 			<!--  01 /2024 version 4.0.0 did not work with LogManager  -->
+
 		<java-version>17</java-version>
+
+		<log4j2-version>2.22.1</log4j2-version>
 
 		<maven-javadoc-plugin-version>3.6.3</maven-javadoc-plugin-version>
 		<maven-jar-plugin-version>3.4.1</maven-jar-plugin-version>
@@ -182,6 +186,51 @@
 			<artifactId>wicket-toastr-core</artifactId>
 			<version>${wicket-toastr-core}</version>
 		</dependency>
+
+
+		<!-- s. LOGGING ========================================================  -->
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${log4j2-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${log4j2-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>${log4j2-version}</version>
+		</dependency>
+
+		<dependency>
+			<!-- used by Log4j2 Async  -->
+			<groupId>com.lmax</groupId>
+			<artifactId>disruptor</artifactId>
+			<version>${disruptor-version}</version>
+		</dependency>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	</dependencies>
 
