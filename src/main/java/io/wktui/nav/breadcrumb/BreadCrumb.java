@@ -127,7 +127,7 @@ public class BreadCrumb<T> extends ModelPanel<T> {
 		breadcrumbContainer.add(v);
 		
 		
-	      NavDropDownMenu<BreadcrumbBasePanel> menu = new NavDropDownMenu<BreadcrumbBasePanel>("menu", null, new Model<String>("Navegación"));
+	      NavDropDownMenu<BreadcrumbBasePanel> menu = new NavDropDownMenu<BreadcrumbBasePanel>("menu", null,  getLabel("navigation"));
 
 	       for( int counter=0; counter<list.size(); counter++) {
 	          
@@ -154,9 +154,6 @@ public class BreadCrumb<T> extends ModelPanel<T> {
 	      }
 	        
 	      add(menu);
-		
-		
-		
 		
  	}
 	

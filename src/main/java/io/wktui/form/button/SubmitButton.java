@@ -7,6 +7,7 @@ import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
 import org.apache.wicket.ajax.attributes.IAjaxCallListener;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
@@ -22,9 +23,11 @@ public abstract class SubmitButton<T> extends BasePanel {
 
     private Form<T> form;
 
-    private int mode;
     private String style;
     private String css;
+    
+    private Label label;
+
     
     private IModel<T> model;
     
@@ -33,6 +36,12 @@ public abstract class SubmitButton<T> extends BasePanel {
     
     public SubmitButton(String id) {
         this(id, null, null);
+    }
+    
+    public SubmitButton(String id, Form<T> form) {
+        super(id);
+        this.model=null;
+        this.form=form;
     }
     
     public SubmitButton(String id, IModel<T> model, Form<T> form) {
@@ -113,10 +122,18 @@ public abstract class SubmitButton<T> extends BasePanel {
             }
         };
         add(button);
-        
+     
+        label = new Label("submit", getLabel());
+        button.add(label)
+        ;
     }
     
 
+    public IModel<String> getLabel() {
+    	return new StringResourceModel("button.submit");
+    			
+    }
+    
     public void onDetach() {
         super.onDetach();
         if (this.model!=null)
@@ -153,10 +170,8 @@ public abstract class SubmitButton<T> extends BasePanel {
     }
 
 
-
-    protected void onSubmit(AjaxRequestTarget target) {
-    }
-    
+    protected abstract void onSubmit(AjaxRequestTarget target);
+        
     protected void onError(AjaxRequestTarget target) {
         /**
         getForm().visitChildren(Field.class, new IVisitor<Field<?>, Void>() {
@@ -169,10 +184,7 @@ public abstract class SubmitButton<T> extends BasePanel {
         });
         **/
     }
-        
-    public IModel<String> getLabel() {
-        return null;
-    }
+      
     
     //protected IModel<String> getWorkingLabel() {
     //    return new StringResourceModel("button.submiting", ContentEditor.this, null);

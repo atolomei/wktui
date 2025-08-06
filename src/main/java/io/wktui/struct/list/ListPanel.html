@@ -1,43 +1,81 @@
 <wicket:panel>
-			
-			<div class="row">
-				<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 text-sm-center">
-					<div wicket:id="title-container">
-						<div class="row">
-							<div class="col-xxl col-xl col-lg-12 col-md-12 col-sm-12">
-								<span wicket:id="title"></span>
-							</div>
-						</div>
-					</div>
-					
-					<div class="row">
-						<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 text-sm-center">
-							<div wicket:id="toolbar"></div>
-						</div>
-					</div>
 
-					<div class="row">
-						<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 text-sm-center">
-							<div wicket:id="list-items-container">
-								<ul class="list-group">
-									<li class="list-group-item" wicket:id="list-items">
-										<div wicket:id="row-element" />
-									</li>
-								</ul>
+	<div class="row">
+		<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 text-sm-center">
+			<div wicket:id="title-container">
+				<div class="row">
+					<div class="col-xxl col-xl col-lg-12 col-md-12 col-sm-12">
+						<span wicket:id="title"></span>
+						<!-- a wicket:id="settings" href="#" style="float:left">Settings <i class="ps-1 pe-1 mr-0 fa-light fa-gear bordered"></i></a -->
+					</div>
+				</div>
+			</div>
+
+			<div wicket:id="liveSearchContainer" class="row">
+				<div class="col-xxl-12 col-xl-12 col-lg-12 c col-md-12 col-sm-12">
+					<div class="border mt-1 ps-3 pe-3 pt-3 pb-3" style="margin-bottom: 1px;">
+						<div wicket:id="liveSearchTitleContainer" class="row">
+							<div class="mb-1 col-xxl-12 col-xl-12 col-lg-12 c col-md-12 col-sm-12 text-sm-center text-lg-start">
+								<b><span wicket:id="live-search-title" class="mt-0 mb-0"></span></b>
 							</div>
 						</div>
-					</div>
-					<div class="row">
-						<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 text-sm-center">
-							<div wicket:id="bottom"/>
+						<div class="row">
+							<div class="col-xxl-12 col-xl-12 col-lg-12 c col-md-12 col-sm-12 mb-2">
+								<div class="row">
+									<form wicket:id="form">
+	        							 <fieldset>
+			       								<input class="form-control mb-1" type="text" wicket:id="input" />
+									      </fieldset>						       	   
+									</form>
+    							</div>
+    							<div class="row">
+									<div class="col-xxl-12 col-xl-12 col-lg-12 c col-md-12 col-sm-12 text-start mt-1">
+							    
+							       	  <a class="ml-0" wicket:id="reset" href="#"><wicket:message key="reset">
+										</wicket:message></a>
+        						
+        						   	  <div style="float:right;">  
+        						   	  		<span  wicket:id="total" class="mr-1"></span>
+        									/ 
+        									<span  wicket:id="initialTotal" class="ml-1"></span>
+        							 </div>
+        							</div>
+    							</div>
+    						
+    						</div>
 						</div>
 					</div>
 				</div>
 			</div>
 
+			<div class="row">
+				<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 text-sm-center">
+					<div wicket:id="toolbar"></div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 text-sm-center">
+					<div wicket:id="list-items-container">
+						<ul class="list-group">
+							<li class="list-group-item" wicket:id="list-items">
+								<div wicket:id="row-element" />
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 text-sm-center">
+					<div wicket:id="bottom" />
+				</div>
+			</div>
+		</div>
+	</div>
+
 </wicket:panel>
-					
-					<!--  div class="row">
+
+<!--  div class="row">
 						<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
 							<div wicket:id="list-items-container">
 								<div class="container text-center">

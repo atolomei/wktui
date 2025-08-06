@@ -1,0 +1,195 @@
+package io.wktui.form.field;
+
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
+import org.apache.wicket.markup.ComponentTag;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.util.value.IValueMap;
+
+import wktui.base.Logger;
+
+
+public class LiveSearchField<T> extends Field<T> {
+            
+	private static final long serialVersionUID = 1L;
+
+	static private Logger logger = Logger.getLogger(LiveSearchField.class.getName());
+	
+	private String value;
+	private org.apache.wicket.markup.html.form.TextField<String> input;
+	
+	public LiveSearchField(String id, IModel<T> model) {
+	    this(id, model, null);
+	}
+	
+	public LiveSearchField(String id, IModel<T> model, IModel<String> label) {
+		super(id, model, label);
+		setOutputMarkupId(true);
+	}
+
+	public void setValue(String value) {
+        this.value=value;
+	}
+	
+	public String getValue() {
+	    return value;
+	}
+	
+	@Override
+	public void onInitialize() {
+	        super.onInitialize();
+	        
+	        if (getModel().getObject()!=null)
+	            setValue(getModel().getObject().toString());
+	        else
+	            setValue("");
+	        
+	        org.apache.wicket.markup.html.form.TextField<String> input = newTextField();
+	        super.addControl(input);
+	}
+	
+	
+	/**
+	 * @return
+	 */
+    protected org.apache.wicket.markup.html.form.TextField<String> newTextField() {
+	        
+        input = new org.apache.wicket.markup.html.form.TextField<String>("input", new PropertyModel<String>(this, "value")) {
+	        
+	            private static final long serialVersionUID = 1L;
+
+                @Override
+	            public void validate() {
+                    LiveSearchField.this.validate();
+	                super.validate();
+	            }
+	            @Override
+	            public boolean isEnabled() {
+	                return LiveSearchField.this.isEditMode();
+	            }
+	            
+	            protected void onComponentTag(final ComponentTag tag) {
+                    
+	                IValueMap attributes = tag.getAttributes();
+	                
+	                if (getInputType()!=null)           
+	                    attributes.put("type",  getInputType());
+	                else
+	                    attributes.put("type",  "text");
+	                    
+	                if (getAutoComplete()!=null)
+	                    attributes.put("autocomplete", getAutoComplete());
+	                
+	                if (autofocus())
+	                    attributes.putIfAbsent("autofocus", "");
+
+	                super.onComponentTag(tag);
+	            }
+
+	            @Override
+	            public String getInputName() {
+	                
+	                String overridedName = LiveSearchField.this.getInputName();
+	                
+	                if(overridedName != null)
+	                    return overridedName;
+
+	                return super.getInputName();
+	            }
+	        };
+
+	        input.setOutputMarkupId(true);
+	        
+	        if (getTabIndex()>0)
+	            input.add(new AttributeModifier("tabindex", getTabIndex()));
+	        
+	        
+	         try {
+	            if (getPlaceHolderLabel()!=null && getPlaceHolderLabel().getObject()!=null) 
+	                input.add(new AttributeModifier("placeholder", getPlaceHolderLabel()));
+	         }
+	         catch (java.util.MissingResourceException e) {
+	            logger.debug(e.getClass().getName() + " | " +  Thread.currentThread().getStackTrace()[1].getMethodName()+ " |  id. " + LiveSearchField.this.getId());
+	         }
+	        
+	        return input;
+	    }
+
+
+    
+
+    protected IModel<String> getPlaceHolderLabel() {
+        return null;
+    }
+
+    protected Object getAutoComplete() {
+        return null;
+    }
+
+    protected String getInputName() {
+        return null;
+    }
+
+    protected void validate() {
+        logger.debug("validate");
+    }
+
+    @Override
+    public Component getInput() {
+        return input;
+    }
+    
+    
+    public Object getInputValue() {
+        //return ((FormComponent<?>)getInput()).getInput();
+        //return input.getInput();
+        return input.getValue();
+    }
+    
+    
+    @Override
+    public void updateModel() {
+    
+        Object val = null;
+        
+        try {
+
+            if (getModel()==null)
+                return;
+            
+            val = getInputValue();
+            
+            if (val!=null) {
+                
+                    if  ( (getModel().getObject()!=null && !getModel().getObject().equals(val)) || 
+                          (getModel().getObject()==null && val!=null && !"".equals(val))) {
+                    
+                        onUpdate(getModel().getObject(), (T) val);
+                        getModel().setObject( (T) val);
+                }
+            }
+            else {
+                if (getModel().getObject()!=null) {
+                    getModel().setObject(null);
+                    onUpdate(getModel().getObject(), null);
+                }
+            }
+        } 
+        catch (Exception e) {
+            logger.error(e,  getInput()!=null? getInput().toString(): "");
+            getModel().detach();
+        }
+    }
+
+    protected void onUpdate(T oldvalue, T newvalue) {
+        //if (getEditor()!=null) {
+        //    getEditor().setUpdatedPart(getPart());
+        //}
+    }
+    
+    protected String getInputType() {
+        return "text";
+    }
+
+} 

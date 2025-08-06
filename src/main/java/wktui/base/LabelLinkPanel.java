@@ -6,7 +6,7 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 
-public abstract class LabelLinkPanel extends Panel {
+public abstract class LabelLinkPanel extends  BasePanel {
 
 	private static final long serialVersionUID = 1L;
 	

@@ -48,4 +48,10 @@ public class Form<T> extends BaseForm<T> {
         super.onComponentTag(tag);
     }
 
+	public void setFormState(FormState state) {
+		this.state=state;
+	}
+
+	
+	
 }
