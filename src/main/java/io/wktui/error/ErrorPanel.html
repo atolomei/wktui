@@ -1,12 +1,12 @@
 <wicket:panel>
 	
 	
-	<div class="alert alert-danger" role="alert" wicket:id="container" style="float:left; width:100%;">
+	<div wicket:id="container" class="alert alert-danger" role="alert"  style="float:left; width:100%;">
 			<div class="row">
 				<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 text-sm-center">
 					
 						<a wicket:id="close" href="#" style="position:absolute; right:0; padding:4px; top:0;top: -4px; float: right">
-							<i style="color:#d01a1f; font-size:14px; padding: 0 10px;" class="fal fa-times"></i>
+							<i wicket:id="closeIcon" class="fal fa-times iconClose"></i>
 						</a>					
 						
 						<div wicket:id="titleContainer" class="row">
@@ -22,7 +22,7 @@
 						</div --> 
 						
 						<div wicket:id="textContainer" class="row">
-							<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 text-start text-sm-center">
+							<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 text-center  text-xs-center text-sm-center text-md-start text-lg-start text-xl-start text-xxl-start">
 								<span class="mb-0" wicket:id="text"></span>
 							</div>
 						</div>

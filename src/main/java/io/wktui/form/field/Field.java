@@ -8,6 +8,7 @@ import java.util.MissingResourceException;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
+import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -27,6 +28,7 @@ import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
 
+import io.wktui.editor.Editor;
 import io.wktui.form.Form;
 import io.wktui.form.FormState;
 import io.wktui.form.util.TitlePanel;
@@ -43,23 +45,73 @@ import wktui.base.LabelPanel;
  * @param <T>
  */
 public abstract class Field<T> extends BasePanel implements IFormModelUpdateListener {
-
+ 	    
     private static final long serialVersionUID = 1L;
 
     private int tab_index = -1;
 
-    private boolean editable = true;   
+    private boolean readOnly = false;   
+    private boolean editEnabled = false;   
     private boolean required = false;
     private boolean feedback = false;
     private boolean helpInfo = false;
+
+    private IModel<String> titleModel;
+
     
+    private Editor<?> editor;
     private Form<?> form;
     
-
-    public Form<?> getForm() {
-        return form;
-    }
     
+    /** valor original */
+    private IModel<T> model;
+    
+    /** valor ingresado */
+    private IModel<T> valueModel;
+    
+    private String fieldUpdatedPartName;
+    
+    // public abstract IModel<T> makeValueModel(T value);
+    // public abstract void setValueModelObject(T value);
+    
+    private Model<String> subtitleModel;
+
+    private WebMarkupContainer containerCol;
+    private WebMarkupContainer containerBorder;
+    
+    private Component inputComponent;
+
+    private IValidator<T> validator;
+    private String property;
+    private List<Behavior> behaviors;
+    private boolean autofocus = false;
+
+    /**
+     * @param id
+     * @param model
+     */
+    public Field(String id, IModel<T> model, IModel<String> label) {
+    	this( id, model, label, null);
+    }
+    	
+    public Field(String id, IModel<T> model, IModel<String> label, String name) {
+        super(id);
+        setProperty(id);
+        setModel(model);
+        setTitleModel(label);
+        if (name==null)
+        	this.fieldUpdatedPartName=id;
+        else
+        	this.fieldUpdatedPartName=name;
+    }
+
+    public String getFieldUpdatedPartName() {
+    	return this.fieldUpdatedPartName;
+    }
+	
+	public void validate() {
+	}
+	
     public boolean isRequired() {
         return required;
     }
@@ -69,7 +121,7 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
     }
     
     public boolean isEditEnabled() {
-        return editable;
+        return editEnabled;
     }
     
     public boolean isEditMode() {
@@ -77,49 +129,7 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
             return true;
         return getForm().getFormState()==FormState.EDIT;
     }
-    
-    
-    /** valor original */
-    public IModel<T> model;
-    
-    private Model<String> subtitleModel;
-    
-    //public abstract T getValue();
-    //public abstract IModel<T> getValueModel();
-    //public abstract void setValueModel(T value);
-    
-    private WebMarkupContainer containerCol;
-    private WebMarkupContainer containerBorder;
-    
-    
-    /** valor ingresado */
-    //private IModel<T> valueModel;
-
-    private Component inputComponent;
-
-    private IValidator<T> validator;
-    private String property;
-    private Width width = Width.W18;
-    private List<Behavior> behaviors;
-    private boolean autofocus = false;
-
-    public enum Width {
-        W01("col-lg-1"), W02("col-lg-2"), W03("col-lg-3"), W04("col-lg-4"), W05("col-lg-5"), W06("col-lg-6"), W07("col-lg-7"),
-        W08("col-lg-8"), W09("col-lg-9"), W10("col-lg-10"), W11("col-lg-11"), W12("col-lg-12"), W13("col-lg-13"), W14("col-lg-14"),
-        W15("col-lg-15"), W16("col-lg-16"), W17("col-lg-17"), W18("col-lg-18");
-
-        private String css;
-
-        private Width(String css) {
-            this.css = css;
-        }
-
-        public String getCss() {
-            return css;
-        }
-    };
-
-
+        
     @Override
     public void onInitialize() {
         super.onInitialize();
@@ -150,28 +160,21 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
         containerBorder.add(new InvisiblePanel("feedbackMarkupContainer"));
         containerBorder.add(new InvisiblePanel("errorMarkupContainer"));
     }
-
+  
+    public void editOn() {
+    	this.editEnabled=true;
+    	super.setEnabled(true);
+		
+	}
+	
+	public void editOff() {
+    	this.editEnabled=false;
+		super.setEnabled(false);
+	}
+    
     public void addControl(WebMarkupContainer input) {
         containerBorder.add(input);
     }
-
-    private IModel<String> titleModel;
-    
-    /**
-     * 
-     * 
-     * @param id
-     * @param model
-     */
-    public Field(String id, IModel<T> model, IModel<String> label) {
-        super(id);
-        setProperty(id);
-        
-        setModel(model);
-        setTitleModel( label );
-    }
-
-    
 
     public void setTitleModel(IModel<String> titleModel) {
         this.titleModel = titleModel;
@@ -181,8 +184,6 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
         return this.titleModel;
     }
 
-    
-
     public void setSubtitleModel(Model<String> titleModel) {
         this.subtitleModel = titleModel;
     }
@@ -191,6 +192,9 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
         return this.subtitleModel;
     }
 
+    public abstract void updateModel();
+    
+    
     //public void updateModel() {
     //    if (valueModel != null)
     //        setModel(getValueModel());
@@ -198,15 +202,17 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
 
     public void cancel() {
         clearInput();
-        // if (getModel()!=null)
-        // setValue(getModel().getObject());
+         //if (getModel()!=null)
+         //	 makeValueModel(getModel().getObject());
     }
 
     public void clearInput() {
-        // feedback = false;
+        
+    	// feedback = false;
         // getFeedbackMessages().clear();
-        // if (getInput()!=null && getInput() instanceof FormComponent)
-        // ((FormComponent<?>)getInput()).clearInput();
+    	
+         if (getInput()!=null && getInput() instanceof FormComponent)
+        	 ((FormComponent<?>)getInput()).clearInput();
     }
 
     public void add(IValidator<T> validator) {
@@ -238,11 +244,11 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
     }
 
     public void setReadOnly(boolean readOnlyStatus) {
-        this.editable =! readOnlyStatus;
+        this.readOnly =  readOnlyStatus;
     }
 
     public boolean isReadOnly() {
-        return !this.editable;
+        return this.readOnly;
     }
 
     public void setProperty(String name) {
@@ -279,10 +285,10 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
         return feedback;
     }
 
-    //public IModel<T> getValueModel() {
-    //    return valueModel;
-    //}
-
+    public IModel<T> getValueModel() {
+        return valueModel;
+    }
+ 
     //public void setValueModel(IModel<T> value) {
     //    valueModel = value;
     //}
@@ -293,14 +299,8 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
         ((org.apache.wicket.markup.html.form.TextField<T>) getInput()).setModelValue(values);
     }
 
-    public Width getWidth() {
-        return width;
-    }
-
-    public void setWidth(Width width) {
-        this.width = width;
-    }
-
+    
+    
     public void setError(ValidationError error) {
         error(error);
         feedback = true;
@@ -311,6 +311,16 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
             behaviors = new ArrayList<Behavior>();
         behaviors.add(behavior);
     }
+    
+    
+    @Override
+	public void onConfigure() {
+		super.onConfigure();
+		if (isEditEnabled())
+		 editOn();
+		else
+		 editOff();
+	}
 
     @Override
     public void onBeforeRender() {
@@ -341,12 +351,13 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
         // }
         super.onDetach();
 
-        //if (valueModel != null)
-        //    valueModel.detach();
+        if (valueModel != null)
+            valueModel.detach();
 
-        if (model != null)
-            model.detach();
+        if (this.model != null)
+        	this.model.detach();
     }
+    
 
     public void addBehaviors() {
         if (behaviors != null) {
@@ -360,15 +371,46 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
         autofocus = value;
     }
 
-    /**
-     * protected IModel<T> getModel(T value) { if (value instanceof Identifiable) {
-     * return new ObjectModel<T>(value); } return null; }
-     **/
-
+  
     protected boolean autofocus() {
         return autofocus;
     }
 
+    
+    protected Editor<?> getEditor() {
+		if (this.editor==null) {
+			MarkupContainer parent = getParent();
+			while (this.editor==null && parent!=null) {
+				if (parent instanceof Editor) {
+					this.editor = (Editor<?>)parent;
+				}
+				else
+					parent = parent.getParent();
+			}
+		}
+		return this.editor;
+	}	
+	
+    
+    
+
+	protected Form<?> getForm() {
+
+		if (this.form!=null)
+			return this.form;
+				
+		MarkupContainer parent = getParent();
+		while (parent!=null) {
+			if (parent instanceof Form) {
+				this.form=(Form<?>)parent;
+				return this.form;
+			}
+			else
+				parent = parent.getParent();
+		}
+		return null;
+	}
+    
     /**
      * public void validate() { feedback = false; getFeedbackMessages().clear();
      * final Object input = getInputValue(); if (isRequired() && (input==null ||

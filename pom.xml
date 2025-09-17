@@ -41,11 +41,8 @@
 			<id>my-local-repo</id>
 			<url>file://${basedir}/nonstandardlib/</url>
 		</repository>
-
-	 
-
-
-		<repository>
+ 
+ 		<repository>
 			<id>wicket-menu-release</id>
 			<url>http://wicket-menu.googlecode.com/svn/maven/repo</url>
 		</repository>
@@ -212,24 +209,7 @@
 			<version>${disruptor-version}</version>
 		</dependency>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	</dependencies>
+ 	</dependencies>
 
 
 	<build>

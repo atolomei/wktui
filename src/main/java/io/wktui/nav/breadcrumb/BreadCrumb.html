@@ -1,12 +1,18 @@
 <wicket:panel>
 	<nav class="d-none d-sm-none d-md-none d-lg-block" wicket:id="breadcrumbContainer" aria-label="breadcrumb">
-		<ol class="breadcrumb">
+		<ol class="breadcrumb" style="max-width:calc( 100vw - 12em); float: left;">
 			<li class="breadcrumb-item" style="display: flex;" wicket:id="breadcrumb-element">
 				<div wicket:id="bc-menu-item" />
 			</li>
 		</ol>
+		<div style="float: right;" wicket:id="navigator" />
 	</nav>
+	
 	<nav class="d-block d-sm-block d-md-block d-lg-none  d-xl-none d-xxl-none text-md-center breadcrumb" wicket:id="menu" />
+	<nav class="d-block d-sm-block d-md-block d-lg-none  d-xl-none d-xxl-none text-md-center breadcrumb" wicket:id="navigator" />
+
+	
+	
 </wicket:panel>
 
 

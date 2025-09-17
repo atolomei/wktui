@@ -1,23 +1,27 @@
 package io.wktui.form.field;
 
+import java.io.Serializable;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.ComponentTag;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.util.value.IValueMap;
 
 import wktui.base.Logger;
 
 
-public class TextField<T> extends Field<T> {
+public class TextField<T extends Serializable> extends Field<T> {
             
 	private static final long serialVersionUID = 1L;
 
 	static private Logger logger = Logger.getLogger(TextField.class.getName());
 	
-	private String value;
-	private org.apache.wicket.markup.html.form.TextField<String> input;
+	private T value;
+	private org.apache.wicket.markup.html.form.TextField<T> input;
 	
 	public TextField(String id, IModel<T> model) {
 	    this(id, model, null);
@@ -28,34 +32,51 @@ public class TextField<T> extends Field<T> {
 		setOutputMarkupId(true);
 	}
 
-	public void setValue(String value) {
+	public void setValue(T value) {
         this.value=value;
 	}
 	
-	public String getValue() {
+	public T getValue() {
 	    return value;
 	}
 	
 	@Override
-	public void onInitialize() {
-	        super.onInitialize();
-	        
-	        if (getModel().getObject()!=null)
-	            setValue(getModel().getObject().toString());
-	        else
-	            setValue("");
-	        
-	        org.apache.wicket.markup.html.form.TextField<String> input = newTextField();
-	        super.addControl(input);
+	public void editOn() {
+		this.input.setEnabled(true);
+		super.editOn();
+	}
+
+	@Override
+	public void editOff() {
+		this.input.setEnabled(false);
+		super.editOff();
 	}
 	
 	
+	@Override
+	public void onInitialize() {
+	        super.onInitialize();
+	  	        
+	        if (getModel().getObject()!=null)
+	            setValue(getModel().getObject());
+
+	        this.input = newTextField();
+	        super.addControl(input);
+	        
+	}
+	
+
+	@Override
+	public void onConfigure() {
+		super.onConfigure();
+		// logger.debug("onConfigure() -> " + getId());
+	}
 	/**
 	 * @return
 	 */
-    protected org.apache.wicket.markup.html.form.TextField<String> newTextField() {
+    protected org.apache.wicket.markup.html.form.TextField<T> newTextField() {
 	        
-        input = new org.apache.wicket.markup.html.form.TextField<String>("input", new PropertyModel<String>(this, "value")) {
+    	org.apache.wicket.markup.html.form.TextField<T> input = new org.apache.wicket.markup.html.form.TextField<T>("input", new PropertyModel<T>(this, "value")) {
 	        
 	            private static final long serialVersionUID = 1L;
 
@@ -113,12 +134,22 @@ public class TextField<T> extends Field<T> {
 	            logger.debug(e.getClass().getName() + " | " +  Thread.currentThread().getStackTrace()[1].getMethodName()+ " |  id. " + TextField.this.getId());
 	         }
 	        
+	         
+	         
+	         
 	        return input;
 	    }
 
-
+    protected void onUpdate(T oldvalue, T newvalue) {
+		if (getEditor()!=null) {
+			getEditor().setUpdatedPart(getPart());
+		}
+	}
     
-
+    protected String getPart() {
+    	return getFieldUpdatedPartName();
+	}
+    
     protected IModel<String> getPlaceHolderLabel() {
         return null;
     }
@@ -131,8 +162,8 @@ public class TextField<T> extends Field<T> {
         return null;
     }
 
-    protected void validate() {
-        logger.debug("validate");
+    public void validate() {
+        logger.debug("validate " + getId());
     }
 
     @Override
@@ -142,9 +173,24 @@ public class TextField<T> extends Field<T> {
     
     
     public Object getInputValue() {
-        //return ((FormComponent<?>)getInput()).getInput();
+    
+    	//return ((FormComponent<?>)getInput()).getInput();
         //return input.getInput();
-        return input.getValue();
+    	//logger.debug( getId()+ " -> " + input.getValue() +  " - " +   getValue());
+        
+    	
+    	//logger.debug( input.getInnermostModel().getObject());
+		
+    	//logger.debug( input.getDefaultModelObjectAsString() );
+    	//logger.debug( input.getInput() );;
+    	//logger.debug( input.getModel().getObject() );
+    	
+    	return input.getValue();
+    }
+    
+    @Override
+    public void onDetach() {
+    	super.onDetach();
     }
     
     
@@ -155,10 +201,12 @@ public class TextField<T> extends Field<T> {
         
         try {
 
-            if (getModel()==null)
-                return;
-            
-            val = getInputValue();
+            if (getModel()==null) {
+            	logger.warn("model is null for id -> " + getId());
+            	return;
+            }
+ 
+            val = getValue();
             
             if (val!=null) {
                 
@@ -166,8 +214,10 @@ public class TextField<T> extends Field<T> {
                           (getModel().getObject()==null && val!=null && !"".equals(val))) {
                     
                         onUpdate(getModel().getObject(), (T) val);
+                        logger.debug( "update -> " + getId() + ": " + val.toString());
                         getModel().setObject( (T) val);
-                }
+                        
+                    }
             }
             else {
                 if (getModel().getObject()!=null) {
@@ -182,14 +232,14 @@ public class TextField<T> extends Field<T> {
         }
     }
 
-    protected void onUpdate(T oldvalue, T newvalue) {
-        //if (getEditor()!=null) {
-        //    getEditor().setUpdatedPart(getPart());
-        //}
-    }
-    
+       
     protected String getInputType() {
         return "text";
     }
+
+	//@Override
+	//public IModel<T> makeValueModel(T value) {
+	//		return new Model<T>(value.toString());
+	//}
 
 } 

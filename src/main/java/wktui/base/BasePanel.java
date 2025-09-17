@@ -10,6 +10,8 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.http.WebRequest;
 
+import io.wktui.event.UIEvent;
+
 public abstract class BasePanel extends Panel {
 
     private static final long serialVersionUID = 1L;
@@ -24,8 +26,8 @@ public abstract class BasePanel extends Panel {
     }
 
     @SuppressWarnings("unchecked")
-    public void fireScanAll(FrontEndEvent event) {
-        for (FrontEndEventListener<FrontEndEvent> listener : getPage().getBehaviors(FrontEndEventListener.class)) {
+    public void fireScanAll(UIEvent event) {
+        for (UIEventListener<UIEvent> listener : getPage().getBehaviors(UIEventListener.class)) {
             if (listener.handle(event)) {
                 listener.onEvent(event);
             }
@@ -33,16 +35,16 @@ public abstract class BasePanel extends Panel {
         fire(event, getPage().iterator(), false);
     }
 
-    public boolean fire(FrontEndEvent event, Iterator<Component> components) {
+    public boolean fire(UIEvent event, Iterator<Component> components) {
         return fire(event, components, true);
     }
 
     @SuppressWarnings("unchecked")
-    public boolean fire(FrontEndEvent event, Iterator<Component> components, boolean stop_first_hit) {
+    public boolean fire(UIEvent event, Iterator<Component> components, boolean stop_first_hit) {
         boolean handled = false;
         while (components.hasNext()) {
             Component component = components.next();
-            for (FrontEndEventListener<FrontEndEvent> listener : component.getBehaviors(FrontEndEventListener.class)) {
+            for (UIEventListener<UIEvent> listener : component.getBehaviors(UIEventListener.class)) {
                 if (listener.handle(event)) {
                     listener.onEvent(event);
                     if (stop_first_hit) {
@@ -63,9 +65,9 @@ public abstract class BasePanel extends Panel {
     }
 
     @SuppressWarnings("unchecked")
-    public void fire(FrontEndEvent event) {
+    public void fire(UIEvent event) {
         boolean handled = false;
-        for (FrontEndEventListener<FrontEndEvent> listener : getPage().getBehaviors(FrontEndEventListener.class)) {
+        for (UIEventListener<UIEvent> listener : getPage().getBehaviors(UIEventListener.class)) {
             if (listener.handle(event)) {
                 listener.onEvent(event);
                 handled = true;

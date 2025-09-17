@@ -4,14 +4,14 @@ import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.request.resource.ResourceReference;
 
-public class InvisibleImagePanel extends Image {
+public class InvisibleImage extends Image {
 			
 	
 private static final long serialVersionUID = 1L;
 
-private static final ResourceReference EMPTY_IMAGE = new PackageResourceReference(InvisibleImagePanel.class, null);
+private static final ResourceReference EMPTY_IMAGE = new PackageResourceReference(InvisibleImage.class, null);
 	
-	public InvisibleImagePanel(String id) {
+	public InvisibleImage(String id) {
 		super(id, EMPTY_IMAGE);
 	}
 	

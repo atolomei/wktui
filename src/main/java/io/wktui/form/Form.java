@@ -1,8 +1,12 @@
 package io.wktui.form;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.model.IModel;
+
+import io.wktui.form.field.Field;
 
 
 /***
@@ -34,6 +38,16 @@ public class Form<T> extends BaseForm<T> {
         super(id, model);
     }
 
+    @SuppressWarnings("unchecked")
+	@Override
+    public MarkupContainer add(final Component... children) {
+    	//for (Component child : children) {
+    		//if (child instanceof Field)
+    		//	((Field<T>) child).editOff();
+    	//}
+    	return super.add( children );
+    }
+
     public FormState getFormState() {
         return this.state;
     }
@@ -50,6 +64,9 @@ public class Form<T> extends BaseForm<T> {
 
 	public void setFormState(FormState state) {
 		this.state=state;
+		
+		
+		
 	}
 
 	

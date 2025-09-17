@@ -131,7 +131,7 @@ public class LiveSearchField<T> extends Field<T> {
         return null;
     }
 
-    protected void validate() {
+    public void validate() {
         logger.debug("validate");
     }
 
@@ -155,8 +155,10 @@ public class LiveSearchField<T> extends Field<T> {
         
         try {
 
-            if (getModel()==null)
+            if (getModel()==null) {
+            	logger.warn("model is null for id -> " + getId());
                 return;
+            }
             
             val = getInputValue();
             

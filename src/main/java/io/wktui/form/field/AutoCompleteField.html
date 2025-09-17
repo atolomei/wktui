@@ -1,0 +1,41 @@
+<wicket:panel>
+	<wicket:extend>
+
+		<input type="text" class="form-control" wicket:id="input" />
+
+		<div class="row">
+			<div class="col-xxl-12 col-xl-12 col-lg-12 c col-md-12 col-sm-12 mb-2">
+				<div class="row">
+					<form wiecket:id="form">
+						<fieldset>
+							<input class="form-control mb-1" type="text" wiceeket:id="input" />
+						</fieldset>
+					</form>
+				</div>
+				<div class="row">
+					<div class="col-xxl-12 col-xl-12 col-lg-12 c col-md-12 col-sm-12 text-start mt-1">
+						<a class="ml-0" wickeet:id="reset" href="#"><wicket:message key="reset">
+							</wicket:message></a>
+						<div style="float: right;">
+							<span wickeet:id="total" class="mr-1"></span> / <span wiceket:id="initialTotal" class="ml-1"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 text-sm-center">
+				<ul class="list-group">
+					<li class="list-group-item" wiceeket:id="list-items"><wicket:container wicket:id="row-element" /></li>
+				</ul>
+				<div wickeeet:id="noItems" />
+			</div>
+		</div>
+
+	</wicket:extend>
+
+</wicket:panel>
+
+
+

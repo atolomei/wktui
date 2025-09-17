@@ -71,7 +71,7 @@ public class SimpleGridPanel<T> extends BasePanel {
 			private static final long serialVersionUID = 1L;
 			@Override
 			protected void populateItem(ListItem<IModel<T>> item) {
-				    Panel panel = getListItemPanel(item.getModelObject());
+				    Panel panel = getListItemPanel(item.getModelObject(), ListPanelMode.TITLE_TEXT_IMAGE);
 					item.add(panel);
 				item.setOutputMarkupId(true);
 			}
@@ -80,8 +80,8 @@ public class SimpleGridPanel<T> extends BasePanel {
 	}
 	
 	
-	protected Panel getListItemPanel(IModel<T> modelObject) {
-	    ListItemPanel<T> panel = new ListItemPanel<T>("row-element", modelObject) {
+	protected Panel getListItemPanel(IModel<T> modelObject, ListPanelMode mode) {
+	    ListItemPanel<T> panel = new ListItemPanel<T>("row-element", modelObject, mode) {
             private static final long serialVersionUID = 1L;
             public IModel<String> getLabel() {
                 return SimpleGridPanel.this.getItemLabel(modelObject);

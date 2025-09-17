@@ -2,7 +2,7 @@ package io.wktui.nav.menu;
 
 import org.apache.wicket.model.IModel;
 
-public class SeparatorMenuItem extends MenuItemPanel<Void> {
+public class SeparatorMenuItem<T> extends MenuItemPanel<T> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -10,14 +10,15 @@ public class SeparatorMenuItem extends MenuItemPanel<Void> {
 		super(id);
 	}
 
-	
 	@Override
 	public IModel<String> getLabel() {
 		return null;
 	}
 	
-	
-	
+	//@Override
+	//public String getCssClass()  {
+//		return "border-top float-start w-100";
+//	}
 	
 
 }

@@ -1,6 +1,5 @@
 package wktui.base;
 
-import org.apache.wicket.model.IDetachable;
 import org.apache.wicket.model.IModel;
 
 public class ModelPanel<T> extends BasePanel {
@@ -8,7 +7,7 @@ public class ModelPanel<T> extends BasePanel {
 	
 	private static final long serialVersionUID = 1L;
 	
-	IModel<T> model;
+	private IModel<T> model;
 	
 
 	public ModelPanel(String id, IModel<T> model) {
@@ -16,6 +15,9 @@ public class ModelPanel<T> extends BasePanel {
 		this.model=model;
 	}
 
+	public void setModel(IModel<T> model)  {
+		this.model=model;
+	}
 	
 	public IModel<T> getModel() {
 		return model;

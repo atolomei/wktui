@@ -1,9 +1,17 @@
 package io.wktui.form.button;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
+import org.apache.wicket.ajax.attributes.IAjaxCallListener;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.StringResourceModel;
 
 import io.wktui.form.Form;
 import io.wktui.form.FormState;
@@ -15,15 +23,15 @@ public class EditButtons<T> extends BasePanel {
 
 	static private Logger logger = Logger.getLogger(EditButtons.class.getName());
 	
+    public static final String SPINNING ="fas fa-sync fa-spin fa-fw spinning";
+
     private static final long serialVersionUID = 1L;
 
     private Form<T> form;
     
-    AjaxLink<T> edit;
-    AjaxLink<T> save;
-    AjaxLink<T> cancel;
-    
-    
+    private AjaxLink<T> edit;
+    private AjaxButton save;
+    private AjaxButton cancel;
     
     private String style;
     private String css;
@@ -118,41 +126,113 @@ public class EditButtons<T> extends BasePanel {
         
         containerEdit.add(edit);
         
-        save =  new AjaxLink<T>("save", getModel()) {
+        save =  new AjaxButton("save") {
 			private static final long serialVersionUID = 1L;
 			@Override
-			public void onClick(AjaxRequestTarget target) {
-				EditButtons.this.onSave( target );
+			protected void onSubmit(AjaxRequestTarget target) {
+				long start=System.currentTimeMillis();
+				EditButtons.this.onSave(target);	
+				long end=System.currentTimeMillis();
+				if ( (end-start) < 600) {
+					try {
+	                    Thread.sleep(600 - (end-start));
+	                } catch (InterruptedException e) {
+	                    e.printStackTrace();
+	                }
+				}
 			}
-        	
+			
+			
+			@Override
+			protected void updateAjaxAttributes(AjaxRequestAttributes attributes) {
+				super.updateAjaxAttributes(attributes);
+				IAjaxCallListener listener = new IAjaxCallListener() {
+					@Override
+					public CharSequence getSuccessHandler(Component component) {
+						return null;
+					}
+					@Override
+					public CharSequence getPrecondition(Component component) {
+						return null;
+					}
+					@Override
+					public CharSequence getFailureHandler(Component component) {
+						return null;
+
+					}
+					@Override
+					public CharSequence getCompleteHandler(Component component) {
+						String s = null, s1=null;
+						String id = component.getMarkupId();
+							s1 = "document.getElementById('"+id+"').innerHTML = '"+(getLabel()!=null?getLabel().getObject():"")+"';";
+							s ="setTimeout(function () {"+s1+"}, 100);";
+						return s;
+					}
+					@Override
+					public CharSequence getBeforeSendHandler(Component component) {
+						return null;
+					}
+					@Override
+					public CharSequence getBeforeHandler(Component component) {
+						String s = EditButtons.this.getBeforeHandler();
+						s += "document.getElementById('"+component.getMarkupId()+"').innerHTML = '<span class=\""+SPINNING+"\"></span>'";
+						return s;																		
+					}
+					@Override
+					public CharSequence getAfterHandler(Component component) {
+						return null;
+					}
+					@Override
+					public CharSequence getDoneHandler(Component component) {
+						return null;
+					}
+					@Override
+					public CharSequence getInitHandler(Component component) {
+						return null;
+					}
+				};
+				attributes.getAjaxCallListeners().add(listener);
+			}
         };
         
-        cancel =  new AjaxLink<T>("cancel", getModel()) {
+        cancel =  new AjaxButton("cancel") {
 			private static final long serialVersionUID = 1L;
 			@Override
-			public void onClick(AjaxRequestTarget target) {
-				EditButtons.this.onCancel( target );
+			public void onSubmit(AjaxRequestTarget target) {
+				EditButtons.this.onCancel(target);
 			}
         };
+        
+        
+        save.add( new AttributeModifier("class", getSaveClass()));
+        cancel.add( new AttributeModifier("class", getCancelClass()));
         
         containerSave.add(save);
         containerSave.add(cancel);
     }
+    
+    
+    
+	protected IModel<String> getWorkingLabel() {
+		return new StringResourceModel("saving", this, null);
+	}
+	
+	public String getBeforeHandler() {
+		return "";
+	}
+
     
     protected Form<T> getForm() {
 		return this.form;
 	}
 
 	protected void onCancel(AjaxRequestTarget target) {
-		logger.debug("onCancel");
 	}
 
 	protected void onSave(AjaxRequestTarget target) {
-		logger.debug("onSave");
 	}
 
 	protected void onEdit(AjaxRequestTarget target) {
-		logger.debug("onEdit");
 		getForm().setFormState( FormState.EDIT);
 		target.add(getForm());
 		target.add(this);
@@ -175,7 +255,7 @@ public class EditButtons<T> extends BasePanel {
     }
     
     protected String getCancelClass() {
-        return "btn btn-default btn-sm";
+        return "btn  btn-outline-primary btn-sm";
     }    
     
 }

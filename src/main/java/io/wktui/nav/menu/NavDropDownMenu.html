@@ -1,9 +1,10 @@
 <wicket:panel>
 	
 	<div class="nav-item dropdown">
+	
+	
 		<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-           	<i class="d-block-inline d-sm-block-inline d-md-block-inline d-lg-none  d-xl-none d-xxl-none fa-solid fa-bars ps-1 pe-1"></i>
-            <span wicket:id="label"></span>
+    			<wicket:container wicket:id="titlePanel" />
         </a>
         
 		<ul class="dropdown-menu">
@@ -12,3 +13,14 @@
 	
 	</div>
 </wicket:panel>
+
+
+
+<wicket:fragment wicket:id="titleFragment">
+
+		<!-- img wicket:id="image" class="thumbnail"></img -->
+       	<i wicket:id="icon" class="d-block-inline d-sm-block-inline d-md-block-inline d-lg-none  d-xl-none d-xxl-none fa-solid fa-bars ps-2 pe-2"></i>
+        <span wicket:id="label"></span>
+    
+</wicket:fragment>
+

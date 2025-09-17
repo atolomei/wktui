@@ -12,8 +12,12 @@ public class ListItemPanel<T> extends ModelPanel<T> {
 
 	private static final long serialVersionUID = 1L;
 
-	public ListItemPanel(String id, IModel<T> model) {
+	
+	ListPanelMode mode;
+	
+	public ListItemPanel(String id, IModel<T> model,ListPanelMode mode) {
 		super(id, model);
+		this.mode=mode;
 	}
 	
 	@Override
@@ -39,5 +43,11 @@ public class ListItemPanel<T> extends ModelPanel<T> {
 		return new Model<String>(getModel().getObject().toString());
 	}
     
-    
+    public boolean isImageVisible() {
+		return this.mode==ListPanelMode.TITLE_TEXT_IMAGE;
+	}
+ 
+    public boolean isTextVisible() {
+		return this.mode==ListPanelMode.TITLE_TEXT_IMAGE || this.mode==ListPanelMode.TITLE_TEXT;
+	}
 }

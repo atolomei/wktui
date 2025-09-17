@@ -2,13 +2,15 @@ package wktui.base;
 
 import org.apache.wicket.behavior.Behavior;
 
-public abstract class FrontEndEventListener<T extends FrontEndEvent> extends Behavior {
+import io.wktui.event.UIEvent;
+
+public abstract class UIEventListener<T extends UIEvent> extends Behavior {
 				
 	private static final long serialVersionUID = 1L;
 	
 	private Class<?> eventclass;
 	
-	public FrontEndEventListener(T event) {
+	public UIEventListener(T event) {
 		this.eventclass = event.getClass();
 	}
 	
@@ -16,7 +18,7 @@ public abstract class FrontEndEventListener<T extends FrontEndEvent> extends Beh
 		return this.eventclass.equals(claz);
 	}
 	
-	public boolean handle(FrontEndEvent event) {
+	public boolean handle(UIEvent event) {
 		return eventclass.isInstance(event);
 	}
 	

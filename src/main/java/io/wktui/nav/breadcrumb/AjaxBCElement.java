@@ -13,8 +13,9 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 
+import io.wktui.event.UIEvent;
 import wktui.base.FrontEndEvent;
-import wktui.base.FrontEndEventListener;
+import wktui.base.UIEventListener;
 
 
 public class AjaxBCElement<T> extends AjaxLink<T> implements AjaxIBCElement  {
@@ -99,8 +100,8 @@ public class AjaxBCElement<T> extends AjaxLink<T> implements AjaxIBCElement  {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void fireScanAll(FrontEndEvent event) {
-		for (FrontEndEventListener<FrontEndEvent> listener : getPage().getBehaviors(FrontEndEventListener.class)) {
+	public void fireScanAll(UIEvent event) {
+		for (UIEventListener<UIEvent> listener : getPage().getBehaviors(UIEventListener.class)) {
 			if (listener.handle(event)) {
 				listener.onEvent(event);
 			}
@@ -113,9 +114,9 @@ public class AjaxBCElement<T> extends AjaxLink<T> implements AjaxIBCElement  {
 	 * The first Component that listens to this event will handle it
 	 **/
 	@SuppressWarnings("unchecked")
-	public void fire(FrontEndEvent event) {
+	public void fire(UIEvent event) {
 		boolean handled=false;
-		for (FrontEndEventListener<FrontEndEvent> listener : getPage().getBehaviors(FrontEndEventListener.class)) {
+		for (UIEventListener<UIEvent> listener : getPage().getBehaviors(UIEventListener.class)) {
 			if (listener.handle(event)) {
 				listener.onEvent(event);
 					handled = true;
@@ -126,16 +127,16 @@ public class AjaxBCElement<T> extends AjaxLink<T> implements AjaxIBCElement  {
 			fire(event, getPage().iterator());
 	}
 	
-	protected boolean fire(FrontEndEvent event, Iterator<Component> components) {
+	protected boolean fire(UIEvent event, Iterator<Component> components) {
 		return fire(event, components, true);
 	}
 
 	@SuppressWarnings("unchecked")
-	protected boolean fire(FrontEndEvent event, Iterator<Component> components, boolean stop_first_hit) {
+	protected boolean fire(UIEvent event, Iterator<Component> components, boolean stop_first_hit) {
 		boolean handled = false;
 		while (components.hasNext()) {
 			Component component = components.next();
-			for (FrontEndEventListener<FrontEndEvent> listener : component.getBehaviors(FrontEndEventListener.class)) {
+			for (UIEventListener<UIEvent> listener : component.getBehaviors(UIEventListener.class)) {
 				if (listener.handle(event)) {
 					listener.onEvent(event);
 					if (stop_first_hit) {

@@ -12,7 +12,12 @@ import wktui.base.BasePanel;
 
 public class ListNavigator<T> extends BasePanel {
 
-    List<IModel<T>> list;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	List<IModel<T>> list;
     
     Link<T> prev;
     Link<T> next;
@@ -50,8 +55,7 @@ public class ListNavigator<T> extends BasePanel {
         if (current==0)
             this.prev.setVisible(false);
         
-        
-        
+      
         
         this.next = new Link<T>("next", next()) {
             private static final long serialVersionUID = 1L;
@@ -73,16 +77,6 @@ public class ListNavigator<T> extends BasePanel {
 
     
 
-    protected IModel<String> getLabel(IModel<T> model) {
-        return new Model<String>( model.getObject().getClass().getSimpleName() );
-    }
-    
-    
-    protected void navigate(int current) {
-    }
-
-
-    
     public IModel<T> prev() {
         if (this.current>0) {
             return getList().get( current-1);
@@ -105,9 +99,21 @@ public class ListNavigator<T> extends BasePanel {
     @Override
     public void onDetach() {
         super.onDetach();
-        this.list.forEach( t -> t.detach());
+        
+		if (this.list!=null)
+			  this.list.forEach( t -> t.detach());
+
     }
     
+
+    protected IModel<String> getLabel(IModel<T> model) {
+        return new Model<String>( model.getObject().getClass().getSimpleName() );
+    }
+    
+    
+    protected void navigate(int current) {
+    }
+
     
     
     

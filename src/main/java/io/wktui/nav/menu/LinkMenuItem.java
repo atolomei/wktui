@@ -74,10 +74,7 @@ public abstract class LinkMenuItem<T> extends MenuItemPanel<T> {
 		Label label = new Label("label", getLabel());
 		link.add(icon);
 		link.add(label);
-		 
 	}
-	
-	
 	
 	protected AbstractLink getNewLink(String id) {
 		
