@@ -4,23 +4,37 @@ import java.util.Iterator;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.markup.head.CssHeaderItem;
+import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.http.WebRequest;
+import org.apache.wicket.request.resource.ResourceReference;
 
 import io.wktui.event.UIEvent;
+import wktui.bootstrap.Bootstrap;
 
 public abstract class BasePanel extends Panel {
 
     private static final long serialVersionUID = 1L;
 
+	private static final ResourceReference CSS = Bootstrap.getCssResourceReference();
+	
     public BasePanel(String id) {
         super(id);
         addListeners();
     }
+    @Override
+	public void renderHead(IHeaderResponse response) {
+		super.renderHead(response);
 
+		response.render(CssHeaderItem.forReference(CSS));
+    }
+    
+    
+    
     public IModel<String> getStringResourceModel(String key) {
         return new StringResourceModel(key);
     }

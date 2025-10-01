@@ -26,6 +26,7 @@ import io.wktui.nav.menu.NavDropDownMenu;
 
 import wktui.base.BasePanel;
 import wktui.base.InvisiblePanel;
+import wktui.base.LabelPanel;
 import wktui.base.Logger;
 import wktui.base.NumberFormatter;
 
@@ -46,6 +47,9 @@ public class ListPanel<T> extends BasePanel {
 
 	static final public int MINIMUN_SIZE_FOR_LIVE_SEARCH = 5;
 	static final int DEFAULT_PAGE_SIZE = 30;
+	
+	public static final String ITEM_EXPAND = "item-expand";
+
 
 	private List<IModel<T>> listModel;
 	private List<IModel<T>> initialListModel;
@@ -73,6 +77,8 @@ public class ListPanel<T> extends BasePanel {
 
 	private org.apache.wicket.markup.html.form.TextField<?> input;
 
+	
+	private boolean hasItemMenu = false;
 	private boolean hasExpander = false;
 	private boolean isSettings = true;
 
@@ -111,45 +117,25 @@ public class ListPanel<T> extends BasePanel {
 		this.frame = new WebMarkupContainer("frame");
 		this.frame.setOutputMarkupId(true);
 		add(this.frame);
-		this.bottom = new InvisiblePanel("bottom");
-
-		/**
-		this.toolbarContainer = new WebMarkupContainer("toolbarContainer") {
-			private static final long serialVersionUID = 1L;
-			public boolean isVisible() {
-				return isToolbar();
-			}
-		};
-		**/
 		
-		//this.frame.addOrReplace(this.toolbarContainer);
+		this.bottom = new InvisiblePanel("bottom");
 		this.frame.addOrReplace(this.bottom);
+	
+		this.listItemContainer = new WebMarkupContainer("list-items-container");
+		this.listItemContainer.setOutputMarkupId(true);
+		
+		this.frame.addOrReplace(this.listItemContainer);
+		
+	 	addTitle();
+		addSettingsTitleBar();
+		addLiveSearch();
+		addListView();
+	
+		rendered=true;
+		
+		
 	}
 
-	
-
-	/**
-	boolean create = false;
-	
-	public boolean isCreate() {
-		return create;
-	}
-	
-	public void setCreate( boolean b) {
-		this.create=b;
-	}
-	
-	
-	
-	protected void addCreateButton() {
-	
-		if (!isCreate()) {
-			
-		}
-	}
-    **/
-	
-	
 	public void setToolbar(WebMarkupContainer toolbar) {
 		this.toolbar=toolbar;
 	}
@@ -167,7 +153,7 @@ public class ListPanel<T> extends BasePanel {
 			addSettingsTitleBar();
 			addLiveSearch();
 			addListView();
-			//addToolbar();
+		
 			rendered=true;
 		}
 	}
@@ -227,6 +213,16 @@ public class ListPanel<T> extends BasePanel {
 		this.hasExpander = b;
 	}
 
+
+	public boolean hasItemMenu() {
+		return this.hasItemMenu;
+	}
+
+	public void setItemMenu(boolean b) {
+		this.hasItemMenu = b;
+	}
+
+	
 	public IModel<String> getTitle() {
 		return this.title;
 	}
@@ -313,11 +309,7 @@ public class ListPanel<T> extends BasePanel {
 
 	private void addListView() {
 
-		this.listItemContainer = new WebMarkupContainer("list-items-container");
-		this.listItemContainer.setOutputMarkupId(true);
-		
-		this.frame.addOrReplace(this.listItemContainer);
-
+	 
 		this.listView = new PageableListView<IModel<T>>("list-items", new PropertyModel<List<IModel<T>>>(this, "items"), getPageSize()) {
 			private static final long serialVersionUID = 1L;
 
@@ -325,7 +317,14 @@ public class ListPanel<T> extends BasePanel {
 			protected void populateItem(ListItem<IModel<T>> item) {
 
 				if (hasExpander()) {
-					ListItemExpanderPanel<T> panel = new ListItemExpanderPanel<T>("row-element", item.getModelObject());
+					
+					Panel mainPanel = getListItemPanel(item.getModelObject());
+					ListItemExpanderPanel<T> panel = new ListItemExpanderPanel<T>("row-element", item.getModelObject(), mainPanel) {
+						private static final long serialVersionUID = 1L;
+						public WebMarkupContainer getExpandedPanel() {
+							return ListPanel.this.getListItemExpandedPanel(item.getModelObject(), getListPanelMode());
+						}
+					};
 					item.add(panel);
 				} else {
 					Panel panel = getListItemPanel(item.getModelObject());
@@ -336,7 +335,7 @@ public class ListPanel<T> extends BasePanel {
 		};
 		
 		this.listItemContainer.add(this.listView);
-		this.listItemContainer.setOutputMarkupId(true);
+		 
 		
 		ErrorPanel nitems = new ErrorPanel("noItems", null, getLabel("no-items")) {
 			private static final long serialVersionUID = 1L;
@@ -351,32 +350,41 @@ public class ListPanel<T> extends BasePanel {
 		
 		this.listItemContainer.add(nitems);
 
+		addToolbar();
 		
-		
-		/** ------- **/
-		
+	}
+
+	protected void addToolbar() {
+ 		
+	
 		this.navigator=new PagingNavigator("navigator", listView);
 		
 		int size=getItems().size();
 		
-		
 		if (getPageSize()>=size)
 			this.navigator.setVisible(false);
 		
-		String totalStr = NumberFormatter.formatNumber(size);
-		
-		ListPanelToolbar toolbar = new ListPanelToolbar("toolbar", this.navigator, this.settingsMenu, totalStr);
+	 	ListPanelToolbar toolbar = new ListPanelToolbar("toolbar", this.navigator, this.settingsMenu) {
+			private static final long serialVersionUID = 1L;
+			public Integer getTotal() {
+					return ListPanel.this.getTotalItems();
+					
+			};
+		};
+	
 		setToolbar(toolbar);
-
+		
 		this.listItemContainer.addOrReplace(getToolbar());
 		this.listItemContainer.add(new AttributeModifier("class", this.getListPanelMode().getCss() + (this.isToolbar() ? " hastoolbar" : "")));
 
-		/** ------- **/
-
+		setToolbar(toolbar);
+	}
+	
+	
+	protected WebMarkupContainer getListItemExpandedPanel(IModel<T> model, ListPanelMode mode) {
+		return new LabelPanel("expanded-panel", new Model<String>(model.getObject().toString()));
 	}
 
-
-	
 	protected boolean isSettings() {
 		return this.isSettings;
 	}
@@ -612,7 +620,7 @@ public class ListPanel<T> extends BasePanel {
 
 					@Override
 					public IModel<String> getLabel() {
-						return getLabel("image");
+						return getLabel("expanded-view");
 					}
 
 					public String getIconCssClass() {

@@ -19,6 +19,12 @@ public class DropDownMenuToolbarItem<T> extends ToolbarItem {
 		super.setAlign(Align.TOP_RIGHT);
 	}
 	
+
+	public DropDownMenuToolbarItem(String id, IModel<T> model) {
+		super(id);
+		this.model=model;
+		super.setAlign(Align.TOP_LEFT);
+	}
 	
 	public DropDownMenuToolbarItem(String id, IModel<T> model, Align align) {
 		super(id);

@@ -78,4 +78,9 @@ public class HREFBCElement extends BreadcrumbBasePanel implements IBCElement {
         return this.html_title;
     }
 
+	@Override
+	protected IModel<String> getLabel(int limit) {
+		return Model.of( pad( getLabel().getObject(), limit));
+	}
+
 }

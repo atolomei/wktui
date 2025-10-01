@@ -136,6 +136,7 @@ public abstract class SubmitButton<T> extends BasePanel {
     
     public void onDetach() {
         super.onDetach();
+        
         if (this.model!=null)
             this.model.detach();
     }

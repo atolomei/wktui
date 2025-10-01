@@ -6,9 +6,10 @@ import java.lang.reflect.Type;
 import org.apache.wicket.behavior.Behavior;
 
 import wktui.base.Logger;
+import wktui.base.UIEventListener;
 
 
-public abstract class WicketEventListener<T extends UIEvent> extends Behavior {
+public abstract class WicketEventListener<T extends UIEvent> extends UIEventListener<T> {
 
 private static final long serialVersionUID = 1L;
 	
@@ -19,30 +20,14 @@ private static final long serialVersionUID = 1L;
 	
 	
 	public WicketEventListener(T event) {
-		this.eventclass = event.getClass();
+		super(event);
 	}
 	
 	public WicketEventListener() {
-		try {
-			Type superclass = getClass().getGenericSuperclass();
-			Type tType = ((ParameterizedType)superclass).getActualTypeArguments()[0];
-			String typename = tType.toString();
-			if (typename.startsWith("class ")) {
-				typename = typename.substring(6); 
-			}
-			if (typename.indexOf("<")>0) {
-				typename = typename.substring(0, typename.indexOf("<"));
-			}
-			@SuppressWarnings("unchecked")
-			Class<T> eventclass = (Class<T>)Class.forName(typename);
-			this.eventclass = eventclass;
-		}
-		catch (Exception e) {
-			logger.error(e);
-		}
+		super();
 	}
 	
-	
+	/**
 	public boolean handles(Class<T> claz) {
 		return this.eventclass.equals(claz);
 	}
@@ -57,4 +42,6 @@ private static final long serialVersionUID = 1L;
 	}
 	
 	public abstract void onEvent(T event);
+	*/
+	
 }

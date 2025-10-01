@@ -15,7 +15,7 @@ public class ListItemPanel<T> extends ModelPanel<T> {
 	
 	ListPanelMode mode;
 	
-	public ListItemPanel(String id, IModel<T> model,ListPanelMode mode) {
+	public ListItemPanel(String id, IModel<T> model, ListPanelMode mode) {
 		super(id, model);
 		this.mode=mode;
 	}

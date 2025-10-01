@@ -11,9 +11,19 @@ public abstract class BreadcrumbBasePanel extends BasePanel implements IBreacrum
     public BreadcrumbBasePanel(String id) {
         super(id);
     }
-    
+
+	protected abstract IModel<String> getLabel(int limit);
     public abstract IModel<String> getLabel();
+
     public abstract void onClick();
+
+    protected String pad(String s, int limt) {
+    	  if (s==null)
+              return "";
+          if (s.length()<limt)
+              return s;
+          return s.substring(0,limt)+"...";
+    }
     
     protected String pad(String s) {
 
@@ -23,6 +33,7 @@ public abstract class BreadcrumbBasePanel extends BasePanel implements IBreacrum
             return s;
         return s.substring(0,BreadCrumb.LIMIT)+"...";
     }
+
 
 
 }

@@ -2,7 +2,7 @@ package io.wktui.event;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 
-public class SimpleAjaxWicketEvent  implements WicketAjaxEvent {
+public class SimpleAjaxWicketEvent implements WicketAjaxEvent {
 
 	final String name;
 	final AjaxRequestTarget target;
@@ -22,9 +22,7 @@ public class SimpleAjaxWicketEvent  implements WicketAjaxEvent {
 	}
 	
 	public String toString() {
-	
-		return name;
-		
+		return getClass().getSimpleName()+"{ \"name\": " + getName()+"}";
 	}
 
 }

@@ -2,7 +2,7 @@ package io.wktui.nav.breadcrumb;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+ 
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
@@ -21,6 +21,7 @@ import io.wktui.nav.menu.MenuItemPanel;
 import io.wktui.nav.menu.NavDropDownMenu;
 import wktui.base.BasePanel;
 import wktui.base.InvisiblePanel;
+import wktui.base.Logger;
 import wktui.base.ModelPanel;
 
 public class BreadCrumb<T> extends ModelPanel<T> {
@@ -161,6 +162,10 @@ public class BreadCrumb<T> extends ModelPanel<T> {
 
 		for (int counter = 0; counter < list.size(); counter++) {
 
+			
+			logger.debug(list.get(counter).getLabel().getObject());
+			
+			
 			final int final_counter = counter;
 
 			menu.addItem(new MenuItemFactory<BreadcrumbBasePanel>() {
@@ -173,7 +178,7 @@ public class BreadCrumb<T> extends ModelPanel<T> {
 
 						@Override
 						public IModel<String> getLabel() {
-							return list.get(final_counter).getLabel();
+							return list.get(final_counter).getLabel(LIMIT);
 						}
 
 						@Override

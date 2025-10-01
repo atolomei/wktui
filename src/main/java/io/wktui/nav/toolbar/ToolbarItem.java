@@ -28,14 +28,26 @@ public class ToolbarItem extends BasePanel {
 	private Align align;
 	private boolean isIcon;
 	private String iconCss;
-	
+	private final String name;
+		
+
 	public ToolbarItem(String id) {
+		this(id, null);
+	}		
+	
+	public ToolbarItem(String id, String name) {
 		super(id);
+		
+		this.name=name;
 	
 		align=Align.TOP_LEFT;
 		 justify=Justify.LEFT;
 	}
 
+	
+	public String getName() {
+		return this.name;
+	}
 	
 	
 	public boolean isIcon() {

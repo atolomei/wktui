@@ -85,7 +85,7 @@ public abstract class ButtonToolbarItem<T> extends ToolbarItem {
 	
 	
 	public IModel<String> getButtonLabel() {
-		return null;
+		return this.title;
 	}
 
 	

@@ -10,6 +10,10 @@ public class SeparatorMenuItem<T> extends MenuItemPanel<T> {
 		super(id);
 	}
 
+	public SeparatorMenuItem(String id, IModel<T> model) {
+		super(id, model);
+	}
+	
 	@Override
 	public IModel<String> getLabel() {
 		return null;

@@ -1,6 +1,7 @@
 package io.wktui.struct.list;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -15,19 +16,25 @@ import wktui.base.ModelPanel;
 
 public class ListItemExpanderPanel<T> extends ModelPanel<T> {
 
+		
 	private static final long serialVersionUID = 1L;
 
 	private boolean isExpanded = false;
 	
-	private Panel expandedPanel;
+	private WebMarkupContainer expandedPanel;
 	
 	private WebMarkupContainer icon = new WebMarkupContainer("icon");
 	private AjaxLink<T> ex;
+	private WebMarkupContainer mainPanel;
 	
 	
-	public ListItemExpanderPanel(String id, IModel<T> model) {
+	public ListItemExpanderPanel(String id, IModel<T> model, WebMarkupContainer mainPanel) {
 		super(id, model);
+		super.setOutputMarkupId(true);
+		this.mainPanel=mainPanel;
 	}
+	
+	
 	
 	@Override
 	public void onInitialize() {
@@ -35,8 +42,7 @@ public class ListItemExpanderPanel<T> extends ModelPanel<T> {
 			
 			icon = new WebMarkupContainer("icon");
 			
-			LabelPanel ma=new LabelPanel("main-panel", getLabel());
-			add( ma);
+			add( getMainPanel() );
 			
 			ex = new AjaxLink<T>("expand", ListItemExpanderPanel.this.getModel()) {
 				private static final long serialVersionUID = 1L;
@@ -55,13 +61,14 @@ public class ListItemExpanderPanel<T> extends ModelPanel<T> {
 							expandedPanel = new InvisiblePanel("expanded-panel");
 					}
 						
-						ListItemExpanderPanel.this.addOrReplace(expandedPanel);
-						ex.addOrReplace(icon);
-						target.add(ListItemExpanderPanel.this);
-				}
+					ListItemExpanderPanel.this.addOrReplace(expandedPanel);
+					ex.addOrReplace(icon);
+					target.add(ListItemExpanderPanel.this);
+					
+					fire (new ListPanelWicketEvent<T>( ListPanel.ITEM_EXPAND, target , ListItemExpanderPanel.this.getModel(), isExpanded()));
+				} 
 			};
 			add(ex);
-			
 			
 			if (isExpanded()) {
 				icon.add(new AttributeModifier("class", getIconExpanded()));
@@ -77,16 +84,24 @@ public class ListItemExpanderPanel<T> extends ModelPanel<T> {
 	
 	
 	
-	public Panel getExpandedPanel() {
+	public WebMarkupContainer getMainPanel() {
+		//LabelPanel ma=new LabelPanel("main-panel", getLabel());
+		//return ma;
+		return mainPanel;
+	}
+
+	
+	public WebMarkupContainer getExpandedPanel() {
 		return new LabelPanel("expanded-panel", new Model<String>("expanded"));
 	}
 
 	public String getIconCollapsed() {
-		return "icon-collapsed";
+		return "fa-solid fa-caret-down";
 	}
+	
 
 	public String getIconExpanded() {
-		return "icon-expanded";
+		return "fa-solid fa-caret-up";
 	}
 	
 	public IModel<String> getLabel() {

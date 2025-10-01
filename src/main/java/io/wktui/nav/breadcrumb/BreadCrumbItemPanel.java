@@ -54,6 +54,10 @@ public class BreadCrumbItemPanel extends BreadcrumbBasePanel {
         return new Model<String>(this.element.getLabel().getObject());
     }
 
+    @Override
+	protected IModel<String> getLabel(int limit) {
+		return Model.of( pad( getLabel().getObject(), limit));
+	}
 
     @Override
     public void onClick() {

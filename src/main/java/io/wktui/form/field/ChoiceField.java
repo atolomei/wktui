@@ -13,7 +13,7 @@ import org.apache.wicket.util.value.IValueMap;
 
 import wktui.base.Logger;
 
-public class ChoiceField<T> extends Field<T> {
+public abstract class ChoiceField<T> extends Field<T> {
 
 	
 	private static final long serialVersionUID = 1L;
@@ -21,7 +21,11 @@ public class ChoiceField<T> extends Field<T> {
 	static private Logger logger = Logger.getLogger(ChoiceField.class.getName());
 	
 	private IModel<List<T>> choices;
-	private String value;
+	//private String value;
+	private int indexSelected = -1;
+	private IModel<T> valueModel;
+
+	
 	private DropDownChoice<T> selector;
 
 	public ChoiceField(String id, IModel<T> model) {
@@ -31,6 +35,9 @@ public class ChoiceField<T> extends Field<T> {
 	public ChoiceField(String id, IModel<T> model, IModel<String> label) {
 		super(id, model, label);
 		setOutputMarkupId(true);
+		
+		this.valueModel=model;
+		
 	}
 
 	@Override
@@ -47,6 +54,7 @@ public class ChoiceField<T> extends Field<T> {
 		super.editOff();
 	}
 	
+	/**
 	public void setValue(String value) {
         this.value=value;
 	}
@@ -54,12 +62,17 @@ public class ChoiceField<T> extends Field<T> {
 	public String getValue() {
 	    return value;
 	}
+	**/
+	
+	//public abstract T getModelObject( String val );
+	
+		
 
 	@Override
 	public void updateModel() {
 	
 
-        Object val = null;
+       T val = null;
         
         try {
 
@@ -70,17 +83,19 @@ public class ChoiceField<T> extends Field<T> {
  
             val = getValue();
             
+            
+            String s= selector.getValue();
+            
             if (val!=null) {
                 
                     if  ( (getModel().getObject()!=null && !getModel().getObject().equals(val)) || 
                           (getModel().getObject()==null && val!=null && !"".equals(val))) {
                     
-                        onUpdate(getModel().getObject(), (T) val);
+                        	onUpdate(getModel().getObject(), val);
                         
-                        logger.debug( "update -> " + getId() + ": " + val.toString());
+                        	logger.debug( "update -> " + getId() + ": " + val.toString());
                         
-                        getModel().setObject( (T) val);
-                        
+                        	getModel().setObject(val);
                     }
             }
             else {
@@ -121,17 +136,23 @@ public class ChoiceField<T> extends Field<T> {
 			throw new IllegalArgumentException ("choices is null");
 		
 
+		//if (getModel()!=null && getModel().getObject()!=null) {
+		//	String startValue = getModel().getObject().toString();
+		//	this.setValue(startValue);
+		//}
+		
 		if (getModel()!=null && getModel().getObject()!=null) {
-			String startValue = getModel().getObject().toString();
-			this.setValue(startValue);
+				for (int index=0; index<getChoices().getObject().size(); index++) {
+					if (getChoices().getObject().get(index).equals(getModel().getObject())) {
+						this.indexSelected=index;
+						break;
+					}
+				}
 		}
 		
         this.selector = newSelectField();
         super.addControl(selector);
 	}
-
-	
-	
 	
 	private DropDownChoice<T> newSelectField() {
         
@@ -172,10 +193,13 @@ public class ChoiceField<T> extends Field<T> {
 		selector.setModel(new PropertyModel<T>(this, "value"));
 
 		selector.setChoiceRenderer(new ChoiceRenderer<T>() {
+			
 			private static final long serialVersionUID = 1L;
+			
 			public String getIdValue(T value, int index) {
 				return ChoiceField.this.getIdValue(value); 
 			};
+			
 			public String getDisplayValue(T value) {
 				return ChoiceField.this.getDisplayValue(value);
 			};
@@ -189,6 +213,35 @@ public class ChoiceField<T> extends Field<T> {
 	     
 	}
 
+	
+	
+	public T getValue() {
+		if (valueModel!=null)
+			return valueModel.getObject();
+		return null;
+	}
+	
+	
+	public void setValue(T value) {
+		if (valueModel!=null)
+			 valueModel.setObject(value);
+	}
+	
+	
+	public void onDetach() {
+		super.onDetach();
+		
+		if (valueModel!=null) {
+			valueModel.detach();
+		}
+		
+		if (getChoices()!=null) {
+				this.getChoices().detach();
+		}
+	}
+	
+	
+	
 	protected String getIdValue(T value) {
 		
 		if (value==null)
@@ -207,6 +260,8 @@ public class ChoiceField<T> extends Field<T> {
 		}	
 		return id;
 		**/
+		
+		logger.debug(" getIdValue  -> " + value.toString());
 		return value.toString();
 	}
 	
@@ -227,15 +282,7 @@ public class ChoiceField<T> extends Field<T> {
 	public void onUpdate(AjaxRequestTarget target) {
 	}
 	
-	@Override
-	public void onDetach() {
-		super.onDetach();
-		
-		
-		if (getChoices()!=null) {
-			this.getChoices().detach();
-		}
-	}
+	
 	
 	protected String getDisplayValue(T value) {
 		if (value==null)
