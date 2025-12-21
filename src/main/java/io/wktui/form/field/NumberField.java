@@ -184,9 +184,6 @@ public class NumberField<T extends Number & Comparable<T>> extends TextField<T> 
 	         catch (java.util.MissingResourceException e) {
 	            logger.debug(e.getClass().getName() + " | " +  Thread.currentThread().getStackTrace()[1].getMethodName()+ " |  id. " + NumberField.this.getId());
 	         }
-	        
-	         
-	         
 	         
 	        return input;
 	    }

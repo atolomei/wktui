@@ -20,7 +20,7 @@ public class TextCleaner {
     public static String clean(String source, int maxSize) {
     
             if (source==null)
-                return null;
+                return "";
             
             StringBuilder str = new StringBuilder();
             

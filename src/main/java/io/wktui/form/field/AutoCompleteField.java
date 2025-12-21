@@ -22,6 +22,12 @@ public class AutoCompleteField<T>  extends Field<T> {
 	
 	private org.apache.wicket.markup.html.form.TextField<T> input;
 	
+	@Override
+	public void reload() {
+		logger.error("reload not done");
+	}
+
+	
 	public AutoCompleteField(String id, IModel<T> model) {
 	    this(id, model, null);
 	}

@@ -101,7 +101,7 @@ public class BreadCrumb<T> extends ModelPanel<T> {
 				panel.detach();
 
 		} catch (Exception e) {
-			// logger.error(e);
+			 logger.error(e);
 		}
 	}
 
@@ -121,10 +121,7 @@ public class BreadCrumb<T> extends ModelPanel<T> {
 		return this;
 	}
 
-	// public BreadCrumb<T> addElement(AjaxIBCElement b) {
-	// list.add(new MenuAjaxBCElement(b));
-	// return this;
-	// }
+ 
 
 	public void setActiveCss(String s) {
 		this.active_css = s;

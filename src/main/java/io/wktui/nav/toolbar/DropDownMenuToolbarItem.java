@@ -5,18 +5,24 @@ import org.apache.wicket.model.IModel;
 import io.wktui.nav.menu.DropDownMenu;
 import io.wktui.nav.menu.MenuItemFactory;
 import io.wktui.nav.menu.NavDropDownMenu;
+import io.wktui.nav.menu.NavDropDownMenu.TitleFragment;
 
 public class DropDownMenuToolbarItem<T> extends ToolbarItem {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private DropDownMenu<T> menu;
+	private NavDropDownMenu<T> menu;
 	private IModel<T> model;
-	private IModel<String> label;
+	private IModel<String> title;
 	
 	public DropDownMenuToolbarItem(String id) {
 		super(id);
 		super.setAlign(Align.TOP_RIGHT);
+	}
+	
+	public DropDownMenuToolbarItem(String id, Align align) {
+		super(id);
+		super.setAlign(align);
 	}
 	
 
@@ -36,7 +42,7 @@ public class DropDownMenuToolbarItem<T> extends ToolbarItem {
 	public DropDownMenuToolbarItem(String id, IModel<T> model, IModel<String> label, Align align) {
 		super(id);
 		this.model=model;
-		this.label=label;
+		this.title=label;
 		super.setAlign(align);
 	}
 
@@ -44,8 +50,12 @@ public class DropDownMenuToolbarItem<T> extends ToolbarItem {
 		return this.model;
 	}
 	
-	public void setLabel(IModel<String> label) {
-		this.label=label;
+	public void setTitle(IModel<String> label) {
+		this.title=label;
+	}
+	
+	public IModel<String> getTitle() {
+		return this.title;
 	}
 	
 
@@ -56,9 +66,18 @@ public class DropDownMenuToolbarItem<T> extends ToolbarItem {
 			this.model.detach();
 	}
 	
+	
+	
+	
 	public void addItem(MenuItemFactory<T> item) {
-		if (menu==null)
-			menu = new NavDropDownMenu<T>("menu", getModel(), this.label);
+		if (menu==null) {
+			menu = new NavDropDownMenu<T>("menu", getModel()) {
+				private static final long serialVersionUID = 1L;
+				public IModel<String> getTitle() {
+					return DropDownMenuToolbarItem.this.getTitle();
+				}
+			};
+		};
 		menu.addItem(item);
 	}
 	
@@ -66,11 +85,19 @@ public class DropDownMenuToolbarItem<T> extends ToolbarItem {
 		super.onInitialize();
 	
 		if (menu==null) {
-			menu = new NavDropDownMenu<T>("menu", getModel(), this.label);
+			menu = new NavDropDownMenu<T>("menu", getModel()) {
+				private static final long serialVersionUID = 1L;
+				public IModel<String> getTitle() {
+					return DropDownMenuToolbarItem.this.getTitle();
+				}
+			};
 		}
 		add(menu);
 	}
 
-
+	protected void addTitlePanel() {
+		menu.addTitlePanel();
+	}
+	
 
 }

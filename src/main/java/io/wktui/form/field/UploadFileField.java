@@ -21,6 +21,14 @@ public class UploadFileField<T> extends Field<T> {
 	private String value;
 	private org.apache.wicket.markup.html.form.TextField<String> input;
 	
+	
+
+	@Override
+	public void reload() {
+		logger.error("reload not done");
+	}
+	
+	
 	public UploadFileField(String id, IModel<T> model) {
 	    this(id, model, null);
 	}

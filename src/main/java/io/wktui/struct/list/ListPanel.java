@@ -23,20 +23,13 @@ import io.wktui.nav.menu.AjaxLinkMenuItem;
 import io.wktui.nav.menu.MenuItemPanel;
 import io.wktui.nav.menu.NavDropDownMenu;
 
-
 import wktui.base.BasePanel;
 import wktui.base.InvisiblePanel;
 import wktui.base.LabelPanel;
 import wktui.base.Logger;
-import wktui.base.NumberFormatter;
 
 /**
- * 
  * liveSearch
- * 
- * viewmode -> image y.n, text y.n
- * 
- * 
  * @param <T>
  */
 public class ListPanel<T> extends BasePanel {
@@ -47,27 +40,32 @@ public class ListPanel<T> extends BasePanel {
 
 	static final public int MINIMUN_SIZE_FOR_LIVE_SEARCH = 5;
 	static final int DEFAULT_PAGE_SIZE = 30;
-	
+
 	public static final String ITEM_EXPAND = "item-expand";
 
+	private List<IModel<T>> workingListModel;
 
-	private List<IModel<T>> listModel;
-	private List<IModel<T>> initialListModel;
-
+	private final List<IModel<T>> itemsListModel;
+	
 	private PageableListView<IModel<T>> listView;
 
 	private IModel<String> title;
 
 	private int pageSize = DEFAULT_PAGE_SIZE;
-	
-	private WebMarkupContainer toolbarContainer;
- 	private WebMarkupContainer titleContainer;
+
+	private WebMarkupContainer titleContainer;
 	private WebMarkupContainer listItemContainer;
 	private WebMarkupContainer bottom;
 	private WebMarkupContainer liveSearchContainer;
 	private WebMarkupContainer toolbar;
 	private WebMarkupContainer liveSearchTitleContainer;
 	private WebMarkupContainer frame;
+	private WebMarkupContainer toolbarContainer;
+
+	
+	
+	
+	
 
 	private Form<?> form;
 	private Label totalLabel;
@@ -77,20 +75,16 @@ public class ListPanel<T> extends BasePanel {
 
 	private org.apache.wicket.markup.html.form.TextField<?> input;
 
-	
 	private boolean hasItemMenu = false;
 	private boolean hasExpander = false;
 	private boolean isSettings = true;
-
-	private boolean isBorder = false;
-	private boolean rendered = false;
 
 	private ListPanelMode mode;
 	private Boolean liveSearch;
 
 	private NavDropDownMenu<Void> settingsMenu;
 	private PagingNavigator navigator;
-	
+
 	/**
 	 * 
 	 * 
@@ -99,67 +93,59 @@ public class ListPanel<T> extends BasePanel {
 	public ListPanel(String id) {
 		super(id);
 		setOutputMarkupId(true);
+		this.itemsListModel = null;
 	}
 
 	public ListPanel(String id, List<IModel<T>> list) {
 		super(id);
 		setOutputMarkupId(true);
-		setListModel(list);
+		this.itemsListModel = list;
 	}
 
+	boolean requiresReload = true;
 
 	@Override
 	public void onInitialize() {
 		super.onInitialize();
 
 		setDefaults();
-		
+
 		this.frame = new WebMarkupContainer("frame");
 		this.frame.setOutputMarkupId(true);
 		add(this.frame);
-		
+
 		this.bottom = new InvisiblePanel("bottom");
 		this.frame.addOrReplace(this.bottom);
-	
+
 		this.listItemContainer = new WebMarkupContainer("list-items-container");
 		this.listItemContainer.setOutputMarkupId(true);
-		
+
 		this.frame.addOrReplace(this.listItemContainer);
-		
-	 	addTitle();
-		addSettingsTitleBar();
-		addLiveSearch();
-		addListView();
-	
-		rendered=true;
-		
-		
+
 	}
 
 	public void setToolbar(WebMarkupContainer toolbar) {
-		this.toolbar=toolbar;
+		this.toolbar = toolbar;
 	}
-	
+
 	public int gePageSize() {
 		return this.pageSize;
 	}
-	
+
 	@Override
 	public void onBeforeRender() {
 		super.onBeforeRender();
-		
-		if (!rendered) {
-			addTitle();
-			addSettingsTitleBar();
-			addLiveSearch();
-			addListView();
-		
-			rendered=true;
-		}
+
+		setWorkingItems(getItems());
+		addTitle();
+		addSettingsTitleBar();
+		addLiveSearch();
+		addListView();
+		addToolbar();
 	}
-	
-	public List<IModel<T>> getList() {
-		return this.listModel;
+
+	public List<IModel<T>> getWorkingItems() {
+		return this.workingListModel;
 	}
 
 	public String getStringValue() {
@@ -174,8 +160,8 @@ public class ListPanel<T> extends BasePanel {
 		return Integer.valueOf(getItems().size());
 	}
 
-	public Integer getInitialTotalItems() {
-		return Integer.valueOf(getInitialItems().size());
+	public Integer getTotalWorkingItems() {
+		return Integer.valueOf(getWorkingItems().size());
 	}
 
 	public void setListPanelMode(ListPanelMode mode) {
@@ -188,11 +174,10 @@ public class ListPanel<T> extends BasePanel {
 		return this.mode;
 	}
 
-	
-	public void setPageSize( int pageSize ) {
-		this.pageSize=pageSize;
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
 	}
-	
+
 	public long getPageSize() {
 		return this.pageSize;
 	}
@@ -200,7 +185,7 @@ public class ListPanel<T> extends BasePanel {
 	public void setSettings(boolean settings) {
 		this.isSettings = settings;
 	}
-	
+
 	public IModel<String> getItemLabel(IModel<T> model) {
 		return new Model<String>(model.getObject().toString());
 	}
@@ -213,7 +198,6 @@ public class ListPanel<T> extends BasePanel {
 		this.hasExpander = b;
 	}
 
-
 	public boolean hasItemMenu() {
 		return this.hasItemMenu;
 	}
@@ -222,7 +206,6 @@ public class ListPanel<T> extends BasePanel {
 		this.hasItemMenu = b;
 	}
 
-	
 	public IModel<String> getTitle() {
 		return this.title;
 	}
@@ -231,24 +214,19 @@ public class ListPanel<T> extends BasePanel {
 	public void onDetach() {
 		super.onDetach();
 
-		if (this.listModel != null)
-			this.listModel.forEach(i -> i.detach());
+		if (this.itemsListModel != null)
+			this.itemsListModel.forEach(i -> i.detach());
 
-		if (this.initialListModel != null)
-			this.initialListModel.forEach(i -> i.detach());
-
+		if (this.workingListModel != null)
+			this.workingListModel.forEach(i -> i.detach());
 	}
 
 	public void setTitle(IModel<String> title) {
-		this.title=title;
-	}
-
-	public void setListModel(List<IModel<T>> listModel) {
-		this.listModel = listModel;
+		this.title = title;
 	}
 
 	public List<IModel<T>> getItems() {
-		return this.listModel;
+		return this.itemsListModel;
 	}
 
 	public ListPanelMode getMode() {
@@ -267,23 +245,20 @@ public class ListPanel<T> extends BasePanel {
 		this.liveSearch = Boolean.valueOf(liveSearch);
 
 	}
-	
+
 	protected WebMarkupContainer getToolbar() {
-		if (this.toolbar==null)
+		if (this.toolbar == null)
 			this.toolbar = new InvisiblePanel("toolbar");
 		return this.toolbar;
 	}
 
-	
 	protected boolean isToolbar() {
-	 	return this.toolbar!=null && this.toolbar.isVisible();
+		return (this.toolbar != null) && this.toolbar.isVisible();
 	}
-
 
 	protected org.apache.wicket.markup.html.form.TextField<?> newTextField() {
 
-		org.apache.wicket.markup.html.form.TextField<?> input = new org.apache.wicket.markup.html.form.TextField<String>(
-				"input", new PropertyModel<String>(this, "stringValue")) {
+		org.apache.wicket.markup.html.form.TextField<?> input = new org.apache.wicket.markup.html.form.TextField<String>("input", new PropertyModel<String>(this, "stringValue")) {
 
 			private static final long serialVersionUID = 1L;
 
@@ -307,80 +282,47 @@ public class ListPanel<T> extends BasePanel {
 		return input;
 	}
 
-	private void addListView() {
-
-	 
-		this.listView = new PageableListView<IModel<T>>("list-items", new PropertyModel<List<IModel<T>>>(this, "items"), getPageSize()) {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected void populateItem(ListItem<IModel<T>> item) {
-
-				if (hasExpander()) {
-					
-					Panel mainPanel = getListItemPanel(item.getModelObject());
-					ListItemExpanderPanel<T> panel = new ListItemExpanderPanel<T>("row-element", item.getModelObject(), mainPanel) {
-						private static final long serialVersionUID = 1L;
-						public WebMarkupContainer getExpandedPanel() {
-							return ListPanel.this.getListItemExpandedPanel(item.getModelObject(), getListPanelMode());
-						}
-					};
-					item.add(panel);
-				} else {
-					Panel panel = getListItemPanel(item.getModelObject());
-					item.add(panel);
-				}
-				item.setOutputMarkupId(true);
-			}
-		};
+	protected void addToolbar() {
 		
-		this.listItemContainer.add(this.listView);
-		 
-		
-		ErrorPanel nitems = new ErrorPanel("noItems", null, getLabel("no-items")) {
+		toolbarContainer = new WebMarkupContainer("toolbarContainer") {
 			private static final long serialVersionUID = 1L;
 			public boolean isVisible() {
-				return getList()!=null && getList().size()==0;
-			}
-			@Override
-			public String getCss() {
-				return "alert border rounded-top-0";
+				return isToolbar();
 			}
 		};
-		
-		this.listItemContainer.add(nitems);
 
-		addToolbar();
-		
-	}
+		this.navigator = new PagingNavigator("navigator", this.listView);
 
-	protected void addToolbar() {
- 		
-	
-		this.navigator=new PagingNavigator("navigator", listView);
-		
-		int size=getItems().size();
-		
-		if (getPageSize()>=size)
+		int size = getWorkingItems().size();
+
+		if (getPageSize() >= size)
 			this.navigator.setVisible(false);
-		
-	 	ListPanelToolbar toolbar = new ListPanelToolbar("toolbar", this.navigator, this.settingsMenu) {
+
+		ListPanelToolbar toolbar = new ListPanelToolbar("toolbar", this.navigator, this.settingsMenu) {
 			private static final long serialVersionUID = 1L;
 			public Integer getTotal() {
-					return ListPanel.this.getTotalItems();
-					
+				return ListPanel.this.getTotalItems();
 			};
+
+			public boolean isSearchButton() {
+				return true;
+			}
+
+			public void onClick(AjaxRequestTarget target) {
+				setLiveSearch(!isLiveSearch());
+				addLiveSearch();
+				refresh(target);
+			}
 		};
-	
-		setToolbar(toolbar);
-		
-		this.listItemContainer.addOrReplace(getToolbar());
-		this.listItemContainer.add(new AttributeModifier("class", this.getListPanelMode().getCss() + (this.isToolbar() ? " hastoolbar" : "")));
 
 		setToolbar(toolbar);
+
+		this.toolbarContainer.addOrReplace(getToolbar());
+		this.listItemContainer.addOrReplace(toolbarContainer);
+		this.listItemContainer.add(new AttributeModifier("class", this.getListPanelMode().getCss() + (this.isToolbar() ? " hastoolbar" : "")));
+
 	}
-	
-	
+
 	protected WebMarkupContainer getListItemExpandedPanel(IModel<T> model, ListPanelMode mode) {
 		return new LabelPanel("expanded-panel", new Model<String>(model.getObject().toString()));
 	}
@@ -402,7 +344,7 @@ public class ListPanel<T> extends BasePanel {
 
 			if (code == 13) {
 				setStringValue("");
-				setItems(getInitialItems());
+				setWorkingItems(getItems());
 
 				target.add(this.listItemContainer);
 				target.add(input);
@@ -422,7 +364,7 @@ public class ListPanel<T> extends BasePanel {
 
 			else if (code == 46) {
 				setStringValue("");
-				setItems(getInitialItems());
+				setWorkingItems(getItems());
 				target.add(this.listItemContainer);
 				target.add(input);
 				target.add(this.totalLabel);
@@ -430,7 +372,7 @@ public class ListPanel<T> extends BasePanel {
 
 			else if (code == 127) {
 				setStringValue("");
-				setItems(getInitialItems());
+				setWorkingItems(getItems());
 				target.add(this.listItemContainer);
 				target.add(this.totalLabel);
 				target.add(input);
@@ -438,17 +380,17 @@ public class ListPanel<T> extends BasePanel {
 
 			else if (code == 37 || code == 39) {
 				setStringValue("");
-				setItems(getInitialItems());
+				setWorkingItems(getItems());
 				target.add(this.listItemContainer);
 				target.add(input);
 			}
 
-			if (code >= 32 && code < 127)
+			else if (code >= 32 && code < 127)
 				setStringValue(input.getValue() + String.valueOf(character).toLowerCase());
 
 			if (getStringValue() != null && getStringValue().length() > 2) {
-				List<IModel<T>> list = ListPanel.this.filter(getInitialItems(), getStringValue());
-				ListPanel.this.setItems(list);
+				List<IModel<T>> list = ListPanel.this.filter(getItems(), getStringValue());
+				ListPanel.this.setWorkingItems(list);
 				target.add(this.listItemContainer);
 				target.add(this.totalLabel);
 			}
@@ -459,18 +401,30 @@ public class ListPanel<T> extends BasePanel {
 
 	}
 
-	protected void setItems(List<IModel<T>> list) {
-		this.listModel = list;
-	}
+	protected void setWorkingItems(List<IModel<T>> list) {
+		this.workingListModel = new ArrayList<IModel<T>>();
+		list.forEach(item -> {
+			workingListModel.add(item);
+		});
 
-	protected List<IModel<T>> getInitialItems() {
-		return this.initialListModel;
 	}
 
 	protected List<IModel<T>> filter(List<IModel<T>> initialList, String filter) {
-		return getItems();
+		List<IModel<T>> list = new ArrayList<IModel<T>>();
+		final String str = filter.trim().toLowerCase();
+		initialList.forEach(s -> {
+			
+			String t=ListPanel.this.getItemLabel(s).getObject();
+			
+			
+			if ( t.toLowerCase().contains(str)) {
+				list.add(s);
+			}
+		});
+		return list;
 	}
 
+	
 	protected Panel getListItemPanel(IModel<T> model) {
 		return getListItemPanel(model, getListPanelMode());
 	}
@@ -494,7 +448,6 @@ public class ListPanel<T> extends BasePanel {
 	protected void onClick(IModel<T> model) {
 	}
 
-	
 	private void addTitle() {
 		if ((this.title == null) && !isSettings()) {
 			this.titleContainer = new InvisiblePanel("title-container");
@@ -506,6 +459,7 @@ public class ListPanel<T> extends BasePanel {
 				this.titleContainer.setVisible(false);
 			} else {
 				Label title = new Label("title", getTitle());
+				title.setEscapeModelStrings(false);
 				this.titleContainer.add(title);
 			}
 		}
@@ -518,9 +472,8 @@ public class ListPanel<T> extends BasePanel {
 	private void addLiveSearch() {
 
 		if (liveSearch == null)
-			//setLiveSearch(getItems().size() >= MINIMUN_SIZE_FOR_LIVE_SEARCH);
 			setLiveSearch(true);
-	
+
 		if (!isLiveSearch()) {
 			this.liveSearchContainer = new InvisiblePanel("liveSearchContainer");
 			frame.addOrReplace(liveSearchContainer);
@@ -537,17 +490,12 @@ public class ListPanel<T> extends BasePanel {
 		this.liveSearchTitleContainer.add(liveSearchTitle);
 		this.liveSearchContainer.add(liveSearchTitleContainer);
 
-		this.initialListModel = new ArrayList<IModel<T>>();
-		getItems().forEach(item -> {
-			initialListModel.add(item);
-		});
-
 		AjaxLink<Void> resetLink = new AjaxLink<Void>("reset") {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-				setItems(getInitialItems());
+				setWorkingItems(getItems());
 				ListPanel.this.setStringValue("");
 				target.add(ListPanel.this.input);
 				target.add(ListPanel.this.totalLabel);
@@ -555,10 +503,11 @@ public class ListPanel<T> extends BasePanel {
 			}
 		};
 
-		this.totalLabel = new Label("total", new PropertyModel<Integer>(this, "totalItems"));
+		this.totalLabel = new Label("total", new PropertyModel<Integer>(this, "totalWorkingItems"));
 		this.totalLabel.setOutputMarkupId(true);
 		this.liveSearchContainer.add(this.totalLabel);
-		this.initialTotalLabel = new Label("initialTotal", new PropertyModel<Integer>(this, "initialTotalItems"));
+
+		this.initialTotalLabel = new Label("initialTotal", new PropertyModel<Integer>(this, "totalItems"));
 		this.initialTotalLabel.setOutputMarkupId(true);
 		this.liveSearchContainer.add(this.initialTotalLabel);
 
@@ -590,12 +539,11 @@ public class ListPanel<T> extends BasePanel {
 
 	private void addSettingsTitleBar() {
 
-		//getLabel("settings")
 		settingsMenu = new NavDropDownMenu<Void>("settings", null, null);
 		settingsMenu.setOutputMarkupId(true);
-		
-		settingsMenu.setLabelCss("d-block-inline d-sm-block-inline d-md-block-inline d-lg-none d-xl-none d-xxl-none ps-1 pe-1");
-		settingsMenu.setIconCss( "fa-light fa-gear d-block-inline d-sm-block-inline d-md-block-inline d-lg-block-inline d-xl-block-inline d-xxl-block-inline ps-1 pe-1");
+
+		settingsMenu.setTitleCss("d-block-inline d-sm-block-inline d-md-block-inline d-lg-none d-xl-none d-xxl-none ps-1 pe-1");
+		settingsMenu.setIconCss("fa-light fa-gear d-block-inline d-sm-block-inline d-md-block-inline d-lg-block-inline d-xl-block-inline d-xxl-block-inline ps-1 pe-1");
 		settingsMenu.setVisible(isSettings());
 		settingsMenu.addItem(new io.wktui.nav.menu.MenuItemFactory<Void>() {
 
@@ -624,7 +572,7 @@ public class ListPanel<T> extends BasePanel {
 					}
 
 					public String getIconCssClass() {
-						if (getListPanelMode()==ListPanelMode.TITLE)
+						if (getListPanelMode() == ListPanelMode.TITLE)
 							return null;
 						return "fa-solid fa-check";
 					}
@@ -660,7 +608,7 @@ public class ListPanel<T> extends BasePanel {
 							return "fa-solid fa-check";
 						return null;
 					}
-					
+
 					@Override
 					public IModel<String> getLabel() {
 						return getLabel("liveSearch");
@@ -673,14 +621,57 @@ public class ListPanel<T> extends BasePanel {
 				};
 			}
 		});
-		// this.titleContainer.add(settingsMenu);
+	}
+
+	private void addListView() {
+
+		this.listView = new PageableListView<IModel<T>>("list-items", new PropertyModel<List<IModel<T>>>(this, "workingItems"), getPageSize()) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void populateItem(ListItem<IModel<T>> item) {
+
+				if (hasExpander()) {
+
+					Panel mainPanel = getListItemPanel(item.getModelObject());
+					ListItemExpanderPanel<T> panel = new ListItemExpanderPanel<T>("row-element", item.getModelObject(), mainPanel) {
+						private static final long serialVersionUID = 1L;
+
+						public WebMarkupContainer getExpandedPanel() {
+							return ListPanel.this.getListItemExpandedPanel(item.getModelObject(), getListPanelMode());
+						}
+					};
+					item.add(panel);
+				} else {
+					Panel panel = getListItemPanel(item.getModelObject());
+					item.add(panel);
+				}
+				item.setOutputMarkupId(true);
+			}
+		};
+
+		this.listItemContainer.addOrReplace(this.listView);
+
+		ErrorPanel nitems = new ErrorPanel("noItems", null, getLabel("no-items")) {
+			private static final long serialVersionUID = 1L;
+
+			public boolean isVisible() {
+				return getWorkingItems() != null && getWorkingItems().size() == 0;
+			}
+
+			@Override
+			public String getCss() {
+				return "pt-2 pb-2 alert border rounded-top-0";
+			}
+		};
+
+		this.listItemContainer.addOrReplace(nitems);
 	}
 
 	private void setDefaults() {
-		this.mode= ListPanelMode.TITLE;
-		this.isSettings=true;
-		liveSearch=Boolean.valueOf(false);
+		this.mode = ListPanelMode.TITLE;
+		this.isSettings = true;
+		liveSearch = Boolean.valueOf(false);
 	}
-	
 
 }

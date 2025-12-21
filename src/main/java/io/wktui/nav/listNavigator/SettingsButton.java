@@ -27,7 +27,7 @@ public class SettingsButton extends ToolbarItem {
 		settingsMenu = new NavDropDownMenu<Void>("settings", null, null);
 		settingsMenu.setOutputMarkupId(true);
 		
-		settingsMenu.setLabelCss("d-block-inline d-sm-block-inline d-md-block-inline d-lg-none d-xl-none d-xxl-none ps-1 pe-1");
+		settingsMenu.setTitleCss("d-block-inline d-sm-block-inline d-md-block-inline d-lg-none d-xl-none d-xxl-none ps-1 pe-1");
 		settingsMenu.setIconCss( "fa-light fa-gear d-block-inline d-sm-block-inline d-md-block-inline d-lg-block-inline d-xl-block-inline d-xxl-block-inline ps-1 pe-1");
 		settingsMenu.setVisible(isSettings());
 		settingsMenu.addItem(new io.wktui.nav.menu.MenuItemFactory<Void>() {

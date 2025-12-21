@@ -17,6 +17,7 @@ import org.apache.wicket.markup.html.panel.Fragment;
 
 @SuppressWarnings("serial")
 public class PasswordField extends TextField<String> {
+	
 	private static final long serialVersionUID = 1L;
 
 	private org.apache.wicket.markup.html.form.TextField<String> input;
@@ -27,10 +28,18 @@ public class PasswordField extends TextField<String> {
 	
 	public PasswordField(String id, IModel<String> model) {
 	        super(id, model);
+	    	setOutputMarkupId(true);
 	}
 	    
+	
+	public PasswordField(String id, IModel<String> model, IModel<String> label) {
+		super(id, model, label);
+		setOutputMarkupId(true);
+	}
+
+	
 	public boolean isShowPasswordLink() {
-	        return showPasswordLink ;
+	        return showPasswordLink;
 	}
 	    
 

@@ -1,7 +1,8 @@
 <wicket:panel>
 	<wicket:extend>
 
-		<input type="file" class="form-control" wicket:id="input" />
+		<input type="file" class="form-control text-center text-md-start text-lg-start text-xl-start text-xxl-start"
+			wicket:id="input" />
 
 		<div wicket:id="thumbnailContainer" class="row">
 
@@ -9,20 +10,39 @@
 
 				<div class="border ps-3 pe-3 pb-3 pt-3" style="width: 100%; float: left; margin-top: 1px;">
 
-
-					<div class="col-xxl-5 col-xl-5 col-lg-5 col-md-12 col-sm-12 col-xs-12">
+					<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
 
 						<div class="row" wicket:id="imageContainer">
-							<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+							<div class="col-xxl-5 col-xl-5 col-lg-5 col-md-12 col-sm-12 col-xs-12">
 								<img style="max-width: 100%; max-height: 25em; padding: 2px;" class="border" wicket:id="image" />
 							</div>
-
 						</div>
-						<div class="row" wicket:id="fileNameContainer">
-							<div class="mt-1 mb-0 col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-								<span wicket:id="fileName"></span>
+
+						<div wicket:id="audioContainer" class="row">
+							<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<div wicket:id="intro-audio" class="row">
+									<audio wicket:id="audio" controls="controls" class="mt-1 mb-1">
+									</audio>
+									
+									<!-- div  class="mt-1 mb-1" wicket:id="audio" ></div -->
+								</div>
 							</div>
 						</div>
+
+
+						<div class="row" wicket:id="fileNameContainer">
+							<div class="mt-1 mb-0 ps-4 col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<span class="lh-sm" wicket:id="fileName"></span>
+							</div>
+						</div>
+
+						<div class="row" wicket:id="removeContainer">
+							<div class="mt-2 mb-0 ps-4 col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<a class="btn-link" wicket:id="remove"> <wicket:message key="remove" /></a>
+							</div>
+						</div>
+
+
 					</div>
 				</div>
 

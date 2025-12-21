@@ -6,6 +6,9 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+
+import io.wktui.event.CloseErrorPanelAjaxEvent;
+
 import org.apache.wicket.AttributeModifier;
 
 import wktui.base.BasePanel;
@@ -45,11 +48,19 @@ public class ErrorPanel extends BasePanel {
 
 	
 	public ErrorPanel(String id, Exception e ) {
+		this(id, e, false);
+	}
+	
+	public ErrorPanel(String id, Exception e, boolean isClose ) {
 		super(id);
 		this.title = new Model<String>(e.getClass().getSimpleName());;
+		this.is_close=isClose;
 		 if (e.getMessage()!=null)
 			 this.text = new Model<String>( e.getMessage());
 	}
+	
+	
+	
 		
 	public void onInitialize() {
 		super.onInitialize();
@@ -63,7 +74,7 @@ public class ErrorPanel extends BasePanel {
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-				// fire (new CloseErrorPanelEvent<>(target));
+				fire (new CloseErrorPanelAjaxEvent("close", target));
 			}
 		};
 

@@ -11,85 +11,76 @@ import wktui.base.BasePanel;
 
 public class NavDropDownMenu<T> extends DropDownMenu<T> {
 
-
 	private static final long serialVersionUID = 1L;
+
+	String titleStyle;
+	String subtitleStyle;
+
+	
+	String titleCss;
+	String subtitleCss;
 	
 	
-	String labelCss;
+	
 	String iconCss;
+	
 	IModel<String> title;
+	IModel<String> subtitle;
 	
 	private WebMarkupContainer icon;
-	
-	
 	private WebMarkupContainer titlePanel;
 
-
-	public void setTitlePanel(WebMarkupContainer titlePanel) {
-		if (titlePanel!=null) {
-			this.titlePanel=titlePanel;
-			addOrReplace(titlePanel);
-		}
-		else {
-			this.titlePanel=titlePanel;
-		}
-	}
-	
-	
-	protected WebMarkupContainer getTitlePanel() {
-		return titlePanel;
-	}
-
-
-	
 	public NavDropDownMenu(String id) {
 		super(id, null);
 	}
-	
-	public NavDropDownMenu(String id, IModel<T> model ) {
+
+	public NavDropDownMenu(String id, IModel<T> model) {
 		super(id, model);
-		this.title=null;
+		this.title = null;
 	}
-	
+
 	public NavDropDownMenu(String id, IModel<T> model, IModel<String> title) {
 		super(id, model);
-		this.title=title;
+		this.title = title;
 	}
- 
-	
+
 	@Override
 	public void onInitialize() {
 		super.onInitialize();
-		
-		if (getTitlePanel()==null) {
-			this.titlePanel=new TitleFragment("titlePanel");
-			addOrReplace(titlePanel);
+		if (getTitlePanel() == null) {
+			addTitlePanel();
 		}
 	}
-	
-	 
 
-	public void addItem(MenuItemFactory<T> item) {
-			super.addItem(item);
+	public void addTitlePanel() {
+		this.titlePanel = new TitleFragment("titlePanel");
+		addOrReplace(titlePanel);
 	}
 	
+	public void addItem(MenuItemFactory<T> item) {
+		super.addItem(item);
+	}
+
+	
+	public void setSubtitle(IModel<String> label) {
+		this.subtitle = label;
+	}
+
+	public IModel<String> getSubtitle() {
+		return  subtitle;
+	}
 	
 	
 	public void setTitle(IModel<String> label) {
-		this.title=label;
+		this.title = label;
 	}
-	
+
 	public IModel<String> getTitle() {
 		return title;
 	}
 
-	public String getLabelCss() {
-		return labelCss;
-	}
-
-	public void setLabelCss(String labelCss) {
-		this.labelCss = labelCss;
-	}
+ 
+ 
 
 	public String getIconCss() {
 		return iconCss;
@@ -99,7 +90,59 @@ public class NavDropDownMenu<T> extends DropDownMenu<T> {
 		this.iconCss = iconCss;
 	}
 
-	
+	public void setTitlePanel(WebMarkupContainer titlePanel) {
+		if (titlePanel != null) {
+			this.titlePanel = titlePanel;
+			addOrReplace(titlePanel);
+		} else {
+			this.titlePanel = titlePanel;
+		}
+	}
+
+	protected WebMarkupContainer getTitlePanel() {
+		return titlePanel;
+	}
+
+	public String getTitleStyle() {
+		return titleStyle;
+	}
+
+	public String getSubtitleStyle() {
+		return subtitleStyle;
+	}
+
+	public String getTitleCss() {
+		return titleCss;
+	}
+
+	public String getSubtitleCss() {
+		return subtitleCss;
+	}
+
+	public WebMarkupContainer getIcon() {
+		return icon;
+	}
+
+	public void setTitleStyle(String titleStyle) {
+		this.titleStyle = titleStyle;
+	}
+
+	public void setSubtitleStyle(String subtitleStyle) {
+		this.subtitleStyle = subtitleStyle;
+	}
+
+	public void setTitleCss(String titleCss) {
+		this.titleCss = titleCss;
+	}
+
+	public void setSubtitleCss(String subtitleCss) {
+		this.subtitleCss = subtitleCss;
+	}
+
+	public void setIcon(WebMarkupContainer icon) {
+		this.icon = icon;
+	}
+
 	/**
 	 * 
 	 * Title Fragment
@@ -107,38 +150,102 @@ public class NavDropDownMenu<T> extends DropDownMenu<T> {
 	 */
 	public class TitleFragment extends Fragment {
 
-		Label f_label;
+		Label f_title;
+		Label f_subtitle;
+		
+		WebMarkupContainer titleSubtitleContainer;
+		WebMarkupContainer subtitleContainer;
+	 	WebMarkupContainer titleContainer;
+	 	
 		
 		public TitleFragment(String id) {
 			super(id, "titleFragment", NavDropDownMenu.this);
 		}
+
 		private static final long serialVersionUID = 1L;
- 
 
 		public void onInitialize() {
 			super.onInitialize();
 			
-			this.f_label = new Label("label", getTitle()) {
+			
+			
+			titleSubtitleContainer =new WebMarkupContainer("titleSubtitleContainer") {
 				private static final long serialVersionUID = 1L;
+
 				public boolean isVisible() {
-					return getTitle()!=null;
+					return getSubtitle() != null || getTitle()!=null;
+				}
+			};
+			add(titleSubtitleContainer);
+			
+			
+			subtitleContainer =new WebMarkupContainer("subtitleContainer") {
+				private static final long serialVersionUID = 1L;
+
+				public boolean isVisible() {
+					return getSubtitle() != null;
+				}
+			};
+			titleSubtitleContainer.add(subtitleContainer);
+			
+			
+			titleContainer =new WebMarkupContainer("titleContainer") {
+				private static final long serialVersionUID = 1L;
+
+				public boolean isVisible() {
+					return getSubtitle() != null;
 				}
 			};
 			
-			if (getLabelCss()!=null)
-				f_label.add( new AttributeModifier("class", getLabelCss()));
-		
-			add(f_label);
-		
+			titleSubtitleContainer.add(titleContainer);
+
+			
+			this.f_title = new Label("title", getTitle()) {
+				private static final long serialVersionUID = 1L;
+
+				public boolean isVisible() {
+					return getTitle() != null;
+				}
+			};
+
+			if (getTitleCss() != null)
+				f_title.add(new AttributeModifier("class", getTitleCss()));
+
+			if (getTitleStyle() != null)
+				f_title.add(new AttributeModifier("class", getTitleStyle()));
+
+			
+			titleContainer.add(f_title);
+			
+			this.f_subtitle = new Label("subtitle", getSubtitle()) {
+				private static final long serialVersionUID = 1L;
+
+				public boolean isVisible() {
+					return getSubtitle() != null;
+				}
+			};
+
+			if (getSubtitleCss() != null)
+				f_subtitle.add(new AttributeModifier("class", getSubtitleCss()));
+
+			
+			if (getSubtitleStyle() != null)
+				f_subtitle.add(new AttributeModifier("class", getSubtitleStyle()));
+
+			
+			subtitleContainer.add(f_subtitle);
+
+			
 			icon = new WebMarkupContainer("icon");
 			add(icon);
 			
-			if (getIconCss()!=null)
-				icon.add( new AttributeModifier("class", getIconCss()));
+			if (getIconCss() != null)
+				icon.add(new AttributeModifier("class", getIconCss()));
 			
-			icon.setVisible(getIconCss()!=null);
-		}
+			icon.setVisible(getIconCss() != null);
 		
+		}
+
 	}
 
 }

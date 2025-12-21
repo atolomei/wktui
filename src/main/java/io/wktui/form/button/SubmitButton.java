@@ -5,14 +5,14 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.attributes.AjaxCallListener;
 import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
 import org.apache.wicket.ajax.attributes.IAjaxCallListener;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
+ 
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.Link;
+ 
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.util.visit.IVisit;
-import org.apache.wicket.util.visit.IVisitor;
+ 
 
 import io.wktui.form.Form;
 import wktui.base.BasePanel;
@@ -24,7 +24,7 @@ public abstract class SubmitButton<T> extends BasePanel {
     private Form<T> form;
 
     private String style;
-    private String css;
+   
     
     private Label label;
 
@@ -32,6 +32,12 @@ public abstract class SubmitButton<T> extends BasePanel {
     private IModel<T> model;
     
     private AjaxButton button;
+    
+    WebMarkupContainer c_h;
+    WebMarkupContainer c_v;
+    
+    private String rowCss;
+    private String colCss;
     
     
     public SubmitButton(String id) {
@@ -54,6 +60,22 @@ public abstract class SubmitButton<T> extends BasePanel {
     public void onInitialize() {
         super.onInitialize();
         
+        c_h = new WebMarkupContainer ("hContainer");
+        add(c_h);
+        
+        c_v = new WebMarkupContainer ("vContainer");
+        c_h.add(c_v);
+        
+        
+        if (getRowCss()!=null) {
+        	c_h.add( new org.apache.wicket.AttributeModifier("class", getRowCss()));
+        }
+        
+        if (getColCss()!=null) {
+        	c_v.add( new org.apache.wicket.AttributeModifier("class", getColCss()));
+        }
+     
+        
         this.button = new AjaxButton("submitButton", this.form) {
             private static final long serialVersionUID = 1L;
             @Override
@@ -63,8 +85,6 @@ public abstract class SubmitButton<T> extends BasePanel {
             
             @Override
             protected void onError(AjaxRequestTarget target) {
-            
-                
             }
             
             protected void updateAjaxAttributes(AjaxRequestAttributes attributes) {
@@ -121,19 +141,23 @@ public abstract class SubmitButton<T> extends BasePanel {
                 attributes.getAjaxCallListeners().add(myAjaxCallListener);
             }
         };
-        add(button);
+        
+        c_v.add(button);
      
         label = new Label("submit", getLabel());
-        button.add(label)
-        ;
+        button.add(label);
+        
+        if (getSaveCss()!=null) 
+        	button.add( new org.apache.wicket.AttributeModifier("class", getSaveCss()));
+       
     }
-    
-
+   
     public IModel<String> getLabel() {
     	return new StringResourceModel("button.submit");
     			
     }
     
+    @Override
     public void onDetach() {
         super.onDetach();
         
@@ -150,17 +174,18 @@ public abstract class SubmitButton<T> extends BasePanel {
         style=s;
     }
 
-    
-    protected String getEditClass() {
-        return "btn btn-primary btn-sm";
+    protected String getRowCss() {
+        return rowCss;
     }
-    
-    protected String getSaveClass() {
-        return "btn btn-primary btn-sm";
+ 
+    protected String getColCss() {
+        return colCss;
     }
+
     
-    protected String getCancelClass() {
-        return "btn btn-default btn-sm";
+    
+    protected String getSaveCss() {
+        return "btn btn-primary btn-sm";
     }
     
     
@@ -185,6 +210,14 @@ public abstract class SubmitButton<T> extends BasePanel {
         });
         **/
     }
+
+	public void setRowCss(String rowCss) {
+		this.rowCss = rowCss;
+	}
+
+	public void setColCss(String colCss) {
+		this.colCss = colCss;
+	}
       
     
     //protected IModel<String> getWorkingLabel() {

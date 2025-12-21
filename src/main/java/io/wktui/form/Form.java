@@ -5,6 +5,8 @@ import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.util.visit.IVisit;
+import org.apache.wicket.util.visit.IVisitor;
 
 import io.wktui.form.field.Field;
 
@@ -38,7 +40,7 @@ public class Form<T> extends BaseForm<T> {
         super(id, model);
     }
 
-    @SuppressWarnings("unchecked")
+     
 	@Override
     public MarkupContainer add(final Component... children) {
     	//for (Component child : children) {
@@ -64,11 +66,26 @@ public class Form<T> extends BaseForm<T> {
 
 	public void setFormState(FormState state) {
 		this.state=state;
-		
-		
-		
 	}
 
 	
+	public void updateReload() {
+		this.visitChildren(Field.class, new IVisitor<Field<?>, Void>() {
+			@Override
+			public void component(Field<?> field, IVisit<Void> visit) {
+				field.reload();
+			}
+		});
+	}
+	
+	public void updateModel() {
+		this.visitChildren(Field.class, new IVisitor<Field<?>, Void>() {
+			@Override
+			public void component(Field<?> field, IVisit<Void> visit) {
+				field.updateModel();
+			}
+		});
+
+	}
 	
 }

@@ -1,5 +1,6 @@
 package io.wktui.nav.toolbar;
 
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.AbstractLink;
 import org.apache.wicket.markup.html.link.Link;
@@ -15,6 +16,8 @@ public abstract class ButtonToolbarItem<T> extends ToolbarItem {
 	private AbstractLink link;
 	private Label label;
 	private IModel<String> title;
+ 
+	private WebMarkupContainer icon;
 	
 	public ButtonToolbarItem()  {
 		super("item");
@@ -65,12 +68,25 @@ public abstract class ButtonToolbarItem<T> extends ToolbarItem {
 			}
 		};
 		
-		
 		if (getLabelCss()!=null)
 			label.add( new AttributeModifier("class", getLabelCss()));
-		
+
 		link.add(label);
+
 		
+		icon = new WebMarkupContainer("icon");
+		
+		if (getIconCss()!=null)
+			icon.add( new AttributeModifier("class", getIconCss() + (getButtonLabel()!=null? " me-1" : "")));
+
+		
+		icon.setVisible(getIconCss()!=null);
+
+		link.add(icon);
+	
+	
+		if (getButtonTitle()!=null)
+			link.add(new AttributeModifier("title", getButtonTitle()));
 	}
 	
 	
@@ -82,7 +98,13 @@ public abstract class ButtonToolbarItem<T> extends ToolbarItem {
 		return null;
 	}
 
+	protected String getIconCss() {
+		return null;
+	}
 	
+	public IModel<String> getButtonTitle() {
+		return null;
+	}
 	
 	public IModel<String> getButtonLabel() {
 		return this.title;

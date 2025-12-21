@@ -9,7 +9,7 @@ public class InvisibleImage extends Image {
 	
 private static final long serialVersionUID = 1L;
 
-private static final ResourceReference EMPTY_IMAGE = new PackageResourceReference(InvisibleImage.class, null);
+private static final ResourceReference EMPTY_IMAGE = new PackageResourceReference(InvisibleImage.class, "null");
 	
 	public InvisibleImage(String id) {
 		super(id, EMPTY_IMAGE);

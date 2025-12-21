@@ -1,26 +1,34 @@
 <wicket:panel>
 	
-	<div class="nav-item dropdown">
-	
-	
+	<div class="nav-item dropdown notoggle">
 		<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     			<wicket:container wicket:id="titlePanel" />
         </a>
-        
-		<ul class="dropdown-menu">
+    	<ul class="dropdown-menu">
 			<li class="dropdown-item" wicket:id="item"><div wicket:id="panel"/></li>
 		</ul>
-	
 	</div>
 </wicket:panel>
 
 
-
 <wicket:fragment wicket:id="titleFragment">
 
-		<!-- img wicket:id="image" class="thumbnail"></img -->
-       	<i wicket:id="icon" class="d-block-inline d-sm-block-inline d-md-block-inline d-lg-none  d-xl-none d-xxl-none fa-solid fa-bars ps-2 pe-2"></i>
-        <span wicket:id="label"></span>
-    
+
+		<div wickeft:id="imageIconContainer" class="imageIconContainer">	
+			<!-- mg wicket:id="image"></img-->
+			<i wicket:id="icon" class="d-block-inline d-sm-block-inline d-md-block-inline d-lg-none d-xl-none d-xxl-none fa-solid fa-bars ps-1 pe-1"></i>
+		</div>		
+		
+		<div style="float:left; text-align:right; margin-right:6px; margin-top:-6px;" wicket:id="titleSubtitleContainer">
+			<div wicket:id="titleContainer">
+				<div wicket:id="title" />
+			</div>
+			
+			<div style="font-size:0.8em; color:#cccccc;" wicket:id="subtitleContainer">
+				<div wicket:id="subtitle" />
+			</div>
+		</div>		
+		
+
 </wicket:fragment>
 

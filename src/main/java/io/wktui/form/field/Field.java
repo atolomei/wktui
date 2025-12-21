@@ -58,6 +58,7 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
 
     private IModel<String> titleModel;
 
+     
     
     private Editor<?> editor;
     private Form<?> form;
@@ -71,21 +72,27 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
     
     private String fieldUpdatedPartName;
     
-    // public abstract IModel<T> makeValueModel(T value);
-    // public abstract void setValueModelObject(T value);
-    
+     
     private Model<String> subtitleModel;
 
     private WebMarkupContainer containerCol;
     private WebMarkupContainer containerBorder;
+
+    private WebMarkupContainer feedbackContainer;
+
     
-    private Component inputComponent;
+    //private Component inputComponent;
 
     private IValidator<T> validator;
     private String property;
     private List<Behavior> behaviors;
     private boolean autofocus = false;
-
+    private WebMarkupContainer feedbackmk = null;
+    
+    private  Component input;
+    private  String css;
+	
+	
     /**
      * @param id
      * @param model
@@ -103,6 +110,14 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
         	this.fieldUpdatedPartName=id;
         else
         	this.fieldUpdatedPartName=name;
+    
+        containerCol = new WebMarkupContainer("containerCol");
+        add(containerCol);
+
+        // class="border pt-4 pb-4 ps-4 pe-4"
+        containerBorder = new WebMarkupContainer("containerBorder");
+        containerCol.add(containerBorder);
+        
     }
 
     public String getFieldUpdatedPartName() {
@@ -133,15 +148,7 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
     @Override
     public void onInitialize() {
         super.onInitialize();
-
-        containerCol = new WebMarkupContainer("containerCol");
-
-        add(containerCol);
-
-        // class="border pt-4 pb-4 ps-4 pe-4"
-        containerBorder = new WebMarkupContainer("containerBorder");
-        containerCol.add(containerBorder);
-
+ 
         if (getTitleModel() != null) {
             containerBorder.add(new TitlePanel<String>("titleMarkupContainer", getTitleModel()));
         } else
@@ -157,23 +164,61 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
         containerBorder.add(new InvisiblePanel("textAfterMarkupContainer"));
 
         containerBorder.add(new InvisiblePanel("helpMarkupContainer"));
-        containerBorder.add(new InvisiblePanel("feedbackMarkupContainer"));
+        
+        WebMarkupContainer c=getFeedbackPanel();
+        
+        if (c==null)
+        	containerBorder.addOrReplace(new InvisiblePanel("feedback"));
+        else
+         	containerBorder.addOrReplace(c);
+         	
         containerBorder.add(new InvisiblePanel("errorMarkupContainer"));
     }
   
     public void editOn() {
     	this.editEnabled=true;
     	super.setEnabled(true);
-		
 	}
-	
+
+  
+    
+    public void setFeedback(WebMarkupContainer fd) {
+    	
+    	if (!fd.getId().equals("feedback"))
+    		throw new RuntimeException("id must be -> 'feedback'");
+    	
+    	feedbackmk=fd;
+    	containerBorder.addOrReplace(feedbackmk);
+    }
+    
+    
+    protected WebMarkupContainer getFeedbackPanel() {
+    	if (this.feedbackmk==null)
+    		this.feedbackmk = new InvisiblePanel("feedback");
+    	return this.feedbackmk;
+    }
+    
+    
 	public void editOff() {
     	this.editEnabled=false;
 		super.setEnabled(false);
 	}
     
+
+	public void setCss( String css) {
+		this.css=css;
+	}
+	
+	public String getCss() {
+		return css;
+	}
+
+	
     public void addControl(WebMarkupContainer input) {
-        containerBorder.add(input);
+    	this.input=input;
+    	if (getCss()!=null)
+    		this.input.add( new AttributeModifier("class", getCss()));
+        containerBorder.addOrReplace(input);
     }
 
     public void setTitleModel(IModel<String> titleModel) {
@@ -192,24 +237,17 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
         return this.subtitleModel;
     }
 
-    public abstract void updateModel();
+   
     
     
-    //public void updateModel() {
-    //    if (valueModel != null)
-    //        setModel(getValueModel());
-    //}
-
+   
     public void cancel() {
         clearInput();
-         //if (getModel()!=null)
-         //	 makeValueModel(getModel().getObject());
+         
     }
 
     public void clearInput() {
-        
-    	// feedback = false;
-        // getFeedbackMessages().clear();
+      
     	
          if (getInput()!=null && getInput() instanceof FormComponent)
         	 ((FormComponent<?>)getInput()).clearInput();
@@ -224,8 +262,8 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
     }
 
     public Component getInput() {
-        return inputComponent;
-    }
+       return input;
+   }
 
     public void setModel(IModel<T> model) {
         this.model = model;
@@ -270,16 +308,7 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
     public boolean isNullValid() {
         return false;
     }
-
-    // public String getMessage() {
-    // if (hasErrorMessage()) {
-    // ValidationErrorFeedback error =
-    // (ValidationErrorFeedback)((ValidationError)getFeedbackMessages().first().getMessage()).getErrorMessage(new
-    // MessageSource());
-    // return (String)error.getMessage();
-    // }
-    // return null;
-    // }
+ 
 
     public boolean hasFeedback() {
         return feedback;
@@ -289,10 +318,7 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
         return valueModel;
     }
  
-    //public void setValueModel(IModel<T> value) {
-    //    valueModel = value;
-    //}
-
+  
     @SuppressWarnings("unchecked")
     public void setFieldValue(String value) {
         String[] values = { value };
@@ -325,15 +351,7 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
     @Override
     public void onBeforeRender() {
         super.onBeforeRender();
-
-        // if (getModel() == null) {
-        // Editor<?> editor = getEditor();
-        // if (editor!=null) {
-        // IModel<T> model = new PropertyModel<T>(editor.getModel(), getProperty());
-        // setModel(model);
-        // setValue(model.getObject());
-        // }
-        // }
+ 
     }
 
     @Override
@@ -344,11 +362,6 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
 
     @Override
     public void onDetach() {
-        // if (value!=null && (!(value instanceof Serializable))) {
-        // valuemodel = getModel(value);
-        // valuemodel.detach();
-        // value = null;
-        // }
         super.onDetach();
 
         if (valueModel != null)
@@ -410,6 +423,10 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
 		}
 		return null;
 	}
+
+	
+    public abstract void updateModel();
+	public abstract void reload();
     
     /**
      * public void validate() { feedback = false; getFeedbackMessages().clear();
@@ -456,17 +473,7 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
      *           tag.getAttribute("class")); } }
      **/
 
-    // protected void setValueModel(IModel<T> model) {
-    // this.valuemodel = model;
-    // }
-
-    // protected IModel<T> getValueModel() {
-    // return this.valuemodel;
-//	}
-
-    // protected boolean isRequiredMark() {
-    // return isRequired();
-    // }
+   
 
     /**
      * private IModel<String> getLabel(){ try { return new

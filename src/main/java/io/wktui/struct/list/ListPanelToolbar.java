@@ -1,5 +1,7 @@
 package io.wktui.struct.list;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 
@@ -7,28 +9,30 @@ import io.wktui.nav.menu.NavDropDownMenu;
 import wktui.base.BasePanel;
 import wktui.base.NumberFormatter;
 
-public class ListPanelToolbar extends BasePanel {
+public abstract class ListPanelToolbar extends BasePanel {
 
 	private static final long serialVersionUID = 1L;
 
+	private AjaxLink<Void> sLink;
 	
 	private NavDropDownMenu<Void> settingsMenu;
 	private PagingNavigator navigator;
 	private Label total;
 	private Integer l_total;
 	
+	
+	public boolean isSearchButton() {
+		return true;
+	}
+	
+	public  abstract void onClick( AjaxRequestTarget target);
+	
+	
 	public ListPanelToolbar(String id, PagingNavigator navigator,  NavDropDownMenu<Void> menu) {
 		super(id);
 
 		this.settingsMenu=menu;
 		this.navigator=navigator;
-		
-//		if (totalStr!=null)
-//			this.total=new Label ("total", totalStr);
-//		else {
-//			this.total=new Label ("total", "");
-//			this.total.setVisible(false);
-//		}	
 	}
 
 	
@@ -46,6 +50,24 @@ public class ListPanelToolbar extends BasePanel {
 		};
 		
 		add(this.total);
+	
+		sLink = new AjaxLink<Void>("searchLink") {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick(AjaxRequestTarget target) {
+				ListPanelToolbar.this.onClick( target );
+			}
+
+			@Override
+			public boolean isVisible() {
+				return isSearchButton();
+			}
+		};
+		
+		add(sLink);
+	
 	}
 
 	public Integer getTotal() {
