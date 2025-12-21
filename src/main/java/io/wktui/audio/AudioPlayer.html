@@ -1,0 +1,105 @@
+<wicket:panel>
+<div class="audio-player">
+    <audio id="audio-el" preload="metadata"></audio>
+
+    <button id="play-btn" class="btn">▶</button>
+
+    <input type="range" id="progress" value="0" min="0" max="100">
+
+    <span id="time" class="time">0:00 / 0:00</span>
+
+    <input type="range" id="volume" min="0" max="1" step="0.01" value="1">
+</div>
+
+<style>
+.audio-player {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: sans-serif;
+}
+#progress {
+    width: 200px;
+    cursor: pointer;
+}
+.btn {
+    cursor: pointer;
+    font-size: 18px;
+}
+.time {
+    width: 100px;
+    text-align: center;
+}
+</style>
+
+<script>
+function formatTime(sec) {
+    if (!sec || isNaN(sec)) return "0:00";
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60).toString().padStart(2, "0");
+    return `${m}:${s}`;
+}
+
+window.initAudioPlayer = function(audioUrl, startSeconds) {
+    const audio = document.getElementById("audio-el");
+    const playBtn = document.getElementById("play-btn");
+    const progress = document.getElementById("progress");
+    const volume = document.getElementById("volume");
+    const timeLbl = document.getElementById("time");
+
+    if (!audio) return;
+
+    // Guardar si estaba reproduciendo (por cambios dinámicos)
+    const wasPlaying = !audio.paused;
+
+    // Reset seguro
+    audio.pause();
+    audio.src = audioUrl;
+
+    // Esperar a que cargue metadata
+    audio.addEventListener("loadedmetadata", () => {
+        // Setear posición inicial
+        audio.currentTime = Math.min(startSeconds, audio.duration);
+
+        // Actualizar tiempo inicial
+        timeLbl.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+
+        if (wasPlaying) audio.play();
+    }, { once: true });
+
+    // Botón play/pause
+    playBtn.onclick = () => {
+        if (!audio.src) return;
+
+        if (audio.paused) {
+            audio.play();
+            playBtn.textContent = "⏸";
+        } else {
+            audio.pause();
+            playBtn.textContent = "▶";
+        }
+    };
+
+    // Barra de progreso
+    audio.addEventListener("timeupdate", () => {
+        if (audio.duration && !isNaN(audio.duration)) {
+            progress.value = (audio.currentTime / audio.duration) * 100;
+            timeLbl.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+        }
+    });
+
+    progress.oninput = () => {
+        if (audio.readyState >= 1 && audio.duration && audio.duration > 0) {
+            audio.currentTime = (progress.value / 100) * audio.duration;
+        }
+    };
+
+    // Volumen
+    volume.oninput = () => {
+        audio.volume = volume.value;
+    };
+
+    console.log("Audio Player inicializado:", audioUrl, "startSeconds:", startSeconds);
+};
+</script>
+</wicket:panel>
