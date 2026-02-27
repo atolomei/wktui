@@ -69,14 +69,22 @@ public class Toolbar extends BasePanel {
 	}
 
 	
+	public String getToolbarCss() {
+		return toolbarCss;
+	}
+
+	public void setToolbarCss(String toolbarCss) {
+		this.toolbarCss = toolbarCss;
+	}
+
 	protected List<ToolbarItem> getLeftItems() {
 		return this.listLeft;
 	}
 
-	protected String getToolbarCss() {
-	 	return "navbar";
-	}
-
+	
+	private String toolbarCss = "navbar";
+	
+	
 	private void load() {
 		
 		this.listLeft=new ArrayList<ToolbarItem>();

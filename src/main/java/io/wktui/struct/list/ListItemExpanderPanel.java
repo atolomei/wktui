@@ -37,7 +37,9 @@ public class ListItemExpanderPanel<T> extends ModelPanel<T> {
 		icon = new WebMarkupContainer("icon");
 
 		add(getMainPanel());
-
+		 
+		
+		
 		ex = new AjaxLink<T>("expand", ListItemExpanderPanel.this.getModel()) {
 			private static final long serialVersionUID = 1L;
 
@@ -50,8 +52,11 @@ public class ListItemExpanderPanel<T> extends ModelPanel<T> {
 				if (isExpanded()) {
 					icon.add(new AttributeModifier("class", getIconExpanded()));
 					expandedPanel = getExpandedPanel();
+					 getMainPanel().add(new AttributeModifier("class", "expanded"));
+					
 				} else {
 					icon.add(new AttributeModifier("class", getIconCollapsed()));
+					getMainPanel().add(new AttributeModifier("class", "collapsed"));
 					expandedPanel = new InvisiblePanel("expanded-panel");
 				}
 

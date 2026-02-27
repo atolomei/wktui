@@ -65,6 +65,7 @@ public class FileUploadSimpleField<T> extends Field<T> {
 
 	@Override
 	public void editOn() {
+		setUpdated(false);
 		this.input.setEnabled(true);
 		super.editOn();
 	}
@@ -85,6 +86,7 @@ public class FileUploadSimpleField<T> extends Field<T> {
 	public void onInitialize() {
 		super.onInitialize();
 
+		setUpdated(false);
 		this.input = newFileUploadField();
 		super.addControl(input);
 
@@ -134,6 +136,7 @@ public class FileUploadSimpleField<T> extends Field<T> {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				input.clearInput();
+				setUpdated(true);
 				FileUploadSimpleField.this.onRemove(target);
 			}
 		};
@@ -378,10 +381,13 @@ public class FileUploadSimpleField<T> extends Field<T> {
 			if (processFileUploads(uploads)) {
 
 				logger.debug("update -> " + getId() + ": " + this.getFileName());
+	        	setUpdated(true);
+
 				onUpdate(null, null);
 
 			}
 		} catch (Exception e) {
+        	setUpdated(false);
 			logger.error(e, getInput() != null ? getInput().toString() : "");
 			if (getModel() != null)
 				getModel().detach();

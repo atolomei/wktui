@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -62,11 +63,6 @@ public class ListPanel<T> extends BasePanel {
 	private WebMarkupContainer frame;
 	private WebMarkupContainer toolbarContainer;
 
-	
-	
-	
-	
-
 	private Form<?> form;
 	private Label totalLabel;
 	private Label initialTotalLabel;
@@ -83,7 +79,7 @@ public class ListPanel<T> extends BasePanel {
 	private Boolean liveSearch;
 
 	private NavDropDownMenu<Void> settingsMenu;
-	private PagingNavigator navigator;
+	private AjaxPagingNavigator navigator;
 
 	/**
 	 * 
@@ -291,8 +287,26 @@ public class ListPanel<T> extends BasePanel {
 			}
 		};
 
-		this.navigator = new PagingNavigator("navigator", this.listView);
+		//this.navigator = new PagingNavigator("navigator", this.listView);
 
+		
+		  // 3. The AjaxPagingNavigator
+		this.navigator = new AjaxPagingNavigator("navigator", listView) {
+             
+			private static final long serialVersionUID = 1L;
+
+			@Override
+            protected void onAjaxEvent(AjaxRequestTarget target) {
+                // This method is called when a page link is clicked
+                // Add the container to the AJAX request target to update the list view
+                target.add(listItemContainer);
+            }
+        };
+	 	
+		
+		
+		
+		
 		int size = getWorkingItems().size();
 
 		if (getPageSize() >= size)
@@ -412,10 +426,13 @@ public class ListPanel<T> extends BasePanel {
 	protected List<IModel<T>> filter(List<IModel<T>> initialList, String filter) {
 		List<IModel<T>> list = new ArrayList<IModel<T>>();
 		final String str = filter.trim().toLowerCase();
+		
+		logger.debug(str);
+		 
 		initialList.forEach(s -> {
-			
 			String t=ListPanel.this.getItemLabel(s).getObject();
-			
+		
+			logger.debug(t);
 			
 			if ( t.toLowerCase().contains(str)) {
 				list.add(s);
@@ -502,6 +519,20 @@ public class ListPanel<T> extends BasePanel {
 				target.add(ListPanel.this.listItemContainer);
 			}
 		};
+		
+		
+		AjaxLink<Void> close = new AjaxLink<Void>("close") {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick(AjaxRequestTarget target) {
+				setLiveSearch(false);
+				addLiveSearch();
+				refresh(target);
+			}
+		};
+		this.liveSearchContainer.add(close);
+		
 
 		this.totalLabel = new Label("total", new PropertyModel<Integer>(this, "totalWorkingItems"));
 		this.totalLabel.setOutputMarkupId(true);
@@ -661,7 +692,7 @@ public class ListPanel<T> extends BasePanel {
 
 			@Override
 			public String getCss() {
-				return "pt-2 pb-2 alert border rounded-top-0";
+				return "pt-2 pb-2 mb-0 alert border rounded-top-0";
 			}
 		};
 
@@ -671,7 +702,13 @@ public class ListPanel<T> extends BasePanel {
 	private void setDefaults() {
 		this.mode = ListPanelMode.TITLE;
 		this.isSettings = true;
-		liveSearch = Boolean.valueOf(false);
+		if (liveSearch==null) {
+	
+			if (getTotalItems()>24)
+				liveSearch = Boolean.valueOf(true);
+			else
+				liveSearch = Boolean.valueOf(false);
+		}
 	}
 
 }

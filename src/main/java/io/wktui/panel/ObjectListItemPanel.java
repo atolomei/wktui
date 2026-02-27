@@ -248,7 +248,7 @@ public abstract class ObjectListItemPanel<T> extends ModelPanel<T> {
 	protected String getImageCss() {
 
 		StringBuilder str = new StringBuilder();
-		str.append("bg-body-tertiary border rounded-0 col-xxl-2  col-xl-2  col-lg-3  col-md-5 col-sm-12 col-xs-12 text-lg-start text-md-start text-xs-center");
+		str.append("bg-body-tertiary border rounded-0 col-xxl-2  col-xl-2  col-lg-3  col-md-4 col-sm-12 col-xs-12 text-lg-start text-md-start text-xs-center");
 
 		if (this.isMenuVisible()) {
 			str.append(" ismenu");
@@ -259,7 +259,7 @@ public abstract class ObjectListItemPanel<T> extends ModelPanel<T> {
 	protected String getCss() {
 		StringBuilder str = new StringBuilder();
 		if (isImageVisible())
-			str.append("mt-1 mt-md-0 mt-xl-0 mt-lg-0 mt-xxl-0 col-xxl-10  col-xl-10  col-lg-9  col-md-7 col-sm-12 text-lg-start text-md-start text-xs-center");
+			str.append("mt-2 mt-md-0 mt-xl-0 mt-lg-0 mt-xxl-0 col-xxl-10  col-xl-10  col-lg-9  col-md-8 col-sm-12 text-lg-start text-md-start text-xs-center");
 		else
 			str.append("col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 text-lg-start text-md-start text-xs-center");
 		if (this.isMenuVisible()) {

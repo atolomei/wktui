@@ -48,6 +48,8 @@ public class UploadFileField<T> extends Field<T> {
 	
 	@Override
 	public void editOn() {
+    	setUpdated(false);
+
 		this.input.setEnabled(true);
 		super.editOn();
 	}
@@ -63,6 +65,8 @@ public class UploadFileField<T> extends Field<T> {
 	public void onInitialize() {
 	        super.onInitialize();
 	  	        
+        	setUpdated(false);
+        	
 	        if (getModel().getObject()!=null)
 	            setValue(getModel().getObject().toString());
 	        else
@@ -218,7 +222,8 @@ public class UploadFileField<T> extends Field<T> {
                 
                     if  ( (getModel().getObject()!=null && !getModel().getObject().equals(val)) || 
                           (getModel().getObject()==null && val!=null && !"".equals(val))) {
-                    
+                    	setUpdated(true);
+
                         onUpdate(getModel().getObject(), (T) val);
                         getModel().setObject( (T) val);
                         logger.debug( "update -> " + getId() + ": " + val.toString());
@@ -227,11 +232,14 @@ public class UploadFileField<T> extends Field<T> {
             else {
                 if (getModel().getObject()!=null) {
                     getModel().setObject(null);
+                	setUpdated(true);
+
                     onUpdate(getModel().getObject(), null);
                 }
             }
         } 
         catch (Exception e) {
+        	setUpdated(false);
             logger.error(e,  getInput()!=null? getInput().toString(): "");
             getModel().detach();
         }

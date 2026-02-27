@@ -1,8 +1,8 @@
 <wicket:panel>
 	
-	<div class="nav-item dropdown notoggle">
+	<div class="nav-item dropdown">
 		<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    			<wicket:container wicket:id="titlePanel" />
+    			<div style="display: inline-block;" wicket:id="titlePanel" />
         </a>
     	<ul class="dropdown-menu">
 			<li class="dropdown-item" wicket:id="item"><div wicket:id="panel"/></li>
@@ -14,18 +14,18 @@
 <wicket:fragment wicket:id="titleFragment">
 
 
-		<div wickeft:id="imageIconContainer" class="imageIconContainer">	
-			<!-- mg wicket:id="image"></img-->
-			<i wicket:id="icon" class="d-block-inline d-sm-block-inline d-md-block-inline d-lg-none d-xl-none d-xxl-none fa-solid fa-bars ps-1 pe-1"></i>
+		<div   wicket:id="imageIconContainer" class="imageIconContainer">	
+			 
+		<i wicket:id="icon" class="d-block-inline d-sm-block-inline d-md-block-inline d-lg-none d-xl-none d-xxl-none fa-solid fa-bars ps-1 pe-1"></i>
 		</div>		
 		
-		<div style="float:left; text-align:right; margin-right:6px; margin-top:-6px;" wicket:id="titleSubtitleContainer">
+		<div class="titleSubtitleContainer" wicket:id="titleSubtitleContainer">
 			<div wicket:id="titleContainer">
-				<div wicket:id="title" />
+				<div class="title" style="display: inline-block;" wicket:id="title" />
 			</div>
 			
-			<div style="font-size:0.8em; color:#cccccc;" wicket:id="subtitleContainer">
-				<div wicket:id="subtitle" />
+			<div wicket:id="subtitleContainer">
+				<div class="subtitle" wicket:id="subtitle" />
 			</div>
 		</div>		
 		

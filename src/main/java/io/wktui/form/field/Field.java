@@ -17,6 +17,7 @@ import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.IFormModelUpdateListener;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.ValidationErrorFeedback;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -59,6 +60,7 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
     private IModel<String> titleModel;
 
      
+    private Panel helpPanel;
     
     private Editor<?> editor;
     private Form<?> form;
@@ -91,6 +93,17 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
     
     private  Component input;
     private  String css;
+	
+    
+    private boolean isUpdated = false;
+	
+	public boolean isUpdated() {
+		return this.isUpdated;
+	}
+	
+	public void setUpdated(boolean b) {
+		this.isUpdated = b;
+	}
 	
 	
     /**
@@ -145,15 +158,23 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
         return getForm().getFormState()==FormState.EDIT;
     }
         
+    
+    private String titleCss;
+    
     @Override
     public void onInitialize() {
         super.onInitialize();
  
         if (getTitleModel() != null) {
-            containerBorder.add(new TitlePanel<String>("titleMarkupContainer", getTitleModel()));
+        	TitlePanel<String> t= new TitlePanel<String>("titleMarkupContainer", getTitleModel());
+            if (getTitleCss()!=null)
+            	t.setCss(getTitleCss());
+            containerBorder.add(t);
         } else
             containerBorder.add(new InvisiblePanel("titleMarkupContainer"));
 
+        
+        
         if (getSubtitleModel() != null) {
             LabelPanel subTitleLabel = new LabelPanel("subtitleMarkupContainer", getSubtitleModel());
             containerBorder.add(subTitleLabel);
@@ -162,8 +183,13 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
 
         containerBorder.add(new InvisiblePanel("textBeforeMarkupContainer"));
         containerBorder.add(new InvisiblePanel("textAfterMarkupContainer"));
+        containerBorder.setOutputMarkupId(true);
+        
+        if( getHelpPanel()==null)
+        	containerBorder.add(new InvisiblePanel("help"));
+        else
+        	containerBorder.add(getHelpPanel());
 
-        containerBorder.add(new InvisiblePanel("helpMarkupContainer"));
         
         WebMarkupContainer c=getFeedbackPanel();
         
@@ -176,13 +202,29 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
     }
   
     public void editOn() {
-    	this.editEnabled=true;
-    	super.setEnabled(true);
-	}
+    	if (!isReadOnly()) {
+	    	this.editEnabled=true;
+	    	super.setEnabled(true);
+    	}
+  	}
 
   
+   
+
+    public Panel getHelpPanel() {
+    	return helpPanel;
+    }
     
-    public void setFeedback(WebMarkupContainer fd) {
+	public void setHelpPanel(Panel panel) {
+		if (!panel.getId().equals("help"))
+    		throw new RuntimeException("id must be -> 'help'");
+		
+		helpPanel=panel;
+    	containerBorder.addOrReplace(helpPanel);
+    	
+	}
+    
+	public void setFeedback(WebMarkupContainer fd) {
     	
     	if (!fd.getId().equals("feedback"))
     		throw new RuntimeException("id must be -> 'feedback'");
@@ -207,6 +249,10 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
 
 	public void setCss( String css) {
 		this.css=css;
+		
+		if (this.input!=null) {
+			this.input.add( new AttributeModifier("class", css));
+		}
 	}
 	
 	public String getCss() {
@@ -427,6 +473,28 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
 	
     public abstract void updateModel();
 	public abstract void reload();
+
+	public String getTitleCss() {
+		return titleCss;
+	}
+
+	public void setTitleCss(String titleCss) {
+		this.titleCss = titleCss;
+	}
+	
+	protected void internalOnUpdate( T oldValue, T newValue ) {
+		if (getEditor() != null) {
+			getEditor().setUpdatedPart(getPart());
+		}
+		this.setUpdated(true);
+		this.onUpdate(oldValue, newValue);
+	}
+
+	protected  abstract void onUpdate(T oldvalue, T newvalue);
+	
+	protected String getPart() {
+		return getFieldUpdatedPartName();
+	}
     
     /**
      * public void validate() { feedback = false; getFeedbackMessages().clear();

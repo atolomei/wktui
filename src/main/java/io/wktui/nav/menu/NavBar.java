@@ -8,7 +8,7 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.IModel;
 
-import wktui.base.BasePanel;
+ 
 import wktui.base.ModelPanel;
 
 public class NavBar<T> extends ModelPanel<T> {

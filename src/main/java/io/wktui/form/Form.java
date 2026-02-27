@@ -8,7 +8,10 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.visit.IVisit;
 import org.apache.wicket.util.visit.IVisitor;
 
+ 
+ 
 import io.wktui.form.field.Field;
+import wktui.base.Logger;
 
 
 /***
@@ -28,6 +31,9 @@ import io.wktui.form.field.Field;
 public class Form<T> extends BaseForm<T> {
 
     private static final long serialVersionUID = 1L;
+    
+    static private Logger logger = Logger.getLogger(Form.class.getName());
+    
     
     private FormState state = FormState.VIEW;
     
@@ -86,6 +92,15 @@ public class Form<T> extends BaseForm<T> {
 			}
 		});
 
+	}
+	
+	/**
+	 * Method to override if you want to do something special when an error occurs (other than
+	 * simply displaying validation errors).
+	 */
+	protected void onError() {
+		
+		logger.debug("on error");
 	}
 	
 }

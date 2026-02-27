@@ -40,6 +40,7 @@ public class ChoiceField<T> extends Field<T> {
 
 	@Override
 	public void editOn() {
+		setUpdated(false);
 		if (this.selector != null)
 			this.selector.setEnabled(true);
 		super.editOn();
@@ -71,6 +72,7 @@ public class ChoiceField<T> extends Field<T> {
 			if (val==null) {
 				if (indexSelected!=-1) {
 					logger.debug("update -> " + getId() + ": null");
+					setUpdated(true);
 					onUpdate(getModel().getObject(), val);
 					getModel().setObject(val);
 					return;
@@ -93,10 +95,12 @@ public class ChoiceField<T> extends Field<T> {
 			
 
 			if (indexSelected==newIndexSelected) {
+					setUpdated(false);
 					return;
 			}
 			
 			if (newIndexSelected!=indexSelected) {
+				setUpdated(true);
 				onUpdate(getModel().getObject(), val);
 				logger.debug("update -> " + getId() + ": " + val.toString());
 				getModel().setObject(val);
@@ -105,6 +109,7 @@ public class ChoiceField<T> extends Field<T> {
 			
 			
 		} catch (Exception e) {
+			setUpdated(false);
 			logger.error(e, getInput() != null ? getInput().toString() : "");
 			getModel().detach();
 		}
@@ -175,7 +180,7 @@ public class ChoiceField<T> extends Field<T> {
 	}
 
 	protected boolean equals(T value, Object object) {
-		return value != null && object != null && value.equals(object);
+		return (value != null) && (object != null) && value.equals(object);
 	}
 
 	protected void onUpdate(T oldvalue, T newvalue) {
@@ -230,6 +235,9 @@ public class ChoiceField<T> extends Field<T> {
 				return ChoiceField.this.isRequired();
 			}
 
+			 
+			
+				
 			@Override
 			protected void onComponentTag(final ComponentTag tag) {
 				IValueMap attributes = tag.getAttributes();
@@ -238,6 +246,8 @@ public class ChoiceField<T> extends Field<T> {
 				super.onComponentTag(tag);
 			}
 		};
+		
+		
 
 		selector.setModel(new PropertyModel<T>(this, "value"));
 

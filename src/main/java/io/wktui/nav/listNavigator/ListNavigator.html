@@ -1,14 +1,15 @@
 <wicket:panel>
 	
 	<div class="row">
-		<div class="col-6 text-start">
-			<a  class="text-start pt-2 pb-2 mt-2 mb-2" wicket:id="prev" href="#">
+		<div wicket:id="prevContainer" class="col-xxl-6 col-xl-6 col-lg-6 col-xs-12 col-md-12 col-sm-12 pt-2 pb-2 text-lg-start text-xl-start text-xxl-start text-center">
+			<a  class="text-lg-start text-xl-start text-xxl-start text-center pt-2 pb-2 w-100" wicket:id="prev" href="#">
 				<i class="fa-solid fa-left me-2"></i>
 				<span class="mt-2 mb-2"  wicket:id="title"></span>
 			</a>
 		</div>
-		<div class="col-6 text-end">
-			<a   class="text-end pt-2 pb-2 mt-2 mb-2" wicket:id="next" href="#">
+		
+		<div wicket:id="nextContainer" class="col-xxl-6 col-xl-6 col-lg-6 col-xs-12 col-md-12 col-sm-12 pt-2 text-lg-end text-xl-end text-xxl-end text-center">
+			<a   class="text-lg-end text-xl-end text-xxl-end  text-center pt-2 pb-2 w-100" wicket:id="next" href="#">
 				<span wicket:id="title"></span>
 				<i class="fa-solid fa-right ms-2"></i>
 			</a>

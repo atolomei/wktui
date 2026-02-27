@@ -2,7 +2,7 @@ package io.wktui.form.button;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.attributes.AjaxCallListener;
+ 
 import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
 import org.apache.wicket.ajax.attributes.IAjaxCallListener;
  
@@ -28,6 +28,8 @@ public abstract class SubmitButton<T> extends BasePanel {
     
     private Label label;
 
+    private String icon;
+    private String iconStyle;
     
     private IModel<T> model;
     
@@ -38,6 +40,9 @@ public abstract class SubmitButton<T> extends BasePanel {
     
     private String rowCss;
     private String colCss;
+    
+    
+    WebMarkupContainer w_icon;
     
     
     public SubmitButton(String id) {
@@ -87,75 +92,111 @@ public abstract class SubmitButton<T> extends BasePanel {
             protected void onError(AjaxRequestTarget target) {
             }
             
-            protected void updateAjaxAttributes(AjaxRequestAttributes attributes) {
-                super.updateAjaxAttributes(attributes);
-                IAjaxCallListener listener = new IAjaxCallListener() {
-                    @Override
-                    public CharSequence getSuccessHandler(Component component) {
-                        return null;
-                    }
-                    @Override
-                    public CharSequence getPrecondition(Component component) {
-                        return null;
-                    }
-                    @Override
-                    public CharSequence getFailureHandler(Component component) {
-                        return null;
+            @Override
+			protected void updateAjaxAttributes(AjaxRequestAttributes attributes) {
+				super.updateAjaxAttributes(attributes);
+				IAjaxCallListener listener = new IAjaxCallListener() {
+					@Override
+					public CharSequence getSuccessHandler(Component component) {
+						return null;
+					}
+					@Override
+					public CharSequence getPrecondition(Component component) {
+						return null;
+					}
+					@Override
+					public CharSequence getFailureHandler(Component component) {
+						return null;
 
-                    }
-                    @Override
-                    public CharSequence getCompleteHandler(Component component) {
-                        return null;
-                    }
-                    @Override
-                    public CharSequence getBeforeSendHandler(Component component) {
-                        return null;
-                    }
-                    @Override
-                    public CharSequence getBeforeHandler(Component component) {
-                        //String s = "document.getElementById('"+component.getMarkupId()+"').innerHTML = '<span class=\"far fa-sync glyphicon-refresh-animate\"></span> "+getWorkingLabel().getObject()+"'";
-                        //return s;
-                        return null;
-                    }
-                    @Override
-                    public CharSequence getAfterHandler(Component component) {
-                        return null;
-                    }
-                    @Override
-                    public CharSequence getDoneHandler(Component component) {
-                        return null;
-                    }
-                    @Override
-                    public CharSequence getInitHandler(Component component) {
-                        return null;
-                    }
-                };
-                attributes.getAjaxCallListeners().add(listener);
-                AjaxCallListener myAjaxCallListener = new AjaxCallListener() {
-                    @Override 
-                    public CharSequence getBeforeHandler(Component component) { 
-                        //return "if (typeof(tinyMCE) != \"undefined\") tinyMCE.triggerSave(true,true)";
-                        return null;
-                    }
-                };
-                attributes.getAjaxCallListeners().add(myAjaxCallListener);
-            }
+					}
+					@Override
+					public CharSequence getCompleteHandler(Component component) {
+						String s = null, s1=null;
+						String id = component.getMarkupId();
+							s1 = "document.getElementById('"+id+"').innerHTML = '"+(getLabel()!=null?getLabel().getObject():"")+"';";
+							s ="setTimeout(function () {"+s1+"}, 100);";
+						return s;
+					}
+					@Override
+					public CharSequence getBeforeSendHandler(Component component) {
+						return null;
+					}
+					@Override
+					public CharSequence getBeforeHandler(Component component) {
+						String s = SubmitButton.this.getBeforeHandler();
+						s += "document.getElementById('"+component.getMarkupId()+"').innerHTML = '<i class=\""+SPINNING+"\"></i>'";
+						return s;																		
+					}
+					@Override
+					public CharSequence getAfterHandler(Component component) {
+						return null;
+					}
+					@Override
+					public CharSequence getDoneHandler(Component component) {
+						return null;
+					}
+					@Override
+					public CharSequence getInitHandler(Component component) {
+						return null;
+					}
+				};
+				attributes.getAjaxCallListeners().add(listener);
+			}
         };
         
         c_v.add(button);
      
-        label = new Label("submit", getLabel());
+        label = new Label("submit", getLabel()) {
+        	
+        	/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			public boolean isVisible() {
+        		return getLabel()!=null;
+        	}
+        };
+        
+        
         button.add(label);
+        
+        w_icon = new  WebMarkupContainer("icon" ) {
+        	 
+			private static final long serialVersionUID = 1L;
+
+			public boolean isVisible() {
+        		return getIcon()!=null;
+        	}
+        };
+        button.add(w_icon);
+        
+        if (getIcon()!=null) {
+        	w_icon.add( new org.apache.wicket.AttributeModifier("class", getIcon()));
+        }
+        
+        if (getIconStyle()!=null) {
+        	w_icon.add( new org.apache.wicket.AttributeModifier("style", getIconStyle()));
+        }
+        
         
         if (getSaveCss()!=null) 
         	button.add( new org.apache.wicket.AttributeModifier("class", getSaveCss()));
        
+        if (getStrStyle()!=null) 
+        	button.add( new org.apache.wicket.AttributeModifier("style", getStrStyle()));
+        
     }
    
     public IModel<String> getLabel() {
     	return new StringResourceModel("button.submit");
     			
     }
+    
+    public String getBeforeHandler() {
+		return "";
+	}
+    
     
     @Override
     public void onDetach() {
@@ -211,6 +252,14 @@ public abstract class SubmitButton<T> extends BasePanel {
         **/
     }
 
+	public String getIconStyle() {
+		return iconStyle;
+	}
+
+	public void setIconStyle(String iconStyle) {
+		this.iconStyle = iconStyle;
+	}
+
 	public void setRowCss(String rowCss) {
 		this.rowCss = rowCss;
 	}
@@ -218,10 +267,17 @@ public abstract class SubmitButton<T> extends BasePanel {
 	public void setColCss(String colCss) {
 		this.colCss = colCss;
 	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
       
-    
-    //protected IModel<String> getWorkingLabel() {
-    //    return new StringResourceModel("button.submiting", ContentEditor.this, null);
-    //}
+	protected IModel<String> getWorkingLabel() {
+		return new StringResourceModel("saving", this, null);
+	}
     
 }

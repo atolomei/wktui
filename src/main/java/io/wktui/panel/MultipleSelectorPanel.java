@@ -58,14 +58,27 @@ public abstract class MultipleSelectorPanel<T> extends BasePanel {
 		itemsContainer = new WebMarkupContainer("itemsContainer");
 		itemsContainer.setOutputMarkupId(true);
 		add(itemsContainer);
-		titleContainer = new WebMarkupContainer("titleContainer");
-		titleContainer.setOutputMarkupId(true);
-		titleContainer.setVisible(getTitle() != null);
-		add(titleContainer);
-		titleContainer.add(new Label("title", getTitle()));
+		addTitle();
 		renderPanel();
 	}
 
+	
+	private void addTitle() {
+		titleContainer = new WebMarkupContainer("titleContainer") {
+			private static final long serialVersionUID = 1L;
+
+			public boolean isVisible() {
+				return getTitle()!=null;
+			}
+		};
+		
+		titleContainer.setOutputMarkupId(true);
+		titleContainer.setVisible(getTitle() != null);
+		add(titleContainer);
+		titleContainer.add(( new Label("title", (getTitle()!=null)?getTitle():"")).setVisible(getTitle()!=null));
+	}
+	
+	
 	@Override
 	public void onDetach() {
 		super.onDetach();
@@ -108,6 +121,12 @@ public abstract class MultipleSelectorPanel<T> extends BasePanel {
 
 			private static final long serialVersionUID = 1L;
 
+			
+			@Override
+			public IModel<String> getItemLabel(IModel<T> model) {
+				return MultipleSelectorPanel.this.getObjectTitle(model);
+			}
+			
 			@Override
 			protected Panel getListItemExpandedPanel(IModel<T> model, ListPanelMode mode) {
 				return MultipleSelectorPanel.this.getObjectListItemExpandedPanel(model, mode);
@@ -120,6 +139,8 @@ public abstract class MultipleSelectorPanel<T> extends BasePanel {
 
 					private static final long serialVersionUID = 1L;
 
+					
+					
 					@Override
 					protected WebMarkupContainer getObjectMenu() {
 						return MultipleSelectorPanel.this.getObjectMenu(getModel());

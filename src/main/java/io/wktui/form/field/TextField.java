@@ -5,10 +5,12 @@ import java.io.Serializable;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.ComponentTag;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.util.value.IValueMap;
 
+import wktui.base.DummyBlockPanel;
 import wktui.base.Logger;
 
 public class TextField<T extends Serializable> extends Field<T> {
@@ -20,7 +22,7 @@ public class TextField<T extends Serializable> extends Field<T> {
 	private T value;
 	private org.apache.wicket.markup.html.form.TextField<T> input;
 	private IModel<String> placeHolder;
-	
+
 	public TextField(String id, IModel<T> model) {
 		this(id, model, null);
 	}
@@ -40,6 +42,7 @@ public class TextField<T extends Serializable> extends Field<T> {
 
 	@Override
 	public void editOn() {
+		setUpdated(false);
 		this.input.setEnabled(true);
 		super.editOn();
 	}
@@ -53,6 +56,8 @@ public class TextField<T extends Serializable> extends Field<T> {
 	@Override
 	public void onInitialize() {
 		super.onInitialize();
+
+		setUpdated(false);
 
 		if (getModel().getObject() != null)
 			setValue(getModel().getObject());
@@ -123,12 +128,9 @@ public class TextField<T extends Serializable> extends Field<T> {
 
 		if (getPlaceHolderLabel() != null && getPlaceHolderLabel().getObject() != null)
 			input.add(new AttributeModifier("placeholder", getPlaceHolderLabel()));
-		
-		
+
 		return input;
 	}
-	
-	
 
 	protected void onUpdate(T oldvalue, T newvalue) {
 		if (getEditor() != null) {
@@ -136,11 +138,7 @@ public class TextField<T extends Serializable> extends Field<T> {
 		}
 	}
 
-	protected String getPart() {
-		return getFieldUpdatedPartName();
-	}
-
-
+ 
 	protected Object getAutoComplete() {
 		return null;
 	}
@@ -159,7 +157,7 @@ public class TextField<T extends Serializable> extends Field<T> {
 	}
 
 	public Object getInputValue() {
- 		return input.getValue();
+		return input.getValue();
 	}
 
 	@Override
@@ -183,17 +181,28 @@ public class TextField<T extends Serializable> extends Field<T> {
 			val = getInputValue();
 
 			if (val != null) {
-
 				if ((getModel().getObject() != null && !getModel().getObject().equals(val)) || (getModel().getObject() == null && val != null && !"".equals(val))) {
 					updated = true;
-					onUpdate(getModel().getObject(), (T) val);
+					internalOnUpdate(getModel().getObject(), (T) val);
+					
+					//if (getEditor() != null) {
+					//	getEditor().setUpdatedPart(getPart());
+					//}
+					//onUpdate(getModel().getObject(), (T) val);
 					getModel().setObject((T) val);
 				}
 			} else {
 				if (getModel().getObject() != null) {
 					updated = true;
+					
+					/**if (getEditor() != null) {
+						getEditor().setUpdatedPart(getPart());
+					}
 					getModel().setObject(null);
 					onUpdate(getModel().getObject(), null);
+					*/
+					internalOnUpdate(getModel().getObject(), (T) val);
+					
 				}
 			}
 			logger.debug("update -> " + getId() + ": " + (val != null ? val.toString() : "null") + " | updated -> " + updated);
@@ -201,9 +210,13 @@ public class TextField<T extends Serializable> extends Field<T> {
 		} catch (Exception e) {
 			logger.error(e, getInput() != null ? getInput().toString() : "");
 			getModel().detach();
+		} finally {
+			setUpdated(updated);
 		}
 	}
-
+	
+	
+	
 	protected String getInputType() {
 		return "text";
 	}
@@ -213,16 +226,13 @@ public class TextField<T extends Serializable> extends Field<T> {
 		setValue(getModel().getObject());
 	}
 
-	
 	protected IModel<String> getPlaceHolderLabel() {
 		return this.placeHolder;
 	}
 
-	
 	public void setPlaceHolderLabel(IModel<String> label) {
-		this.placeHolder=label;
+		this.placeHolder = label;
 	}
 
- 
 
 }

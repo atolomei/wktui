@@ -48,6 +48,8 @@ public class AutoCompleteField<T>  extends Field<T> {
 	
 	@Override
 	public void editOn() {
+    	setUpdated(false);
+
 		this.input.setEnabled(true);
 		super.editOn();
 	}
@@ -62,7 +64,8 @@ public class AutoCompleteField<T>  extends Field<T> {
 	@Override
 	public void onInitialize() {
 	        super.onInitialize();
-	  	        
+        	setUpdated(false);
+ 
 	        //if (getModel().getObject()!=null)
 	        //    setValue(getModel().getObject());
 
@@ -210,7 +213,8 @@ public class AutoCompleteField<T>  extends Field<T> {
                     if  ( (getModel().getObject()!=null && !getModel().getObject().equals(val)) || 
                           (getModel().getObject()==null && val!=null && !"".equals(val))) {
                     
-                        onUpdate(getModel().getObject(), (T) val);
+        	        	setUpdated(true);
+                    	onUpdate(getModel().getObject(), (T) val);
                         logger.debug( "update -> " + getId() + ": " + val.toString());
                         getModel().setObject( (T) val);
                         
@@ -219,12 +223,16 @@ public class AutoCompleteField<T>  extends Field<T> {
             else {
                 if (getModel().getObject()!=null) {
                     getModel().setObject(null);
+    	        	setUpdated(true);
+
                     onUpdate(getModel().getObject(), null);
                 }
             }
         } 
         catch (Exception e) {
-            logger.error(e,  getInput()!=null? getInput().toString(): "");
+        	setUpdated(false);
+
+        	logger.error(e,  getInput()!=null? getInput().toString(): "");
             getModel().detach();
         }
     }

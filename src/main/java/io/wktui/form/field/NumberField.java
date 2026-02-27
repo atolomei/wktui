@@ -19,6 +19,69 @@ public class NumberField<T extends Number & Comparable<T>> extends TextField<T> 
 
 	static private Logger logger = Logger.getLogger(NumberField.class.getName());
 	 
+	
+	@Override
+	public void updateModel() {
+
+		boolean updated = false;
+		
+		try {
+		
+			Object val = null;
+			
+			if (getModel()==null) {
+				return;
+			}
+			
+			
+			val = getInputValue();
+		
+			
+			if ((val==null) && (getModel()!=null)) {
+				updated = true;
+				getModel().setObject(null);
+				onUpdate(getModel().getObject(), null);
+			}
+			
+			if (!isNumber(val)) {
+				val=null;
+			}
+					
+			Number number = getNumber(val);
+					
+			if (number != null) {
+				if (( (getModel().getObject() != null) && (!getModel().getObject().equals(number))) || ((getModel().getObject() == null) && (number != null && !"".equals(number)))) {
+					updated = true;
+					
+					if (getEditor() != null) {
+						getEditor().setUpdatedPart(getPart());
+					}
+					
+					onUpdate(getModel().getObject(), (T) number);
+					getModel().setObject((T) number);
+				}
+			} else {
+				if (getModel().getObject() != null) {
+					updated = true;
+					getModel().setObject(null);
+
+					if (getEditor() != null) {
+						getEditor().setUpdatedPart(getPart());
+					}
+					onUpdate(getModel().getObject(), null);
+				}
+			}
+
+		} catch (Exception e) {
+			logger.error(e, getInput() != null ? getInput().toString() : "");
+			if (getModel()!=null)
+				getModel().detach();
+		}
+		finally {
+			setUpdated(updated);
+		}
+	}
+	
 	public NumberField(String id, IModel<T> model) {
 	    this(id, model, null);
 	}

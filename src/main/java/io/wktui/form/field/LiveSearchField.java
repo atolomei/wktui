@@ -45,6 +45,8 @@ public class LiveSearchField<T> extends Field<T> {
 	public void onInitialize() {
 	        super.onInitialize();
 	        
+	        setUpdated(false);
+	        
 	        if (getModel().getObject()!=null)
 	            setValue(getModel().getObject().toString());
 	        else
@@ -172,6 +174,7 @@ public class LiveSearchField<T> extends Field<T> {
                     if  ( (getModel().getObject()!=null && !getModel().getObject().equals(val)) || 
                           (getModel().getObject()==null && val!=null && !"".equals(val))) {
                     
+                    	setUpdated(true);
                         onUpdate(getModel().getObject(), (T) val);
                         getModel().setObject( (T) val);
                 }
@@ -179,12 +182,14 @@ public class LiveSearchField<T> extends Field<T> {
             else {
                 if (getModel().getObject()!=null) {
                     getModel().setObject(null);
+                	setUpdated(true);
                     onUpdate(getModel().getObject(), null);
                 }
             }
         } 
         catch (Exception e) {
-            logger.error(e,  getInput()!=null? getInput().toString(): "");
+        	setUpdated(false);
+        	logger.error(e,  getInput()!=null? getInput().toString(): "");
             getModel().detach();
         }
     }

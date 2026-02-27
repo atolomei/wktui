@@ -21,6 +21,8 @@ public class StaticTextField<T extends Serializable> extends Field<T> {
 
 	static private Logger logger = Logger.getLogger(StaticTextField.class.getName());
 	
+	private LabelPanel textPanel;
+// private Label text;
 	
 	public StaticTextField(String id, IModel<T> model) {
 	    this(id, model, null);
@@ -29,7 +31,6 @@ public class StaticTextField<T extends Serializable> extends Field<T> {
 		super(id, model, label);
 		setOutputMarkupId(true);
 	}
-
 	
 	@Override
 	public void editOn() {
@@ -41,48 +42,45 @@ public class StaticTextField<T extends Serializable> extends Field<T> {
 		super.editOff();
 	}
 	
-	LabelPanel textPanel;
-	Label text;
-	
 	
 	@Override
 	public void onInitialize() {
 	        super.onInitialize();
-	        
+        	setUpdated(false);
 	        load();
 	}
 	
+	public void setValue( T value ) {
+		if (value==null)
+			return;
+		getModel().setObject(value);
+	}
+	 
 	
 	private void load() {
 	
+	 
 		
-		String s = getModel().getObject()!=null ? getModel().getObject().toString() : "";
-		
-		
-		text = new Label("label", Model.of(s));
-        
-		textPanel = new LabelPanel("input", text);
+		textPanel = new LabelPanel("input", 
+				new Model<String>() {
+					public String getObject() {
+							return 	StaticTextField.this.getModel().getObject() !=null ? 
+									StaticTextField.this.getModel().getObject().toString() : "";
+					}
+		});
 
-		//if (getModel().getObject()==null)
-		//	textPanel.setStyle("min-height: 1.5em;");
-			
-		textPanel.add( new AttributeModifier("class", getCss()));
-		
+		textPanel.add(new AttributeModifier("class", getCss()));
 		super.addControl(textPanel);
-
 	}
 	
 	public String getCss() {
 		return "form-control text-center text-md-start text-lg-start text-xl-start text-xxl-start static-text";
 	}
 	
-	
 	@Override
 	public void onConfigure() {
 		super.onConfigure();
-		// logger.debug("onConfigure() -> " + getId());
 	}
-	 
 
     protected void onUpdate(T oldvalue, T newvalue) {
 	}
@@ -129,10 +127,5 @@ public class StaticTextField<T extends Serializable> extends Field<T> {
 	public void reload() {
 		load();
 	}
-
-	//@Override
-	//public IModel<T> makeValueModel(T value) {
-	//		return new Model<T>(value.toString());
-	//}
-
+ 	 
 } 

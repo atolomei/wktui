@@ -23,6 +23,8 @@ public abstract class BasePanel extends Panel {
 
 	static private Logger logger = Logger.getLogger(BasePanel.class.getName());
 
+	public static final String SPINNING ="fas fa-sync fa-spin fa-fw spinning";
+	 
 	private static final ResourceReference CSS = Bootstrap.getCssResourceReference();
 
 	public BasePanel(String id) {
@@ -48,6 +50,7 @@ public abstract class BasePanel extends Panel {
 			}
 		}
 		fire(event, getPage().iterator(), false);
+		 
 	}
 
 	public boolean fire(UIEvent event, Iterator<Component> components) {

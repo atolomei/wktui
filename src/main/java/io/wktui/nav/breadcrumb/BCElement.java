@@ -92,8 +92,6 @@ public class BCElement extends Link<Void> implements IBCElement {
 	@Override
 	public void onDetach() {
 		super.onDetach();
-		if(label!=null)
-			label.detach();
 	}
 	
 	public AbstractLink getLink(String id) {

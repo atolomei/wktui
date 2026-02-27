@@ -72,48 +72,7 @@ public abstract class LabelLinkPanel extends  BasePanel {
 		ini();
 	
 	}
-	
-	/**
-	public LabelLinkPanel(String id, IModel<String> labelStr) {
-		this(id, labelStr, null);
-	}
-		
-	
-	public LabelLinkPanel(String id, Label label, String icoCss) {
-		super(id);
-		this.iconCss=icoCss;
-		if (label==null) {
-			this.label=new Label("label", "");
-			this.label.setVisible(false);
-		}
-		else
-			this.label=label;
-		ini();
-	}
-
-	
-	public LabelLinkPanel(String id, IModel<String> labelStr, String icoCss) {
-		super(id);
-		
-		
-		this.iconCss=icoCss;
-		this.label= new Label("label", labelStr);
-		
-		if (labelStr==null)
-			this.label.setVisible(false);
-		
-		 this.link = new Link<Void>("link") {
-	            private static final long serialVersionUID = 1L;
-	            @Override
-	            public void onClick() {
-	                LabelLinkPanel.this.onClick();
-	            }
-	        };
-
-	}
-	*/
-	
-	
+	 
 	
 	
 	
@@ -181,11 +140,11 @@ public abstract class LabelLinkPanel extends  BasePanel {
 		}
 
 		if (labelCss!=null) {
-			label.add(new AttributeModifier("class", this.label));
+			label.add(new AttributeModifier("class", this.labelCss));
 		}
 		
 		if (subtitleCss!=null) {
-			subtitle.add(new AttributeModifier("class", this.subtitle));
+			subtitle.add(new AttributeModifier("class", this.subtitleCss));
 		}
 	  
 		

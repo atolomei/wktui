@@ -29,6 +29,20 @@ public class AlertPanel<T> extends ModelPanel<T> {
 
 	private boolean is_close = false;
 
+	//private String col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 text-center text-lg-start text-xl-start text-xxl-start
+
+	private String alertTextContainerCss;//  = "col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 text-center text-lg-start text-xl-start text-xxl-start";
+	
+
+	public String getAlertTextContainerCss() {
+		return alertTextContainerCss;
+	}
+
+	public void setAlertTextContainerCss(String alertTextContainerCss) {
+		this.alertTextContainerCss = alertTextContainerCss;
+	}
+
+	private WebMarkupContainer alertTextContainer = new WebMarkupContainer("alert-text-container");
 	
 	static public final String HELP_INFO  = "fa-duotone fa-circle-info";
 	static public final String ATTENTION  = "fa-solid fa-triangle-exclamation" ; //"fa-duotone fa-hexagon-exclamation";
@@ -36,6 +50,7 @@ public class AlertPanel<T> extends ModelPanel<T> {
 	
 	
 	static public final int INFO = 10;
+	static public final int HELP = 70;
 	static public final int SUCCESS = 20;
 	static public final int WARNING = 30;
 	static public final int DANGER = 40;
@@ -52,18 +67,7 @@ public class AlertPanel<T> extends ModelPanel<T> {
 	WebMarkupContainer alertContainer;
 	WebMarkupContainer iconcontainer;
 	WebMarkupContainer textcontainer;
-	
-	/**
-	public AlertPanel(String id) {
-		super(id, null);
-	}
-
-	public AlertPanel(String id, IModel<T> model, IModel<String> textModel) {
-		super(id, model);
-		alertContainer=new WebMarkupContainer("alert-container");
-		this.text = textModel;
-	}**/
-	
+	WebMarkupContainer au;
 	
 	public AlertPanel(String id) {
 		this( id, AlertPanel.INFO, null, null, null, null);
@@ -90,12 +94,20 @@ public class AlertPanel<T> extends ModelPanel<T> {
 		this.title = titleModel;
 		this.text = textModel;
 		this.icon= iconType;
+	
 		
+		au=new WebMarkupContainer("alert-outside-container");
+		add(au);
+	
 		alertContainer=new WebMarkupContainer("alert-container");
 		setOutputMarkupId(false);
+	
+		au.add(alertContainer);
+		
+		
 	}
 
-	
+		
 	public void setIcon(String icon) {
 		this.icon=icon;
 		
@@ -105,10 +117,12 @@ public class AlertPanel<T> extends ModelPanel<T> {
 			icon_w.add( new AttributeModifier("class", icon));
 			iconcontainer=new WebMarkupContainer("icon-container");
 			iconcontainer.setVisible(this.icon!=null);
-			alertContainer.addOrReplace(iconcontainer);
+			
+			alertContainer.add( alertTextContainer );
+			alertTextContainer.addOrReplace(iconcontainer);
 			
 			textcontainer=new WebMarkupContainer("text-container");
-			alertContainer.addOrReplace(textcontainer);
+			alertTextContainer.addOrReplace(textcontainer);
 			textcontainer.setVisible(text!=null || title!=null);
 			textcontainer.add(new AttributeModifier("style", (icon!=null ? "float:left; width: calc(100% - 72px);":"float:left; width:100%;")));
 			Label ti = new Label("title", (title!=null? title.getObject():""));
@@ -120,6 +134,9 @@ public class AlertPanel<T> extends ModelPanel<T> {
 			te.setVisible(text!=null);
 			textcontainer.addOrReplace(te);
 			
+			if (getAlertTextContainerCss()!=null)
+				alertTextContainer .add( new AttributeModifier("class", getAlertTextContainerCss()) );
+			
 		}
 	}
 	
@@ -128,15 +145,16 @@ public class AlertPanel<T> extends ModelPanel<T> {
 	
 		setOutputMarkupId(true);	
 
-		WebMarkupContainer au=new WebMarkupContainer("alert-outside-container");
-		add(au);
-		au.add(alertContainer);
+	
 		
 		alertContainer.add(new AttributeModifier("class", () -> getCss()));
+		alertContainer.add(alertTextContainer);
 		
 		iconcontainer=new WebMarkupContainer("icon-container"); 
-		alertContainer.add(iconcontainer);
 		iconcontainer.setVisible(this.icon!=null);
+		
+		alertTextContainer.add(iconcontainer);
+		
 		WebMarkupContainer icon_w=new WebMarkupContainer("icon");
 		if (icon!=null)
 			icon_w.add( new AttributeModifier("class", icon));
@@ -146,7 +164,7 @@ public class AlertPanel<T> extends ModelPanel<T> {
 	
 		
 		textcontainer=new WebMarkupContainer("text-container");
-		alertContainer.add(textcontainer);
+		alertTextContainer.add(textcontainer);
 		textcontainer.setVisible( getText()!=null || title!=null);
 		textcontainer.add(new AttributeModifier("style", (icon!=null ? "float:left; width: calc(100% - 72px);":"float:left; width:100%;")));
 		Label ti = new Label("title", (title!=null? title.getObject():""));
@@ -157,7 +175,10 @@ public class AlertPanel<T> extends ModelPanel<T> {
 		te.setEscapeModelStrings(false);
 		te.setVisible( getText()!=null);
 		textcontainer.add(te);
-	
+		
+		if (getAlertTextContainerCss()!=null)
+			alertTextContainer .add( new AttributeModifier("class", getAlertTextContainerCss()) );
+		
 }
 	 
  
@@ -177,6 +198,7 @@ public class AlertPanel<T> extends ModelPanel<T> {
 
 	protected String getDefaultCss() {
 		if (getType()==INFO) return  "alert alert-info";
+		if (getType()==HELP) return  "alert alert-primary";
 		if (getType()==WARNING) return  "alert alert-warning";
 		if (getType()==DANGER) return  "alert alert-danger";
 		if (getType()==NEUTRAL) return  "alert alert-nobck";

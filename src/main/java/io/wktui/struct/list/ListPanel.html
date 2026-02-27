@@ -1,5 +1,4 @@
 <wicket:panel>
-
 	<div wicket:id="title-container" class="row">
 		<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 text-sm-center">
 			<div class="row">
@@ -10,12 +9,13 @@
 		</div>
 	</div>
 
-
 	<div wicket:id="frame">
-
 		<div wicket:id="liveSearchContainer" class="row">
-			<div class="col-xxl-12 col-xl-12 col-lg-12 c col-md-12 col-sm-12">
-				<div class="border mt-1 ps-3 pe-3 pt-3 pb-3" style="margin-bottom: 1px;">
+			<div class="col-xxl-12 col-xl-12 col-lg-12 c col-md-12 col-sm-12" style="position: relative;">
+				<div class="me-4 mt-2" style="position: absolute; right: 0px; top: 0px;">
+					<a wicket:id="close" class="btn-link"><i class="fa-solid fa-xmark"></i></a>
+				</div>
+				<div class="border bg-body-tertiary mt-1 ps-3 pe-3 pt-3 pb-3" style="margin-bottom: 1px;">
 					<div wicket:id="liveSearchTitleContainer" class="row">
 						<div class="mb-1 col-xxl-12 col-xl-12 col-lg-12 c col-md-12 col-sm-12 text-sm-center text-lg-start">
 							<b><span wicket:id="live-search-title" class="mt-0 mb-0"></span></b>
@@ -49,9 +49,7 @@
 
 		<div class="row">
 			<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 text-sm-center">
-
 				<div wicket:id="list-items-container">
-
 					<div wicket:id="toolbarContainer" class="row">
 						<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 text-sm-center">
 							<wicket:container wicket:id="toolbar" />
@@ -66,7 +64,6 @@
 							<div wicket:id="noItems" />
 						</div>
 					</div>
-
 				</div>
 			</div>
 		</div>
@@ -76,7 +73,5 @@
 			</div>
 		</div>
 	</div>
-
-
 </wicket:panel>
 

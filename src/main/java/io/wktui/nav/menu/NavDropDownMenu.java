@@ -167,13 +167,11 @@ public class NavDropDownMenu<T> extends DropDownMenu<T> {
 		public void onInitialize() {
 			super.onInitialize();
 			
-			
-			
 			titleSubtitleContainer =new WebMarkupContainer("titleSubtitleContainer") {
 				private static final long serialVersionUID = 1L;
 
 				public boolean isVisible() {
-					return getSubtitle() != null || getTitle()!=null;
+					return (getSubtitle() != null) || (getTitle()!=null);
 				}
 			};
 			add(titleSubtitleContainer);
@@ -193,12 +191,15 @@ public class NavDropDownMenu<T> extends DropDownMenu<T> {
 				private static final long serialVersionUID = 1L;
 
 				public boolean isVisible() {
-					return getSubtitle() != null;
+					return getTitle() != null;
 				}
 			};
 			
 			titleSubtitleContainer.add(titleContainer);
 
+			//if (getSubtitle()!=null) {
+			//	titleSubtitleContainer.add( new AttributeModifier( "style","display-inline:block; float:left; text-align:right; margin-right:6px; margin-top:-6px;"));
+			//			}
 			
 			this.f_title = new Label("title", getTitle()) {
 				private static final long serialVersionUID = 1L;
@@ -235,11 +236,21 @@ public class NavDropDownMenu<T> extends DropDownMenu<T> {
 			
 			subtitleContainer.add(f_subtitle);
 
-			
+			WebMarkupContainer imageIconContainer = new WebMarkupContainer( "imageIconContainer") {
+				 
+				private static final long serialVersionUID = 1L;
+
+				public boolean isVisible() {
+					return getIconCss() != null;
+				}
+			};
+					
 			icon = new WebMarkupContainer("icon");
-			add(icon);
+			imageIconContainer.add(icon);
 			
-			if (getIconCss() != null)
+			add(imageIconContainer);
+
+		if (getIconCss() != null)
 				icon.add(new AttributeModifier("class", getIconCss()));
 			
 			icon.setVisible(getIconCss() != null);

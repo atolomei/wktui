@@ -53,6 +53,10 @@ public class TextAreaField<T extends Serializable> extends Field<T> {
 	@Override
 	public void onInitialize() {
 		super.onInitialize();
+		
+    	setUpdated(false);
+
+    	
 		if (getModel().getObject() != null)
 			setValue(getModel().getObject().toString());
 		else
@@ -185,12 +189,14 @@ public class TextAreaField<T extends Serializable> extends Field<T> {
 
 				if ((getModel().getObject() != null && !getModel().getObject().equals(val)) || (getModel().getObject() == null && val != null && !"".equals(val))) {
 					updated = true;
+		        	setUpdated(true);
 					onUpdate(getModel().getObject(), (T) val);
 					getModel().setObject((T) val);
 				}
 			} else {
 				if (getModel().getObject() != null) {
 					updated = true;
+		        	setUpdated(true);
 					getModel().setObject(null);
 					onUpdate(getModel().getObject(), null);
 				}
@@ -199,6 +205,7 @@ public class TextAreaField<T extends Serializable> extends Field<T> {
 			logger.debug("update -> " + getId() + ": " + (val != null ? val.toString() : "null") + " | updated -> " + updated);
 
 		} catch (Exception e) {
+        	setUpdated(false);
 			logger.error(e, getInput() != null ? getInput().toString() : "");
 			getModel().detach();
 		}

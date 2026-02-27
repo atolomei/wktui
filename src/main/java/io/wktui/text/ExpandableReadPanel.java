@@ -19,6 +19,7 @@ public class ExpandableReadPanel extends BasePanel {
     private static final long serialVersionUID = 1L;
     boolean isExpanded = false;
     
+    private int shorten = 80;
     
     private final IModel<String> text;
     Label label;
@@ -29,8 +30,13 @@ public class ExpandableReadPanel extends BasePanel {
     AjaxLink<String> expandLink;
     
     public ExpandableReadPanel(String id, IModel<String> text) {
+         this( id, text, 80);
+    }
+    
+    public ExpandableReadPanel(String id, IModel<String> text, int shorten) {
         super(id);
         this.text=text;
+        this.shorten=shorten;
         setOutputMarkupId(true);
     }
     
@@ -122,7 +128,7 @@ public class ExpandableReadPanel extends BasePanel {
 
     
     private IModel<String> Shorten(String text) {
-        return new Model<String>( TextCleaner.clean(text, 200) );
+        return new Model<String>( TextCleaner.clean(text, shorten ) );
     }
 
 

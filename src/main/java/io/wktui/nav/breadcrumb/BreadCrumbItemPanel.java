@@ -27,7 +27,7 @@ public class BreadCrumbItemPanel extends BreadcrumbBasePanel {
 			}
 		};
 		
-		link.add((new Label("label", new Model<String>( pad(bce.getLabel().getObject())) )).setEscapeModelStrings(false));
+		link.add((new Label("label", new Model<String>( pad(bce.getLabel().getObject())) )).setEscapeModelStrings(true));
 		
 		 
 		if (bce.getHTMLTitleAttribute()!=null)

@@ -28,6 +28,7 @@ public class TitlePanel<T> extends Panel {
     
     private boolean isReadOnly = false;
     private boolean isHelp = false;
+    private String css;
     
     
     public void setReadOnly( boolean b) {
@@ -76,6 +77,9 @@ public class TitlePanel<T> extends Panel {
         add(this.titleContainer);
         this.titleContainer.add(titleContainerCol);
         
+        if (getCss()!=null)
+        	this.titleContainer.add(new org.apache.wicket.AttributeModifier("class", getCss())); 
+        
         
         if (this.getModel()!=null && this.getModel().getObject()!=null)
             this.titleContainerCol.add(new Label("title", getModel().getObject().toString()));
@@ -114,6 +118,14 @@ public class TitlePanel<T> extends Panel {
     public IModel<String> getSuffixModel() {
         return this.suffixModel;
     }
+
+	public String getCss() {
+		return css;
+	}
+
+	public void setCss(String css) {
+		this.css = css;
+	}
 
 
 }
