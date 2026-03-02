@@ -21,14 +21,12 @@
 						<div wicket:id="audioContainer" class="row">
 							<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
 								<div wicket:id="intro-audio" class="row">
-									<audio wicket:id="audio" controls="controls" class="mt-1 mb-1">
+									<div wicket:id="audio"></div>
+									<audio wicket:id="audio-base" controls="controls" class="mt-1 mb-1">
 									</audio>
-									
-									<!-- div  class="mt-1 mb-1" wicket:id="audio" ></div -->
 								</div>
 							</div>
 						</div>
-
 
 						<div class="row" wicket:id="fileNameContainer">
 							<div class="mt-1 mb-0 ps-4 col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -45,6 +43,15 @@
 
 					</div>
 				</div>
+				
+				
+				
+				<div class="row" wicket:id="audioMetaContainer">
+						<div class="mt-2 mb-2 ps-3 pe-3 col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+							<span class="lh-sm" wicket:id="audioMeta"></span>
+						</div>
+				</div>
+						
 
 			</div>
 

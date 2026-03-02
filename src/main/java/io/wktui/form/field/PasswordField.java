@@ -5,22 +5,15 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.StringResourceModel;
+ 
 import org.apache.wicket.util.value.IValueMap;
-import org.apache.wicket.MarkupContainer;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.behavior.AttributeAppender;
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.panel.Fragment;
+ 
 
-@SuppressWarnings("serial")
+ 
 public class PasswordField extends TextField<String> {
 	
 	private static final long serialVersionUID = 1L;
 
-	private org.apache.wicket.markup.html.form.TextField<String> input;
 	private org.apache.wicket.markup.html.form.PasswordTextField passwordInput = null;
 	
 	private boolean showPasswordLink = false;
@@ -61,6 +54,7 @@ public class PasswordField extends TextField<String> {
 			
 			protected void onComponentTag(final ComponentTag tag) {
 				IValueMap attributes = tag.getAttributes();
+				// ensure it renders as password type
 				attributes.put("type", "password");
 				super.onComponentTag(tag);
 			}
@@ -81,7 +75,12 @@ public class PasswordField extends TextField<String> {
 			}
 		};
 		
-		passwordInput.add(new AttributeModifier("placeholder", PasswordField.this.getPlaceHolderLabel()));
+		// make the input produce an id so JS/Ajax can reference it
+		passwordInput.setOutputMarkupId(true);
+
+		if (getPlaceHolderLabel() != null && getPlaceHolderLabel().getObject() != null) {
+			passwordInput.add(new AttributeModifier("placeholder", PasswordField.this.getPlaceHolderLabel()));
+		}
 		
 		return passwordInput;
 	}

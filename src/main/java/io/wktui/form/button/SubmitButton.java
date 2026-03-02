@@ -93,56 +93,62 @@ public abstract class SubmitButton<T> extends BasePanel {
             }
             
             @Override
-			protected void updateAjaxAttributes(AjaxRequestAttributes attributes) {
-				super.updateAjaxAttributes(attributes);
-				IAjaxCallListener listener = new IAjaxCallListener() {
-					@Override
-					public CharSequence getSuccessHandler(Component component) {
-						return null;
-					}
-					@Override
-					public CharSequence getPrecondition(Component component) {
-						return null;
-					}
-					@Override
-					public CharSequence getFailureHandler(Component component) {
-						return null;
+				protected void updateAjaxAttributes(AjaxRequestAttributes attributes) {
+					super.updateAjaxAttributes(attributes);
+					IAjaxCallListener listener = new IAjaxCallListener() {
+						@Override
+						public CharSequence getSuccessHandler(Component component) {
+							return null;
+						}
+						@Override
+						public CharSequence getPrecondition(Component component) {
+							return null;
+						}
+						@Override
+						public CharSequence getFailureHandler(Component component) {
+							return null;
 
-					}
-					@Override
-					public CharSequence getCompleteHandler(Component component) {
-						String s = null, s1=null;
-						String id = component.getMarkupId();
-							s1 = "document.getElementById('"+id+"').innerHTML = '"+(getLabel()!=null?getLabel().getObject():"")+"';";
-							s ="setTimeout(function () {"+s1+"}, 100);";
-						return s;
-					}
-					@Override
-					public CharSequence getBeforeSendHandler(Component component) {
-						return null;
-					}
-					@Override
-					public CharSequence getBeforeHandler(Component component) {
-						String s = SubmitButton.this.getBeforeHandler();
-						s += "document.getElementById('"+component.getMarkupId()+"').innerHTML = '<i class=\""+SPINNING+"\"></i>'";
-						return s;																		
-					}
-					@Override
-					public CharSequence getAfterHandler(Component component) {
-						return null;
-					}
-					@Override
-					public CharSequence getDoneHandler(Component component) {
-						return null;
-					}
-					@Override
-					public CharSequence getInitHandler(Component component) {
-						return null;
-					}
-				};
-				attributes.getAjaxCallListeners().add(listener);
-			}
+						}
+						@Override
+						public CharSequence getCompleteHandler(Component component) {
+							String id = component.getMarkupId();
+							// Restore original innerHTML saved in data-orig
+							String s = "";
+							s += "var el = document.getElementById('" + id + "');";
+							s += "if (el && el.dataset && el.dataset._orig !== undefined) { setTimeout(function(){ el.innerHTML = el.dataset._orig; delete el.dataset._orig; }, 100); }";
+							return s;
+						}
+						@Override
+						public CharSequence getBeforeSendHandler(Component component) {
+							return null;
+						}
+						@Override
+						public CharSequence getBeforeHandler(Component component) {
+							String id = component.getMarkupId();
+							// Save original innerHTML into a data attribute and show spinner
+							String s = SubmitButton.this.getBeforeHandler();
+							s += "var el = document.getElementById('" + id + "');";
+							s += "if (el) { el.dataset._orig = el.innerHTML; el.innerHTML = '<i class=\\'fa-solid fa-spinner fa-spin\\'></i>'; }";
+							return s;                                                                         
+						}
+						@Override
+						public CharSequence getAfterHandler(Component component) {
+							return null;
+						}
+						@Override
+						public CharSequence getDoneHandler(Component component) {
+							return null;
+						}
+						@Override
+						public CharSequence getInitHandler(Component component) {
+							return null;
+						}
+					};
+					attributes.getAjaxCallListeners().add(listener);
+				}
         };
+        // ensure the button has a predictable DOM id so the JS handlers can find it
+        this.button.setOutputMarkupId(true);
         
         c_v.add(button);
      

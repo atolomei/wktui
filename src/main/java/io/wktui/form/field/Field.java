@@ -93,7 +93,8 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
     
     private  Component input;
     private  String css;
-	
+    private String titleCss;
+    
     
     private boolean isUpdated = false;
 	
@@ -159,7 +160,6 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
     }
         
     
-    private String titleCss;
     
     @Override
     public void onInitialize() {

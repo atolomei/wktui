@@ -82,7 +82,7 @@ public class TitlePanel<T> extends Panel {
         
         
         if (this.getModel()!=null && this.getModel().getObject()!=null)
-            this.titleContainerCol.add(new Label("title", getModel().getObject().toString()));
+            this.titleContainerCol.add( (new Label("title", getModel().getObject().toString())).setEscapeModelStrings(false) );
         else
             this.titleContainerCol.add(new InvisiblePanel("title"));
         

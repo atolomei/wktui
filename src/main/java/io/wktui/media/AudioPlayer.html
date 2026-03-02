@@ -1,0 +1,174 @@
+<wicket:panel>
+
+	<div class="row">
+	
+		<div class=" mt-0 mb-0 col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
+
+			<div class=" d-block float-start text-sm-start text-start w-100 ps-3 pe-3 pt-2 pb-2">
+				<div wicket:id="container" class="wktui-audio-player">
+
+					<div wicket:id="left" class="wktui-left">
+
+						<button title="reset" wicket:id="reset" class="d-none d-md-block d-lg-block  d-xl-block d-xxl-block text-md-center btn btn-sm" type="button">
+							<i class="fa-solid fa-backward-step"></i>
+						</button>
+						
+						<button wicket:id="play" class="d-block d-md-block d-lg-block  d-xl-block d-xxl-block text-md-center btn btn-sm  " type="button">
+							<i class="fa-solid fa-play"></i>
+						</button>
+						
+						<button wicket:id="end" class=" d-none d-md-block d-lg-block  d-xl-block d-xxl-block text-md-center btn btn-sm  " type="button">
+							<i class="fa-solid fa-forward-step"></i>
+						</button>
+					
+						 <span wicket:id="time" class="wktui-time" style="float:left; width:6em;">0:00/0:00</span>
+					</div>
+
+					<div wicket:id="center" class="wktui-center">
+						<div wicket:id="progress" class="wktui-progress">
+							<div class="wktui-progress-bar"></div>
+							<div class="wktui-progress-tooltip" style="display: none"></div>
+						</div>
+					</div>
+
+					<div wicket:id="right" class="wktui-right">
+					
+						
+						<select wicket:id="speed" class="wktui-speed">
+							<option value="0.8">0.8x</option>
+							<option value="1" selected>1.0x</option>
+							<option value="1.2">1.2x</option>
+							<option value="1.5">1.5x</option>
+							<option value="2">2.0x</option>
+						</select>
+						
+					
+						<input wicket:id="volume" class="wktui-volume" type="range" min="0" max="1" step="0.01" />
+						
+						<div wicket:id="downloadMenu" class="wktui-download">
+							<a wicket:id="downloadLink" class="wktui-download-link">Download</a>
+						</div>
+					</div>
+
+					<audio wicket:id="audio" preload="metadata" style="display: none"></audio>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<style>
+	
+.wktui-audio-player {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	 
+	}
+	
+
+.wktui-left {
+	display: flex;
+	align-items: center;
+	gap: 6px
+}
+
+.wktui-center {
+	flex: 1;
+	margin: 0;
+}
+
+.wktui-right {
+	display: flex;
+	align-items: center;
+	gap: 8px
+}
+
+/* square black control buttons with white background */
+.wktui-ctrl {
+	width: 36px;
+	height: 36px;
+	border-radius: 6px;
+	border: 1px solid #ddd;
+	background: transparent;
+	 
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer
+}
+
+.wktui-ctrl:hover {
+	background: #f2f2f2
+}
+
+.wktui-speed {
+	background: transparent;
+	padding: 3px;
+	border-radius: 6px;
+	border:none;
+    font-size: 0.9em;
+}
+
+
+.wktui-progress {background: #e1e5e8;}
+.wktui-progress-bar { background:rgb(88 99 109);}
+
+
+.text-bg-dark .wktui-progress {background: #3b3d3e;}
+.text-bg-dark .wktui-progress-bar { background:#dee2e6;}
+
+
+
+.wktui-progress {
+	height: 14px;
+	/**background: #3b3d3e;*/
+	border-radius: 4px;
+	overflow: hidden;
+	position: relative;
+}
+
+.wktui-progress-bar {height: 100%;
+	width: 0%;
+	/**background:#dee2e6;*/
+}
+
+.wktui-progress-tooltip {
+	position: absolute;
+	top: -30px;
+	left: 0;
+	transform: translateX(-50%);
+	background: #212529;
+	color: #fff;
+	padding: 4px 6px;
+	border-radius: 4px;
+	font-size: 12px;
+	display: none;
+	pointer-events: none;
+	white-space: nowrap
+}
+
+.wktui-time {
+	font-size: 0.9em;
+	
+	margin-left: 6px;
+}
+
+.wktui-volume {
+	width: 4.5em;
+}
+
+.wktui-download-link {
+	font-size: 12px;
+ 
+	text-decoration: none;
+	padding: 4px 6px;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	background: #fff
+}
+
+.wktui-download-link:hover {
+	background: #f2f2f2
+}
+</style>
+</wicket:panel>
