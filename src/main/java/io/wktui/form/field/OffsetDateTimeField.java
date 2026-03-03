@@ -47,6 +47,11 @@ public class OffsetDateTimeField extends TextField<OffsetDateTime> {
 
 	public class DateValidator implements IValidator<OffsetDateTime> {
 		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		public void validate(final IValidatable<OffsetDateTime> validatable) {
 
 			Object dateobject = validatable.getValue();

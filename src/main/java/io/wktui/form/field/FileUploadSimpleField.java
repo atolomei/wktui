@@ -49,12 +49,10 @@ public class FileUploadSimpleField<T> extends Field<T> {
 	private String workDir;
 	private String fileName = null;
 	private String audioMetadata = null;
-	
-	private boolean b_thumbnail = true;
-	
-	private boolean useNewAudioPlayer = true;
 
-	
+	private boolean b_thumbnail = true;
+
+	private boolean useNewAudioPlayer = true;
 
 	public FileUploadSimpleField(String id, IModel<String> label) {
 		super(id, null, label);
@@ -66,12 +64,11 @@ public class FileUploadSimpleField<T> extends Field<T> {
 		setOutputMarkupId(true);
 	}
 
-
 	@Override
 	public void reload() {
 		logger.error("reload not done");
 	}
-	
+
 	@Override
 	public void editOn() {
 		setUpdated(false);
@@ -122,7 +119,7 @@ public class FileUploadSimpleField<T> extends Field<T> {
 				return (isThumbnail() && (getImage() != null && getFileName() != null));
 			}
 		};
-		
+
 		this.audioMetadataContainer = new WebMarkupContainer("audioMetaContainer") {
 			private static final long serialVersionUID = 1L;
 
@@ -130,8 +127,7 @@ public class FileUploadSimpleField<T> extends Field<T> {
 				return (isAudio() && getAudioMetadata() != null);
 			}
 		};
-		
-	
+
 		if (getImage() == null) {
 			Image image = new Image("image", new UrlResourceReference(Url.parse("")));
 			image.setVisible(false);
@@ -172,12 +168,8 @@ public class FileUploadSimpleField<T> extends Field<T> {
 		fileNameLabel.setEscapeModelStrings(false);
 		fileNameContainer.addOrReplace(fileNameLabel);
 
-		
-		
 		addAudio();
 
-		
-		
 		thumbnailContainer.add(imageContainer);
 		thumbnailContainer.add(fileNameContainer);
 
@@ -187,17 +179,14 @@ public class FileUploadSimpleField<T> extends Field<T> {
 	protected void onRemove(AjaxRequestTarget target) {
 	}
 
-	
-	
 	public void setUseNewAudioPlayer(boolean useNewAudioPlayer) {
 		this.useNewAudioPlayer = useNewAudioPlayer;
 	}
-	
+
 	public boolean isUseNewAudioPlayer() {
 		return useNewAudioPlayer;
 	}
-	
-	
+
 	protected void addAudio() {
 
 		WebMarkupContainer audioContainer = new WebMarkupContainer("audioContainer");
@@ -207,32 +196,31 @@ public class FileUploadSimpleField<T> extends Field<T> {
 		audioContainer.add(audio_c);
 
 		if (isAudio()) {
-			
+
 			String audioUrl = getAudioSrc();
-			
+
 			Url url = Url.parse(audioUrl);
 			UrlResourceReference resourceReference = new UrlResourceReference(url);
-		
+
 			if (isUseNewAudioPlayer()) {
 				AudioPlayer audio = new AudioPlayer("audio", resourceReference);
 				audio.setIncludeDownloadMenu(false);
 				audio_c.add(audio);
-				Audio a=new Audio("audio-base", "");
+				Audio a = new Audio("audio-base", "");
 				a.setVisible(false);
 				audio_c.add(a);
-			}
-			else {
+			} else {
 
 				InvisiblePanel audioNew = new InvisiblePanel("audio");
 				audio_c.add(audioNew);
 				Audio audio = new Audio("audio-base", resourceReference);
 				audio_c.add(audio);
 			}
-			
+
 		} else {
 			audio_c.addOrReplace(new InvisiblePanel("audio"));
 		}
-		
+
 		Label audioMetaLabel = new Label("audioMeta", new Model<String>() {
 			private static final long serialVersionUID = 1L;
 
@@ -240,15 +228,15 @@ public class FileUploadSimpleField<T> extends Field<T> {
 				return getAudioMetadata() != null ? getAudioMetadata() : "";
 			}
 		});
-		
+
 		audioMetaLabel.setEscapeModelStrings(false);
 		audioContainer.setVisible(isAudio());
-		
+
 		audioMetadataContainer.addOrReplace(audioMetaLabel);
 		audioMetadataContainer.setVisible(isAudio() && getAudioMetadata() != null);
-		
+
 		thumbnailContainer.addOrReplace(audioMetadataContainer);
-	
+
 	}
 
 	protected String getAudioSrc() {
@@ -432,13 +420,13 @@ public class FileUploadSimpleField<T> extends Field<T> {
 			if (processFileUploads(uploads)) {
 
 				logger.debug("update -> " + getId() + ": " + this.getFileName());
-	        	setUpdated(true);
+				setUpdated(true);
 
 				onUpdate(null, null);
 
 			}
 		} catch (Exception e) {
-        	setUpdated(false);
+			setUpdated(false);
 			logger.error(e, getInput() != null ? getInput().toString() : "");
 			if (getModel() != null)
 				getModel().detach();
@@ -492,7 +480,6 @@ public class FileUploadSimpleField<T> extends Field<T> {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
-	
 
 	public String getAudioMetadata() {
 		return audioMetadata;
@@ -501,6 +488,5 @@ public class FileUploadSimpleField<T> extends Field<T> {
 	public void setAudioMetadata(String fileName) {
 		this.audioMetadata = fileName;
 	}
-	
 
 }

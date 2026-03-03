@@ -81,7 +81,6 @@ public class ZoneIdField extends ChoiceField<ZoneId> {
 	}
 	
 	protected String getDisplayValue(ZoneId value) {
-		//logger.debug(value.getDisplayName(TextStyle.FULL_STANDALONE, getLocale()));
 		return value.getId();
 	}
 	
