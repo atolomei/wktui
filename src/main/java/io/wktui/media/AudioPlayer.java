@@ -26,7 +26,7 @@ public class AudioPlayer extends Panel {
     private final String srcUrl;
 
     // configuration
-    private boolean includeDownloadMenu = true;
+    private boolean includeDownloadMenu = false;
     private double defaultPlaybackRate = 1.0;
     private double defaultVolume = 0.5;
 
