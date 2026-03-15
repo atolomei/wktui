@@ -86,7 +86,10 @@ public class ChoiceField<T> extends Field<T> {
 			logger.debug((getModel().getObject() != null)? getModel().getObject() : "null");
 		
 			int newIndexSelected = -1;
-			for (int index = 0; index < getChoices().getObject().size(); index++) {
+			
+			int size=getChoices().getObject().size();
+			
+			for (int index = 0; index < size; index++) {
 				if (getChoices().getObject().get(index).equals(val)) {
 					 newIndexSelected=index;
 					break;
@@ -119,11 +122,18 @@ public class ChoiceField<T> extends Field<T> {
 	public void onInitialize() {
 		super.onInitialize();
 
-		if (getChoices() == null)
-			throw new IllegalArgumentException("choices is null");
-
-		if (getModel() != null && getModel().getObject() != null) {
-			for (int index = 0; index < getChoices().getObject().size(); index++) {
+		//if (getChoices() == null) {
+		//	throw new IllegalArgumentException("choices is null");
+		//}
+		
+		logger.debug("initialize -> " + getId());
+		
+		
+		if (getModel() != null && (getModel().getObject() != null) && (getChoices()!=null)) {
+			
+			int size= getChoices().getObject().size();
+			
+			for (int index = 0; index < size; index++) {
 				if (getChoices().getObject().get(index).equals(getModel().getObject())) {
 					indexSelected=index;
 					break;

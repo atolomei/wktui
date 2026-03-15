@@ -6,12 +6,17 @@ import org.apache.wicket.model.IModel;
 
 public abstract class NamedTab extends AbstractTab implements INamedTab {
 
+	private static final long serialVersionUID = 1L;
+
 	final String name;
 	final String moreInfo;
 
-	public String getName() {
-		return name;
+	
+	public NamedTab(String name)  {
+		this(null, name, null);
 	}
+
+	
 	public NamedTab(IModel<String> title, String name)  {
 				this(title, name, null);
 	}
@@ -23,6 +28,11 @@ public abstract class NamedTab extends AbstractTab implements INamedTab {
 		this.moreInfo=moreInfo;
 	}
 
+
+	public String getName() {
+		return name;
+	}
+	
 	public String getMoreInfo() {
 		return this.moreInfo;
 	}

@@ -51,14 +51,13 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
 
     private int tab_index = -1;
 
-    private boolean readOnly = false;   
+    private boolean readOnly 	= false;   
     private boolean editEnabled = false;   
-    private boolean required = false;
-    private boolean feedback = false;
-    private boolean helpInfo = false;
+    private boolean required 	= false;
+    private boolean feedback 	= false;
+    private boolean helpInfo 	= false;
 
-    private IModel<String> titleModel;
-
+ 
      
     private Panel helpPanel;
     
@@ -74,38 +73,26 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
     
     private String fieldUpdatedPartName;
     
-     
-    private Model<String> subtitleModel;
-
-    private WebMarkupContainer containerCol;
-    private WebMarkupContainer containerBorder;
-
-    private WebMarkupContainer feedbackContainer;
-
     
-    //private Component inputComponent;
+    private IModel<String> titleModel;
+    private Model<String> subtitleModel;
 
     private IValidator<T> validator;
     private String property;
     private List<Behavior> behaviors;
     private boolean autofocus = false;
-    private WebMarkupContainer feedbackmk = null;
-    
+
     private  Component input;
     private  String css;
-    private String titleCss;
     
     
     private boolean isUpdated = false;
 	
-	public boolean isUpdated() {
-		return this.isUpdated;
-	}
-	
-	public void setUpdated(boolean b) {
-		this.isUpdated = b;
-	}
-	
+    private WebMarkupContainer feedbackmk = null;
+    private WebMarkupContainer containerCol;
+    private WebMarkupContainer containerBorder;
+    
+    
 	
     /**
      * @param id
@@ -117,6 +104,7 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
     	
     public Field(String id, IModel<T> model, IModel<String> label, String name) {
         super(id);
+        
         setProperty(id);
         setModel(model);
         setTitleModel(label);
@@ -128,12 +116,22 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
         containerCol = new WebMarkupContainer("containerCol");
         add(containerCol);
 
-        // class="border pt-4 pb-4 ps-4 pe-4"
+        
         containerBorder = new WebMarkupContainer("containerBorder");
         containerCol.add(containerBorder);
         
     }
 
+
+	public boolean isUpdated() {
+		return this.isUpdated;
+	}
+	
+	public void setUpdated(boolean b) {
+		this.isUpdated = b;
+	}
+	
+	
     public String getFieldUpdatedPartName() {
     	return this.fieldUpdatedPartName;
     }
@@ -159,8 +157,6 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
         return getForm().getFormState()==FormState.EDIT;
     }
         
-    
-    
     @Override
     public void onInitialize() {
         super.onInitialize();
@@ -168,13 +164,11 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
         if (getTitleModel() != null) {
         	TitlePanel<String> t= new TitlePanel<String>("titleMarkupContainer", getTitleModel());
             if (getTitleCss()!=null)
-            	t.setCss(getTitleCss());
+           	t.setCss(getTitleCss());
             containerBorder.add(t);
         } else
             containerBorder.add(new InvisiblePanel("titleMarkupContainer"));
 
-        
-        
         if (getSubtitleModel() != null) {
             LabelPanel subTitleLabel = new LabelPanel("subtitleMarkupContainer", getSubtitleModel());
             containerBorder.add(subTitleLabel);
@@ -474,6 +468,8 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
     public abstract void updateModel();
 	public abstract void reload();
 
+	String titleCss;
+
 	public String getTitleCss() {
 		return titleCss;
 	}
@@ -481,7 +477,7 @@ public abstract class Field<T> extends BasePanel implements IFormModelUpdateList
 	public void setTitleCss(String titleCss) {
 		this.titleCss = titleCss;
 	}
-	
+
 	protected void internalOnUpdate( T oldValue, T newValue ) {
 		if (getEditor() != null) {
 			getEditor().setUpdatedPart(getPart());

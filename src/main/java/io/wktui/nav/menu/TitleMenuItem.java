@@ -2,13 +2,28 @@ package io.wktui.nav.menu;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.model.IModel;
 
 public abstract class TitleMenuItem<T> extends MenuItemPanel<T> {
 
 	private static final long serialVersionUID = 1L;
-
+	
+	IModel<String> label;
+	
+	
 	public TitleMenuItem(String id) {
 		super(id);
+	}
+	
+	public TitleMenuItem(String id, IModel<String> label) {
+		super(id);
+		this.label = label;
+	}
+
+	
+	
+	public IModel<String> getLabel() {
+		return label;
 	}
 	
 	@Override
@@ -25,9 +40,11 @@ public abstract class TitleMenuItem<T> extends MenuItemPanel<T> {
 			}
 		};
 		
-		Label label = new Label("label", getLabel());
+		Label wlabel = new Label("label", getLabel());
+		wlabel.setEscapeModelStrings(false);
+		
 		lcontainer.add(icon);
-		lcontainer.add(label);
+		lcontainer.add(wlabel);
 	}
 
 }

@@ -2,6 +2,7 @@ package io.wktui.struct.list;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 
@@ -19,7 +20,9 @@ public abstract class ListPanelToolbar extends BasePanel {
 	private PagingNavigator navigator;
 	private Label total;
 	private Integer l_total;
+	WebMarkupContainer container = new WebMarkupContainer("container");
 	
+	private String css;
 	
 	public boolean isSearchButton() {
 		return true;
@@ -39,8 +42,13 @@ public abstract class ListPanelToolbar extends BasePanel {
 	public void onInitialize() {
 		super.onInitialize();
 		
-		add(this.settingsMenu);
-		add( this.navigator);
+		add(container);
+		
+		if (getCss() != null)
+			container.add( new org.apache.wicket.AttributeModifier("class", getCss()) );
+		
+		container.add(this.settingsMenu);
+		container.add( this.navigator);
 		
 		this.total = new Label( "total", NumberFormatter.formatNumber(getTotal())) {
 			private static final long serialVersionUID = 1L;
@@ -49,7 +57,7 @@ public abstract class ListPanelToolbar extends BasePanel {
 			}
 		};
 		
-		add(this.total);
+		container.add(this.total);
 	
 		sLink = new AjaxLink<Void>("searchLink") {
 
@@ -66,12 +74,20 @@ public abstract class ListPanelToolbar extends BasePanel {
 			}
 		};
 		
-		add(sLink);
+		container.add(sLink);
 	
 	}
 
 	public Integer getTotal() {
 		return l_total;
+	}
+
+	public String getCss() {
+		return css;
+	}
+
+	public void setCss(String css) {
+		this.css = css;
 	}
 	
 	

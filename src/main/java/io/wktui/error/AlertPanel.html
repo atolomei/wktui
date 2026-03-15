@@ -2,15 +2,28 @@
 		<div wicket:id="alert-outside-container" class="alert-outside-container">
 			<div class="alert-inside-container" wicket:id="alert-container">
 				<div class="row">
+					
 					<div wicket:id="alert-text-container" class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 text-center text-lg-start text-xl-start text-xxl-start">		
-							<div wicket:id="icon-container" style="float:left; color:inherit; margin-left:5px; width: 65px; text-align:left;">
+					
+							<!-- div wicket:id="icon-container" style="float:left; color:inherit; margin-left:5px; width: 65px; text-align:left;">
 									<i wicket:id="icon" style="font-size:40px;" class="fa-duotone fa-user"></i>
-							</div>
+							</div-->
 							
-							<div wicket:id="text-container" style="float:left; width: calc(100% - 85px);">	
-								<span style="font-weight:bold;" class="title" wicket:id="title"></span>
-								<span style="width: initial;" class="text" wicket:id="text"></span>
-							</div>
+							
+								<div wicket:id="title-container" class="row">
+									<div  class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 text-center text-lg-start text-xl-start text-xxl-start">
+										<span style="text-transform:uppercase; font-weight:bold;" class="mb-3 title" wicket:id="title"></span>
+									</div>
+								</div>
+	
+								<div class="row">
+									<div  class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 text-center text-lg-start text-xl-start text-xxl-start">
+											<span style="width: initial;" class="text" wicket:id="text"></span>
+									</div>
+	
+								</div>
+	
+							
 					</div>
 				</div>
 			</div>
