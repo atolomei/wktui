@@ -1,17 +1,16 @@
 <wicket:panel>
 
 	<wicket:extend>
-		<div class="row" wicket:id="data">
+		<div class="row" wicket:id="mainContainer">
 
 			<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-				<div class="border w-100 pt-2 pb-2 ps-2 pe-2">
 
+				<div wicket:id="data" class="border pt-2 ps-2 pe-2 pb-2 w-100">
 					<div class="row">
 						<div wicket:id="imageContainer" class="col-xxl-1 col-xl-1 col-lg-1 col-md-2 col-sm-12 col-xs-12">
-
 							<a class="mb-0 mb-lg-0" wicket:id="image-link"
-								style="position: relative; float: left; width: 100%; text-align: center;" href="#"> <img class="thumbnail"
-								wicket:id="image" />
+								style="position: relative; float: left; width: 100%; text-align: center;" href="#"> 
+								<img class="thumbnail" wicket:id="image" />
 							</a> <a class="mb-0 mb-lg-0" wicket:id="icon-link">
 								<div class="fs-2 border text-bg-light text-center pt-1 pb-1 fs-2">
 									<i wicket:id="icon" />
@@ -35,7 +34,6 @@
 									<span wicket:id="subtitle"></span>
 								</div>
 							</div>
-
 						</div>
 
 						<div class="menuContainer">
@@ -43,13 +41,10 @@
 								<div class="float-end mt-1 itemMenu" wicket:id="menu"></div>
 							</div>
 						</div>
-
 					</div>
 				</div>
-
 			</div>
 		</div>
-
 
 	</wicket:extend>
 </wicket:panel>

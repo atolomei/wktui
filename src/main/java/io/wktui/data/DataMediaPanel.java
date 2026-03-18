@@ -49,6 +49,8 @@ public class DataMediaPanel<T> extends DataPanel<T> {
 	// State
 	// ---------------------------------------------------------------
 
+	String css;
+	
 	/** FontAwesome class applied to the {@code <i>} tag. */
 	private String iconCss = null;
 
@@ -58,7 +60,8 @@ public class DataMediaPanel<T> extends DataPanel<T> {
 	// ---------------------------------------------------------------
 	// Wicket components
 	// ---------------------------------------------------------------
-
+	private WebMarkupContainer mainContainer;
+	
 	private WebMarkupContainer data;
 	private WebMarkupContainer imageContainer;
 	private WebMarkupContainer titleTextContainer;
@@ -100,6 +103,11 @@ public class DataMediaPanel<T> extends DataPanel<T> {
 		super.onInitialize();
 
 		
+		mainContainer = new WebMarkupContainer("mainContainer");
+		
+	 
+
+		
 		data = new WebMarkupContainer("data");
 		data.setOutputMarkupId(true);
 
@@ -136,13 +144,9 @@ public class DataMediaPanel<T> extends DataPanel<T> {
 
 		
 		if (!hasThumbnail()) {
-
 			if (getIconCss() == null) {
-				
 				setIconCss( getDefaultIconCss( getResourceTitleModel().getObject()) );
-			
 			}
-		
 		}
 		// icon-link: visible only when NO thumbnail is available
 		iconLink = new ExternalLink("icon-link", new PropertyModel<>(this, "fileUrl")) {
@@ -204,7 +208,12 @@ public class DataMediaPanel<T> extends DataPanel<T> {
 		// ---- menu placeholder (invisible by default) ---------------
 		data.add(new InvisiblePanel("menu"));
 
-		super.addControl(data);
+		
+		if (getCss() != null)
+			data.add(new AttributeModifier("class", getCss()));
+		
+		mainContainer.add(data);
+		super.addControl(mainContainer);
 	}
 
 	// ---------------------------------------------------------------
@@ -305,6 +314,14 @@ public class DataMediaPanel<T> extends DataPanel<T> {
 		this.resourceTitleModel = titleModel;
 		if (titleLink != null)
 			((Label) titleLink.get("title")).setDefaultModel(titleModel);
+	}
+
+	public String getCss() {
+		return css;
+	}
+
+	public void setCss(String css) {
+		this.css = css;
 	}
 
 	public IModel<String> getResourceSubtitleModel() {

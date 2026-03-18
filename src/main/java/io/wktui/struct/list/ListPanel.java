@@ -13,7 +13,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
-import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
+ 
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -74,7 +74,9 @@ public class ListPanel<T> extends BasePanel {
 	private boolean hasItemMenu = false;
 	private boolean hasExpander = false;
 	private boolean isSettings = true;
+	private boolean toolbarVisible = true;
 
+	
 	private ListPanelMode mode;
 	private Boolean liveSearch;
 
@@ -119,7 +121,8 @@ public class ListPanel<T> extends BasePanel {
 		this.frame.addOrReplace(this.listItemContainer);
 
 	}
-
+	
+	 
 	public void setToolbar(WebMarkupContainer toolbar) {
 		this.toolbar = toolbar;
 	}
@@ -186,6 +189,14 @@ public class ListPanel<T> extends BasePanel {
 		return new Model<String>(model.getObject().toString());
 	}
 
+	public boolean isToolbarVisible() {
+		return toolbarVisible;
+	}
+
+	public void setToolbarVisible(boolean toolbarVisible) {
+		this.toolbarVisible = toolbarVisible;
+	}
+
 	public boolean hasExpander() {
 		return this.hasExpander;
 	}
@@ -248,7 +259,12 @@ public class ListPanel<T> extends BasePanel {
 		return this.toolbar;
 	}
 
+	
 	protected boolean isToolbar() {
+
+		if (!this.isToolbarVisible())
+			return false;
+		
 		return (this.toolbar != null) && this.toolbar.isVisible();
 	}
 
@@ -287,10 +303,7 @@ public class ListPanel<T> extends BasePanel {
 			}
 		};
 
-		//this.navigator = new PagingNavigator("navigator", this.listView);
-
-		
-		  // 3. The AjaxPagingNavigator
+	    // 3. The AjaxPagingNavigator
 		this.navigator = new AjaxPagingNavigator("navigator", listView) {
              
 			private static final long serialVersionUID = 1L;
@@ -303,9 +316,7 @@ public class ListPanel<T> extends BasePanel {
             }
         };
 	 	
-		
-		
-		
+	 	
 		
 		int size = getWorkingItems().size();
 

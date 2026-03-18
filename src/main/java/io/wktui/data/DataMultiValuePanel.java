@@ -115,6 +115,8 @@ public class DataMultiValuePanel<T> extends DataPanel<T> {
 		data.setLiveSearch(false);
 		data.setSettings(true);
 		data.setHasExpander(false);
+		data.setToolbarVisible(isToolbarVisible());
+		
 
 		data.setOutputMarkupId(true);
 
@@ -129,6 +131,11 @@ public class DataMultiValuePanel<T> extends DataPanel<T> {
 	}
 
 
+	public boolean isToolbarVisible() {
+		return this.toolbarVisible;
+	}
+
+	
 	protected void onClick(IModel<T> model) {}
 
 	protected WebMarkupContainer getMenu(IModel<T> model) {
@@ -216,6 +223,15 @@ public class DataMultiValuePanel<T> extends DataPanel<T> {
 	public void setPlaceHolderLabel(IModel<String> label) {
 		this.placeHolder = label;
 	}
+
+	boolean toolbarVisible = true;
+	
+	public void setToolbarVisible(boolean b) {
+		 toolbarVisible = b;
+		 if (data!=null)
+			 data.setToolbarVisible(b);
+		 
+	}	
 
 
 }

@@ -31,6 +31,11 @@ public class ErrorPanel extends BasePanel {
 
 	private boolean is_close = false;
 
+	
+	private String css= "alert alert-danger";
+	
+	
+	
 	public ErrorPanel(String id) {
 		super(id);
 	}
@@ -83,6 +88,9 @@ public class ErrorPanel extends BasePanel {
 
 		closeIcon.add(new AttributeModifier("class", getCloseIconCss()));
 		container.add(closeButton);
+		
+		container.add(new AttributeModifier("class", getCss()));
+		
 
 		if (getCss() != null)
 			container.add(new AttributeModifier("class", getCss()));
@@ -117,7 +125,7 @@ public class ErrorPanel extends BasePanel {
 	}
 
 	public String getCss() {
-		return null;
+		return this.css;
 	}
 
 	private IModel<String> getTitle() {
@@ -126,6 +134,10 @@ public class ErrorPanel extends BasePanel {
 
 	private IModel<String> getText() {
 		return text;
+	}
+
+	public void setCss(String css) {
+		this.css = css;
 	}
 
 }

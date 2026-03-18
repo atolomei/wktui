@@ -1,21 +1,16 @@
 package io.wktui.data;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
-import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
 import io.wktui.struct.list.ListPanel;
 import io.wktui.struct.list.ListPanelMode;
-import wktui.base.LabelPanel;
 import wktui.base.Logger;
 
 public class DataMultiMediaValuePanel<T> extends DataPanel<T> {
@@ -29,7 +24,7 @@ public class DataMultiMediaValuePanel<T> extends DataPanel<T> {
 	private List<IModel<T>> items;
 	
 	
-	public  DataMultiMediaValuePanel(String id ) {
+	public DataMultiMediaValuePanel(String id ) {
 		this(id, null, null);
 	}
 
@@ -114,6 +109,8 @@ public class DataMultiMediaValuePanel<T> extends DataPanel<T> {
 					//}
 
 				};
+				
+				panel.setCss("w-100");
 				return panel;
 				
 				
@@ -175,6 +172,7 @@ public class DataMultiMediaValuePanel<T> extends DataPanel<T> {
 		data.setSettings(true);
 		data.setHasExpander(false);
 
+		data.setPageSize( getPageSize());
 		data.setOutputMarkupId(true);
 
 		if (getTabIndex() > 0)
@@ -187,6 +185,10 @@ public class DataMultiMediaValuePanel<T> extends DataPanel<T> {
 		super.addControl(data);
 	}
 
+
+	protected int getPageSize() {
+		return 50;
+	}
 
 	private String getDefaultIconCss(String fileName) {
 		 

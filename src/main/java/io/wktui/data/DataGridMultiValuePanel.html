@@ -1,0 +1,29 @@
+<wicket:panel>
+	<wicket:extend>
+
+
+		<div wicket:id="main" class="multivalue w-100">
+
+			<div style="padding: 0; border: none;"
+				class="form-control text-start">
+
+				<table wicket:id="table" class="w-100 table  table-bordered table-hover ">
+					<thead wicket:id="tableHead">
+						<tr class="w-100 pt-2 pb-2">
+							<th scope="col"><span wicket:id="keyLabel"/></th>
+							<th scope="col"><span wicket:id="valueLabel" /></th>
+						</tr>
+					</thead>
+
+					<tr wicket:id="rows" class="row">
+						<td class="pt-2 pb-2 col-xxl-4 col-xl-4 col-lg-4 col-md-5 col-sm-5 col-xs-6"> <b><span class="ps-2" span wicket:id="key" /></b> </td>
+						<td class="pt-2 pb-2 col-xxl-8 col-xl-8 col-lg-8 col-md-7 col-sm-7 col-xs-6"><span class="ps-2" wicket:id="value" /></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</wicket:extend>
+</wicket:panel>
+
+
+

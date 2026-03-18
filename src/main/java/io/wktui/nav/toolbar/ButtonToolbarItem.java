@@ -15,7 +15,7 @@ public abstract class ButtonToolbarItem<T> extends ToolbarItem {
 	private IModel<T> model;
 	private AbstractLink link;
 	private Label label;
-	private IModel<String> title;
+	private IModel<String> buttonlabel;
  
 	private WebMarkupContainer icon;
 	
@@ -29,22 +29,22 @@ public abstract class ButtonToolbarItem<T> extends ToolbarItem {
 
 	public ButtonToolbarItem(String id, IModel<String> title) {
 		super(id);
-		this.title=title;
+		this.buttonlabel=title;
 	}
 	
 	public ButtonToolbarItem(IModel<String> title) {
 		super("item");
-		this.title=title;
+		this.buttonlabel=title;
 	}
 	
 	public ButtonToolbarItem(String id, IModel<T> model, IModel<String> title) {
 		super(id);
-		this.title= title;
+		this.buttonlabel= title;
 		this.model=model;
 	}
 	public ButtonToolbarItem(IModel<T> model, IModel<String> title) {
 		super("item");
-		this.title= title;
+		this.buttonlabel= title;
 		this.model=model;
 	}
 	
@@ -106,8 +106,13 @@ public abstract class ButtonToolbarItem<T> extends ToolbarItem {
 		return null;
 	}
 	
+	
+	public void  setButtonLabel(IModel<String> label) {
+		this.buttonlabel=label;
+	}
+	
 	public IModel<String> getButtonLabel() {
-		return this.title;
+		return this.buttonlabel;
 	}
 
 	

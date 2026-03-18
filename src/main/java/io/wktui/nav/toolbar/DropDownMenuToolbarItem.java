@@ -25,7 +25,6 @@ public class DropDownMenuToolbarItem<T> extends ToolbarItem {
 		super.setAlign(align);
 	}
 	
-
 	public DropDownMenuToolbarItem(String id, IModel<T> model) {
 		super(id);
 		this.model=model;
