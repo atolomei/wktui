@@ -15,6 +15,11 @@ public class DummyBlockPanel extends Panel {
 	private static final long serialVersionUID = 1L;
 
 	private String style;
+
+	IModel<String> label_left;
+	IModel<String> label_right;
+	String css;
+
 	
 	public DummyBlockPanel() {
 			this("panel"); 
@@ -41,10 +46,6 @@ public class DummyBlockPanel extends Panel {
 		this.css=css;
 	}
 
-
-	IModel<String> label_left;
-	IModel<String> label_right;
-	String css;
 	
 	public void onInitialize() {
 		super.onInitialize();

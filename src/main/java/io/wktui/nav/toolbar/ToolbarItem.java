@@ -71,6 +71,10 @@ public class ToolbarItem extends BasePanel {
 	public void setAlign(Align align) {
 		this.align=align;
 	}
+
+	public void setIconCss(String iconCss) {
+		this.iconCss = iconCss;
+	}
 	
 	
 	

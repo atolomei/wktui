@@ -15,6 +15,16 @@ public class DropDownMenuToolbarItem<T> extends ToolbarItem {
 	private IModel<T> model;
 	private IModel<String> title;
 	
+	 
+	
+	public void setIconCss(String string) {
+		super.setIconCss(string);
+		if (menu!=null)
+			menu.setIconCss( getIconCss() );
+	}
+
+	
+	
 	public DropDownMenuToolbarItem(String id) {
 		super(id);
 		super.setAlign(Align.TOP_RIGHT);
@@ -64,10 +74,7 @@ public class DropDownMenuToolbarItem<T> extends ToolbarItem {
 		if (this.model!=null)
 			this.model.detach();
 	}
-	
-	
-	
-	
+	 	
 	public void addItem(MenuItemFactory<T> item) {
 		if (menu==null) {
 			menu = new NavDropDownMenu<T>("menu", getModel()) {
@@ -76,6 +83,8 @@ public class DropDownMenuToolbarItem<T> extends ToolbarItem {
 					return DropDownMenuToolbarItem.this.getTitle();
 				}
 			};
+			if (getIconCss()!=null)
+				menu.setIconCss(getIconCss());
 		};
 		menu.addItem(item);
 	}
@@ -90,6 +99,9 @@ public class DropDownMenuToolbarItem<T> extends ToolbarItem {
 					return DropDownMenuToolbarItem.this.getTitle();
 				}
 			};
+			
+			if (getIconCss()!=null)
+				menu.setIconCss(getIconCss());
 		}
 		add(menu);
 	}
