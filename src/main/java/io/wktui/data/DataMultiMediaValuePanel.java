@@ -235,7 +235,6 @@ public class DataMultiMediaValuePanel<T> extends DataPanel<T> {
 
 	
 	protected String getFileUrl(IModel<T> model) {
-		
 		return null;
 	}
 

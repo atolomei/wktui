@@ -197,9 +197,7 @@ public class NavDropDownMenu<T> extends DropDownMenu<T> {
 			
 			titleSubtitleContainer.add(titleContainer);
 
-			//if (getSubtitle()!=null) {
-			//	titleSubtitleContainer.add( new AttributeModifier( "style","display-inline:block; float:left; text-align:right; margin-right:6px; margin-top:-6px;"));
-			//			}
+		 
 			
 			this.f_title = new Label("title", getTitle()) {
 				private static final long serialVersionUID = 1L;
@@ -208,6 +206,9 @@ public class NavDropDownMenu<T> extends DropDownMenu<T> {
 					return getTitle() != null;
 				}
 			};
+			
+			this.f_title.setEscapeModelStrings(false);
+			
 
 			if (getTitleCss() != null)
 				f_title.add(new AttributeModifier("class", getTitleCss()));
