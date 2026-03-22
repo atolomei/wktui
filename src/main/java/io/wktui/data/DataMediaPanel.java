@@ -10,7 +10,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 
-import io.wktui.media.InvisibleImage;
+ 
 import wktui.base.InvisiblePanel;
 import wktui.base.Logger;
 
@@ -105,10 +105,7 @@ public class DataMediaPanel<T> extends DataPanel<T> {
 		
 		mainContainer = new WebMarkupContainer("mainContainer");
 		
-	 
-
-		
-		data = new WebMarkupContainer("data");
+	  	data = new WebMarkupContainer("data");
 		data.setOutputMarkupId(true);
 
 		// ---- left column: image / icon container -------------------

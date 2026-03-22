@@ -190,7 +190,7 @@ public class DataMultiMediaValuePanel<T> extends DataPanel<T> {
 		return 50;
 	}
 
-	private String getDefaultIconCss(String fileName) {
+	public static String getDefaultIconCss(String fileName) {
 		 
 		if ( FSUtil.isPdf(fileName)) 
 			return FAIcons.PDF;
