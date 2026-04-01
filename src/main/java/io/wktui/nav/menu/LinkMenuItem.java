@@ -71,6 +71,8 @@ public abstract class LinkMenuItem<T> extends MenuItemPanel<T> {
 			}
 		};
 		
+		icon.add(new org.apache.wicket.AttributeModifier("class", getIconCssClass()));
+		
 		Label label = new Label("label", getLabel());
 		label.setEscapeModelStrings(false);
 		link.add(icon);

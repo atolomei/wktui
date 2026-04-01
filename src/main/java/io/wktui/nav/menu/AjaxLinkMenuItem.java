@@ -79,6 +79,9 @@ public abstract class AjaxLinkMenuItem<T> extends MenuItemPanel<T> {
 		icon.add(new AttributeModifier("class", getIconCssClass()));
 		
 		Label label = new Label("label", getLabel());
+
+		label.setEscapeModelStrings(false);
+		
 		link.add(icon);
 		link.add(label);
 	}
