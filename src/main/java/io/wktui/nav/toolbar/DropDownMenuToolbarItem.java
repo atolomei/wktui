@@ -88,6 +88,20 @@ public class DropDownMenuToolbarItem<T> extends ToolbarItem {
 		};
 		menu.addItem(item);
 	}
+
+	public void setMenuAlignEnd(boolean end) {
+		if (menu == null) {
+			menu = new NavDropDownMenu<T>("menu", getModel()) {
+				private static final long serialVersionUID = 1L;
+				public IModel<String> getTitle() {
+					return DropDownMenuToolbarItem.this.getTitle();
+				}
+			};
+			if (getIconCss() != null)
+				menu.setIconCss(getIconCss());
+		}
+		menu.setMenuAlignEnd(end);
+	}
 	
 	public void onInitialize() {
 		super.onInitialize();

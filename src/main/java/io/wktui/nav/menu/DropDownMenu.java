@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.IModel;
@@ -22,6 +23,15 @@ public class DropDownMenu<T> extends BasePanel {
 	private ListView<MenuItemFactory<T>> itemsview;
 
 	private boolean sort = false;
+	private boolean menuAlignEnd = false;
+	
+	public boolean isMenuAlignEnd() {
+		return menuAlignEnd;
+	}
+
+	public void setMenuAlignEnd(boolean menuAlignEnd) {
+		this.menuAlignEnd = menuAlignEnd;
+	}
 	//private boolean popper = true;
 	
 	
@@ -51,7 +61,12 @@ public class DropDownMenu<T> extends BasePanel {
 	@Override
 	public void onInitialize() {
 		super.onInitialize();
-		
+
+		WebMarkupContainer menuList = new WebMarkupContainer("menuList");
+		if (isMenuAlignEnd())
+			menuList.add(new AttributeModifier("class", "dropdown-menu dropdown-menu-end"));
+		add(menuList);
+
 		if (itemsview==null) {
 			
 			int n= 0;
@@ -77,8 +92,6 @@ public class DropDownMenu<T> extends BasePanel {
 				private static final long serialVersionUID = 1L;
 				public void populateItem(ListItem<MenuItemFactory<T>> item) {
 					MenuItemPanel<T> panel = item.getModelObject().getItem("panel");
-					//panel.setEscapeModelStrings(false);
-					//item.setMarkupId("cpanel"+factoryitem.getIndex());
 					item.setVisible(panel.isVisible());
 					item.setIndex(getIndex());
 					
@@ -105,7 +118,7 @@ public class DropDownMenu<T> extends BasePanel {
 				}
 			};
 
-			add(itemsview);
+			menuList.add(itemsview);
 		}
 	}
 

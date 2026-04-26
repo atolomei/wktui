@@ -33,7 +33,7 @@ public class ListItemPanel<T> extends ModelPanel<T> {
 			};
 			
 			add(link);
-			link.add( new Label("label", getLabel()));
+			link.add( (new Label("label", getLabel()).setEscapeModelStrings(false)));
 	}
 
 	protected void onClick() {
