@@ -3,6 +3,7 @@ package io.wktui.form.field;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -272,6 +273,15 @@ public class ChoiceField<T> extends Field<T> {
 			public String getDisplayValue(T value) {
 				return ChoiceField.this.getDisplayValue(value);
 			};
+		});
+
+		selector.add(new AjaxFormComponentUpdatingBehavior("change") {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				ChoiceField.this.onUpdate(target);
+			}
 		});
 		
 		return selector;
