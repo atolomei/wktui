@@ -103,6 +103,7 @@ public class FileUploadSimpleField<T> extends Field<T> {
 				return isAudio() || (isThumbnail() && (getImage() != null));
 			}
 		};
+		thumbnailContainer.setOutputMarkupPlaceholderTag(true);
 
 		this.imageContainer = new WebMarkupContainer("imageContainer") {
 			private static final long serialVersionUID = 1L;
@@ -110,7 +111,24 @@ public class FileUploadSimpleField<T> extends Field<T> {
 			public boolean isVisible() {
 				return isThumbnail() && (getImage() != null);
 			}
+
+			@Override
+			protected void onBeforeRender() {
+				// Refresh the Image child every render so newly uploaded
+				// thumbnails are displayed without requiring a full page reload
+				Image current = getImage();
+				if (current != null) {
+					current.setOutputMarkupId(true);
+					addOrReplace(current);
+				} else {
+					Image blank = new Image("image", new UrlResourceReference(Url.parse("")));
+					blank.setVisible(false);
+					addOrReplace(blank);
+				}
+				super.onBeforeRender();
+			}
 		};
+		this.imageContainer.setOutputMarkupPlaceholderTag(true);
 
 		this.fileNameContainer = new WebMarkupContainer("fileNameContainer") {
 			private static final long serialVersionUID = 1L;
@@ -119,6 +137,7 @@ public class FileUploadSimpleField<T> extends Field<T> {
 				return (isThumbnail() && (getImage() != null && getFileName() != null));
 			}
 		};
+		this.fileNameContainer.setOutputMarkupPlaceholderTag(true);
 
 		this.audioMetadataContainer = new WebMarkupContainer("audioMetaContainer") {
 			private static final long serialVersionUID = 1L;
@@ -128,14 +147,7 @@ public class FileUploadSimpleField<T> extends Field<T> {
 			}
 		};
 
-		if (getImage() == null) {
-			Image image = new Image("image", new UrlResourceReference(Url.parse("")));
-			image.setVisible(false);
-			this.imageContainer.addOrReplace(image);
-		} else {
-			this.imageContainer.addOrReplace(getImage());
-		}
-
+		// No longer set the image statically here – onBeforeRender handles it
 		this.removeContainer = new WebMarkupContainer("removeContainer") {
 			private static final long serialVersionUID = 1L;
 
@@ -143,6 +155,7 @@ public class FileUploadSimpleField<T> extends Field<T> {
 				return FileUploadSimpleField.this.isEditMode() && FileUploadSimpleField.this.getModel() != null;
 			}
 		};
+		this.removeContainer.setOutputMarkupPlaceholderTag(true);
 
 		remove = new AjaxLink<Void>("remove") {
 			private static final long serialVersionUID = 1L;
