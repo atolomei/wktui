@@ -1,11 +1,11 @@
 <wicket:panel>
-	
+
 	<div class="nav-item dropdown">
 		<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    			<div style="display: inline-block;" wicket:id="titlePanel" />
-        </a>
-    	<ul class="dropdown-menu" wicket:id="menuList">
-			<li class="dropdown-item" wicket:id="item"><div wicket:id="panel"/></li>
+			<div style="display: inline-block;" wicket:id="titlePanel" />
+		</a>
+		<ul class="dropdown-menu" wicket:id="menuList">
+			<li class="dropdown-item" wicket:id="item"><div wicket:id="panel" /></li>
 		</ul>
 	</div>
 </wicket:panel>
@@ -14,21 +14,22 @@
 <wicket:fragment wicket:id="titleFragment">
 
 
-		<div   wicket:id="imageIconContainer" class="imageIconContainer">	
-			 
-		<i wicket:id="icon" class="d-block-inline d-sm-block-inline d-md-block-inline d-lg-none d-xl-none d-xxl-none fa-solid fa-bars ps-1 pe-1"></i>
-		</div>		
-		
-		<div class="titleSubtitleContainer" wicket:id="titleSubtitleContainer">
-			<div wicket:id="titleContainer">
-				<div class="title" style="display: inline-block;" wicket:id="title" />
-			</div>
-			
-			<div wicket:id="subtitleContainer">
-				<div class="subtitle" wicket:id="subtitle" />
-			</div>
-		</div>		
-		
+	<div wicket:id="imageIconContainer" class="imageIconContainer">
+
+		<i wicket:id="icon"
+			class="d-block-inline d-sm-block-inline d-md-block-inline d-lg-none d-xl-none d-xxl-none fa-solid fa-bars ps-1 pe-1"></i>
+	</div>
+
+	<div class="titleSubtitleContainer" wicket:id="titleSubtitleContainer">
+		<div wicket:id="titleContainer">
+			<div class="title" style="display: inline-block;" wicket:id="title" />
+		</div>
+
+		<div wicket:id="subtitleContainer">
+			<div class="subtitle" wicket:id="subtitle" />
+		</div>
+	</div>
+
 
 </wicket:fragment>
 

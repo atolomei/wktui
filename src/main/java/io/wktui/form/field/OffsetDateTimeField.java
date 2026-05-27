@@ -7,7 +7,10 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Date;
+import java.util.Locale;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
@@ -29,24 +32,38 @@ import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
 
-
 import wktui.base.Logger;
 
 public class OffsetDateTimeField extends TextField<OffsetDateTime> {
-            
+
+	/**
+	 * Controls how the value is displayed when the field is not editable.
+	 * <ul>
+	 * <li>{@link #TIMESTAMP} – full ISO-like timestamp (default)</li>
+	 * <li>{@link #DATE} – date only, formatted for the component Locale /
+	 * TimeZone</li>
+	 * <li>{@link #DATETIME} – date + time, formatted for the component Locale /
+	 * TimeZone</li>
+	 * </ul>
+	 */
+	public enum LabelDisplayMode {
+		TIMESTAMP, DATE, DATETIME
+	}
+
 	private static final long serialVersionUID = 1L;
 
 	protected static final ResourceReference LOC = new CssResourceReference(OffsetDateTimeField.class, "moment-with-locales.js");
-	protected static final ResourceReference DTCSS = new CssResourceReference(OffsetDateTimeField.class,"bootstrap-datetimepicker.min.css");
-	protected static final ResourceReference DTJS = new CssResourceReference(OffsetDateTimeField.class,"bootstrap-datetimepicker.min.js");
-	
+	protected static final ResourceReference DTCSS = new CssResourceReference(OffsetDateTimeField.class, "bootstrap-datetimepicker.min.css");
+	protected static final ResourceReference DTJS = new CssResourceReference(OffsetDateTimeField.class, "bootstrap-datetimepicker.min.js");
+
 	static private Logger logger = Logger.getLogger(OffsetDateTimeField.class.getName());
-	
+
 	private ZoneId zid;
-	
+	private Locale locale;
+	private LabelDisplayMode labelDisplayMode = LabelDisplayMode.TIMESTAMP;
 
 	public class DateValidator implements IValidator<OffsetDateTime> {
-		
+
 		/**
 		 * 
 		 */
@@ -55,48 +72,33 @@ public class OffsetDateTimeField extends TextField<OffsetDateTime> {
 		public void validate(final IValidatable<OffsetDateTime> validatable) {
 
 			Object dateobject = validatable.getValue();
-			
-			if (dateobject==null) 
+
+			if (dateobject == null)
 				return;
-			
-			OffsetDateTime date = ((OffsetDateTime)dateobject);
-			
+
+			OffsetDateTime date = ((OffsetDateTime) dateobject);
+
 			ZoneId zid = getZoneId();
-			
-			if (zid==null)
+
+			if (zid == null)
 				zid = ZoneId.systemDefault();
-			
+
 			OffsetDateTime dateTime = OffsetDateTime.ofInstant(date.toInstant(), zid);
 			OffsetDateTime last_date = OffsetDateTime.of(9999, 12, 31, 23, 59, 59, 0, ZoneOffset.from(dateTime));
-			
-			if (dateTime.getYear()<70) {
-				OffsetDateTime correctedDateTime = OffsetDateTime.of(dateTime.getYear()+2000,
-					dateTime.getMonthValue(),
-					dateTime.getDayOfMonth(),
-					dateTime.getHour(),
-					dateTime.getMinute(),
-					dateTime.getSecond(),
-					0,
-					ZoneOffset.from(dateTime));
-					setValue(OffsetDateTime.from(correctedDateTime.plusDays(2).toInstant()));
-			}
-			else if (dateTime.getYear()<100) {
-				OffsetDateTime correctedDateTime = OffsetDateTime.of(dateTime.getYear()+1900,
-					dateTime.getMonthValue(),
-					dateTime.getDayOfMonth(),
-					dateTime.getHour(),
-					dateTime.getMinute(),
-					dateTime.getSecond(),
-					0,
-					ZoneOffset.from(dateTime));
+
+			if (dateTime.getYear() < 70) {
+				OffsetDateTime correctedDateTime = OffsetDateTime.of(dateTime.getYear() + 2000, dateTime.getMonthValue(), dateTime.getDayOfMonth(), dateTime.getHour(), dateTime.getMinute(), dateTime.getSecond(), 0,
+						ZoneOffset.from(dateTime));
 				setValue(OffsetDateTime.from(correctedDateTime.plusDays(2).toInstant()));
-			}
-			else if (dateTime.isAfter(last_date)) {				
+			} else if (dateTime.getYear() < 100) {
+				OffsetDateTime correctedDateTime = OffsetDateTime.of(dateTime.getYear() + 1900, dateTime.getMonthValue(), dateTime.getDayOfMonth(), dateTime.getHour(), dateTime.getMinute(), dateTime.getSecond(), 0,
+						ZoneOffset.from(dateTime));
+				setValue(OffsetDateTime.from(correctedDateTime.plusDays(2).toInstant()));
+			} else if (dateTime.isAfter(last_date)) {
 				validatable.error(new ValidationError(this, "invalid-date-high"));
-			}			
-		}	
+			}
+		}
 	}
-	
 
 	public void setZoneId(ZoneId z) {
 		this.zid = z;
@@ -105,81 +107,116 @@ public class OffsetDateTimeField extends TextField<OffsetDateTime> {
 	public ZoneId getZoneId() {
 		return this.zid;
 	}
-	
-	
-	
-	public OffsetDateTimeField(String id, IModel<OffsetDateTime> model) {
-	    this(id, model, null);
+
+	public void setLocale(Locale locale) {
+		this.locale = locale;
 	}
-	
+
+	public Locale getFieldLocale() {
+		return this.locale;
+	}
+
+	public void setLabelDisplayMode(LabelDisplayMode mode) {
+		this.labelDisplayMode = mode;
+	}
+
+	public LabelDisplayMode getLabelDisplayMode() {
+		return this.labelDisplayMode;
+	}
+
+	/**
+	 * Returns the formatted string for a given {@link OffsetDateTime} value
+	 * according to the current {@link LabelDisplayMode}, locale and time zone.
+	 */
+	public String getFormattedLabel(OffsetDateTime value) {
+		if (value == null)
+			return "";
+		ZoneId zone = zid != null ? zid : ZoneId.systemDefault();
+		Locale loc = locale != null ? locale : Locale.getDefault();
+		ZonedDateTime zdt = value.atZoneSameInstant(zone);
+		switch (labelDisplayMode) {
+		case DATE:
+			return zdt.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).withLocale(loc));
+		case DATETIME:
+			return zdt.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).withLocale(loc));
+		case TIMESTAMP:
+		default:
+			return value.toString();
+		}
+	}
+
+	public OffsetDateTimeField(String id, IModel<OffsetDateTime> model) {
+		this(id, model, null);
+	}
+
 	public OffsetDateTimeField(String id, IModel<OffsetDateTime> model, IModel<String> label) {
 		super(id, model, label);
 		setOutputMarkupId(true);
 	}
 
- 
-	
+	public OffsetDateTimeField(String id, IModel<OffsetDateTime> model, IModel<String> label, Locale locale, ZoneId zoneId) {
+		super(id, model, label);
+		this.locale = locale;
+		this.zid = zoneId;
+		setOutputMarkupId(true);
+	}
+
 	@Override
 	public void editOn() {
-	 	super.editOn();
+		super.editOn();
 	}
 
 	@Override
 	public void editOff() {
-	 	super.editOff();
+		super.editOff();
 	}
-	
-	
+
 	@Override
 	public void onInitialize() {
-	        super.onInitialize();
-	  	        
-	       // if (getModel().getObject()!=null)
-	       //     setValue(getModel().getObject());
+		super.onInitialize();
 
-	       // this.input = newTextField();
-	       // super.addControl(input);
-	        
+		// if (getModel().getObject()!=null)
+		// setValue(getModel().getObject());
+
+		// this.input = newTextField();
+		// super.addControl(input);
+
 	}
-	
 
-	 
-
-    protected void onUpdate(OffsetDateTime oldvalue, OffsetDateTime newvalue) {
-		if (getEditor()!=null) {
+	protected void onUpdate(OffsetDateTime oldvalue, OffsetDateTime newvalue) {
+		if (getEditor() != null) {
 			getEditor().setUpdatedPart(getPart());
 		}
 	}
-    
-    protected String getPart() {
-    	return getFieldUpdatedPartName();
+
+	protected String getPart() {
+		return getFieldUpdatedPartName();
 	}
-    
-    protected IModel<String> getPlaceHolderLabel() {
-        return null;
-    }
 
-    protected Object getAutoComplete() {
-        return null;
-    }
+	protected IModel<String> getPlaceHolderLabel() {
+		return null;
+	}
 
-    protected String getInputName() {
-        return null;
-    }
+	protected Object getAutoComplete() {
+		return null;
+	}
 
-    public void validate() {
-        logger.debug("validate " + getId());
-    }
+	protected String getInputName() {
+		return null;
+	}
 
-  
-    @Override
+	public void validate() {
+		logger.debug("validate " + getId());
+	}
+
+	@Override
 	public void renderHead(final IHeaderResponse response) {
 		super.renderHead(response);
 		response.render(JavaScriptHeaderItem.forReference(LOC));
 		response.render(CssHeaderItem.forReference(DTCSS));
 		response.render(JavaScriptHeaderItem.forReference(DTJS));
 	}
-    	 
+
 	@Override
 	public void onConfigure() {
 		super.onConfigure();
@@ -188,91 +225,78 @@ public class OffsetDateTimeField extends TextField<OffsetDateTime> {
 			add(new DateValidator());
 		}
 	}
-    @Override
-    public void onDetach() {
-    	super.onDetach();
-    }
-    
-    protected String getInputType() {
-        return "text";
-    }
- 
-    
-    public Object getInputValue() {
-		
-		String value = ((FormComponent<?>)getInput()).getInput();
-		
-		
-		if (value==null || "".equals(value))
+
+	@Override
+	public void onDetach() {
+		super.onDetach();
+	}
+
+	protected String getInputType() {
+		return "text";
+	}
+
+	public Object getInputValue() {
+
+		String value = ((FormComponent<?>) getInput()).getInput();
+
+		if (value == null || "".equals(value))
 			return null;
-		
+
 		try {
-				// --
-				// Dia Mes Ano -> en el OffsetDateTime del usuario a las 00:00:00
-				// --
-				SimpleDateFormat dateformat = new SimpleDateFormat(getDatePattern());
-				Date date = dateformat.parse(value);
-				
-				LocalDate ldate = date.toInstant().atZone(ZoneOffset.UTC).toLocalDate();
-				
-				ZoneId zid = getZoneId();
-				
-				if (zid==null)
-					zid=ZoneId.systemDefault();
+			// --
+			// Dia Mes Ano -> en el OffsetDateTime del usuario a las 00:00:00
+			// --
+			SimpleDateFormat dateformat = new SimpleDateFormat(getDatePattern());
+			Date date = dateformat.parse(value);
 
-				ZonedDateTime zdt = ldate.atStartOfDay(zid);
-				
-				OffsetDateTime dvalue = zdt.toOffsetDateTime();
+			LocalDate ldate = date.toInstant().atZone(ZoneOffset.UTC).toLocalDate();
 
-				return dvalue;
-				
-		}
-		catch (Exception e) {
+			ZoneId zid = getZoneId();
+
+			if (zid == null)
+				zid = ZoneId.systemDefault();
+
+			ZonedDateTime zdt = ldate.atStartOfDay(zid);
+
+			OffsetDateTime dvalue = zdt.toOffsetDateTime();
+
+			return dvalue;
+
+		} catch (Exception e) {
 			logger.error(e);
 			return null;
 		}
-		
+
 	}
-    
-    /**
-    @Override
-	protected org.apache.wicket.markup.html.form.TextField<?> newTextField() {
 
-		DateTextField input = new DateTextField("input", new PropertyModel<Date>(this, "dateValue"),
-				getDefaultDatePattern()) {
-			@Override
-			public void validate() {
-				super.validate();
-				OffsetDateTimeField.this.validate();
-			}
+	/**
+	 * @Override protected org.apache.wicket.markup.html.form.TextField<?>
+	 *           newTextField() {
+	 * 
+	 *           DateTextField input = new DateTextField("input", new
+	 *           PropertyModel<Date>(this, "dateValue"), getDefaultDatePattern()) {
+	 * @Override public void validate() { super.validate();
+	 *           OffsetDateTimeField.this.validate(); }
+	 * 
+	 * @Override public boolean isEnabled() { return true; } };
+	 * 
+	 *           input.add(new KeyboardBehavior() { protected void
+	 *           onKey(AjaxRequestTarget target, String jsKeycode) {
+	 *           OffsetDateTimeField.this.onKey(target, jsKeycode); } });
+	 * 
+	 *           return input; }
+	 * 
+	 **/
 
-			@Override
-			public boolean isEnabled() {
-				return  true;
-			}
-		};
-		
-		input.add(new KeyboardBehavior() {
-			protected void onKey(AjaxRequestTarget target, String jsKeycode) {
-				OffsetDateTimeField.this.onKey(target, jsKeycode);
-			}
-		});
-
-		return input;
-	}
-    
-    **/
-    
 	protected String getDatePattern() {
 		return getDefaultDatePattern();
 	}
-	
+
 	protected String getDefaultDatePattern() {
-		//String pattern = "es".equals(WebSession.get().getLocale().getLanguage()) ? "dd/MM/yyyy" : "MM/dd/yyyy";
+		// String pattern = "es".equals(WebSession.get().getLocale().getLanguage()) ?
+		// "dd/MM/yyyy" : "MM/dd/yyyy";
 		String pattern = "MM/dd/yyyy";
 		return pattern;
 	}
 
-
-
-} 
+}
