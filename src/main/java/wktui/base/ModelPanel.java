@@ -9,6 +9,7 @@ public class ModelPanel<T> extends BasePanel {
 	
 	private IModel<T> model;
 	
+	
 
 	public ModelPanel(String id, IModel<T> model) {
 		super(id);

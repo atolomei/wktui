@@ -215,12 +215,12 @@ public abstract class MultipleSelectField<T> extends Field<T> {
 					private static final long serialVersionUID = 1L;
 
 					@Override
-					protected IModel<String> getObjectTitle() {
+					public IModel<String> getObjectTitle() {
 						return MultipleSelectField.this.getObjectTitle(getModel());
 					}
 
 					@Override
-					protected String getImageSrc() {
+					public String getImageSrc() {
 						return null;
 						// return MultipleSelectField.this.getObjectImageSrc(getModel());
 					}
@@ -232,22 +232,22 @@ public abstract class MultipleSelectField<T> extends Field<T> {
 					}
 
 					@Override
-					protected IModel<String> getInfo() {
+					public IModel<String> getInfo() {
 						return MultipleSelectField.this.getObjectInfo(getModel());
 					}
 
 					@Override
-					protected WebMarkupContainer getObjectMenu() {
+					public WebMarkupContainer getObjectMenu() {
 						return MultipleSelectField.this.getObjectMenu(getModel());
 					}
 
 					@Override
-					protected String getTitleIcon() {
+				public String getTitleIcon() {
 						return null;
 					}
 
 					@Override
-					protected boolean isEqual(T o1, T o2) {
+					public boolean isEqual(T o1, T o2) {
 						return MultipleSelectField.this.isEqual(o1, o2);
 					}
 				};

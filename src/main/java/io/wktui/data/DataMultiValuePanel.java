@@ -69,12 +69,12 @@ public class DataMultiValuePanel<T> extends DataPanel<T> {
 					private static final long serialVersionUID = 1L;
 
 					@Override
-					protected IModel<String> getObjectTitle() {
+					public  IModel<String> getObjectTitle() {
 						return DataMultiValuePanel.this.getObjectTitle(getModel());
 					}
 
 					@Override
-					protected String getImageSrc() {
+					public String getImageSrc() {
 						return DataMultiValuePanel.this.getObjectImageSrc(getModel());
 					}
 
@@ -84,17 +84,17 @@ public class DataMultiValuePanel<T> extends DataPanel<T> {
 					}
 
 					@Override
-					protected IModel<String> getInfo() {
+					public  IModel<String> getInfo() {
 						return DataMultiValuePanel.this.getObjectInfo(getModel());
 					}
 
 					@Override
-					protected WebMarkupContainer getObjectMenu() {
+					public   WebMarkupContainer getObjectMenu() {
 						return DataMultiValuePanel.this.getMenu(getModel());
 					}
 
 					@Override
-					protected String getTitleIcon() {
+					public String getTitleIcon() {
 							return null;
 					}
 

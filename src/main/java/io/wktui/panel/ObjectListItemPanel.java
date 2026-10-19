@@ -17,7 +17,7 @@ import io.wktui.struct.list.ListPanelWicketEvent;
 import wktui.base.InvisiblePanel;
 import wktui.base.ModelPanel;
 
-public abstract class ObjectListItemPanel<T> extends ModelPanel<T> {
+public abstract class ObjectListItemPanel<T> extends ModelPanel<T> implements ListItemPanel<T> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,7 +33,12 @@ public abstract class ObjectListItemPanel<T> extends ModelPanel<T> {
 	private WebMarkupContainer textContainer;
 	private WebMarkupContainer menu = null;
 
-	protected abstract boolean isEqual(T o1, T o2);
+	
+	public abstract boolean isEqual(T o1, T o2);
+	public abstract IModel<String> getObjectTitle();
+	public abstract IModel<String> getInfo();
+
+	
 	
 	public ObjectListItemPanel(String id, IModel<T> model, ListPanelMode mode) {
 		super(id, model);
@@ -71,6 +76,9 @@ public abstract class ObjectListItemPanel<T> extends ModelPanel<T> {
 			}
 		});
 	}
+	
+	
+	
 
 	@Override
 	public void onBeforeRender() {
@@ -86,6 +94,7 @@ public abstract class ObjectListItemPanel<T> extends ModelPanel<T> {
 		}
 
 		if (isImageVisible()) {
+			
 			String imageSrc = getImageSrc();
 
 			if (imageSrc != null) {
@@ -116,7 +125,7 @@ public abstract class ObjectListItemPanel<T> extends ModelPanel<T> {
 		this.titleIcon = titleIcon;
 	}
 
-	protected String getTitleIcon() {
+	public String getTitleIcon() {
 		return this.titleIcon;
 	}
 
@@ -223,13 +232,13 @@ public abstract class ObjectListItemPanel<T> extends ModelPanel<T> {
 
 	}
 
-	protected abstract IModel<String> getObjectTitle();
+	
 
-	protected WebMarkupContainer getObjectMenu() {
+	
+	public WebMarkupContainer getObjectMenu() {
 		return null;
 	}
 
-	protected abstract IModel<String> getInfo();
 
 	protected IModel<String> getObjectSubtitle() {
 		return subtitle;
@@ -243,7 +252,7 @@ public abstract class ObjectListItemPanel<T> extends ModelPanel<T> {
 
 	}
 
-	protected String getImageSrc() {
+	public String getImageSrc() {
 		return null;
 	}
 

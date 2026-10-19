@@ -82,6 +82,11 @@ public abstract class ListPanelToolbar extends BasePanel {
 		return l_total;
 	}
 
+	/** container of the toolbar components (so subclasses can add their own) */
+	protected WebMarkupContainer getContainer() {
+		return container;
+	}
+
 	public String getCss() {
 		return css;
 	}

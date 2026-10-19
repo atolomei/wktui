@@ -13,7 +13,7 @@ import org.apache.wicket.model.Model;
 import io.wktui.struct.list.ListPanel;
 import io.wktui.struct.list.ListPanelMode;
 import wktui.base.BasePanel;
- 
+
 import wktui.base.LabelAjaxLinkPanel;
 
 import wktui.base.Logger;
@@ -32,14 +32,17 @@ public abstract class MultipleSelectorPanel<T> extends BasePanel {
 	private IModel<String> title;
 
 	protected abstract IModel<String> getObjectSubtitle(IModel<T> model);
+
 	protected abstract String getObjectImageSrc(IModel<T> model);
+
 	protected abstract IModel<String> getObjectInfo(IModel<T> model);
+
 	protected abstract void onClick(IModel<T> model);
+
 	protected abstract void onObjectSelect(IModel<T> model, AjaxRequestTarget target);
+
 	protected abstract boolean isEqual(T o1, T o2);
 
-	
-	
 	public MultipleSelectorPanel(String id, List<IModel<T>> list) {
 		this(id, list, null);
 	}
@@ -62,23 +65,21 @@ public abstract class MultipleSelectorPanel<T> extends BasePanel {
 		renderPanel();
 	}
 
-	
 	private void addTitle() {
 		titleContainer = new WebMarkupContainer("titleContainer") {
 			private static final long serialVersionUID = 1L;
 
 			public boolean isVisible() {
-				return getTitle()!=null;
+				return getTitle() != null;
 			}
 		};
-		
+
 		titleContainer.setOutputMarkupId(true);
 		titleContainer.setVisible(getTitle() != null);
 		add(titleContainer);
-		titleContainer.add(( new Label("title", (getTitle()!=null)?getTitle():"")).setVisible(getTitle()!=null));
+		titleContainer.add((new Label("title", (getTitle() != null) ? getTitle() : "")).setVisible(getTitle() != null));
 	}
-	
-	
+
 	@Override
 	public void onDetach() {
 		super.onDetach();
@@ -121,12 +122,11 @@ public abstract class MultipleSelectorPanel<T> extends BasePanel {
 
 			private static final long serialVersionUID = 1L;
 
-			
 			@Override
 			public IModel<String> getItemLabel(IModel<T> model) {
 				return MultipleSelectorPanel.this.getObjectTitle(model);
 			}
-			
+
 			@Override
 			protected Panel getListItemExpandedPanel(IModel<T> model, ListPanelMode mode) {
 				return MultipleSelectorPanel.this.getObjectListItemExpandedPanel(model, mode);
@@ -139,10 +139,8 @@ public abstract class MultipleSelectorPanel<T> extends BasePanel {
 
 					private static final long serialVersionUID = 1L;
 
-					
-					
 					@Override
-					protected WebMarkupContainer getObjectMenu() {
+					public WebMarkupContainer getObjectMenu() {
 						return MultipleSelectorPanel.this.getObjectMenu(getModel());
 					}
 
@@ -151,11 +149,11 @@ public abstract class MultipleSelectorPanel<T> extends BasePanel {
 						MultipleSelectorPanel.this.onClick(getModel());
 					}
 
-					protected IModel<String> getInfo() {
+					public IModel<String> getInfo() {
 						return MultipleSelectorPanel.this.getObjectInfo(getModel());
 					}
 
-					protected IModel<String> getObjectTitle() {
+					public IModel<String> getObjectTitle() {
 						return MultipleSelectorPanel.this.getObjectTitle(getModel());
 					}
 
@@ -166,12 +164,12 @@ public abstract class MultipleSelectorPanel<T> extends BasePanel {
 					}
 
 					@Override
-					protected String getImageSrc() {
+					public String getImageSrc() {
 						return MultipleSelectorPanel.this.getObjectImageSrc(getModel());
 					}
 
 					@Override
-					protected boolean isEqual(T o1, T o2) {
+					public boolean isEqual(T o1, T o2) {
 						return MultipleSelectorPanel.this.isEqual(o1, o2);
 					}
 

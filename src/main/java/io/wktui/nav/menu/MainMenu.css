@@ -1,0 +1,62 @@
+/* wktui MainMenu ------------------------------------------------------- */
+
+.main-menu-toggle {
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.main-menu {
+	display: none;
+	overflow-y: auto;
+	z-index: 1030;
+}
+
+.main-menu.open {
+	display: block;
+}
+
+/* entries: same padding for all */
+.main-menu .main-menu-entry a,
+.main-menu .main-menu-entry .main-menu-title {
+	display: block;
+	padding: 0.75em 1.5em;
+	color: #f1f1f1;
+	text-decoration: none;
+}
+
+.main-menu .main-menu-entry a:hover {
+	background: rgba(255, 255, 255, 0.1);
+}
+
+/* titles: bold uppercase */
+.main-menu .main-menu-entry .main-menu-title {
+	font-weight: bold;
+	text-transform: uppercase;
+	font-size: 0.85em;
+	letter-spacing: 0.06em;
+	color: #adb5bd;
+}
+
+/* md and larger: fixed panel 380px wide below the top bar,
+   pushes main content to the right */
+@media ( min-width : 768px) {
+	.main-menu {
+		position: fixed;
+		left: 0;
+		width: 380px;
+		/* top set by JS to the bottom of the top bar */
+		bottom: 0;
+	}
+	body.main-menu-open main {
+		margin-left: 380px;
+		transition: margin-left 0.2s ease;
+	}
+}
+
+/* sm and smaller: full width in flow, pushes content down */
+@media ( max-width : 767.98px) {
+	.main-menu {
+		position: static;
+		width: 100%;
+	}
+}

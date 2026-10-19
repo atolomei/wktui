@@ -316,15 +316,37 @@ public class ListPanel<T> extends BasePanel {
             }
         };
 	 	
-	 	
 		
 		int size = getWorkingItems().size();
 
 		if (getPageSize() >= size)
 			this.navigator.setVisible(false);
 
-		ListPanelToolbar toolbar = new ListPanelToolbar("toolbar", this.navigator, this.settingsMenu) {
+		ListPanelToolbar toolbar = newToolbar(this.navigator, this.settingsMenu);
+
+		setToolbar(toolbar);
+
+		if (getToolbarCss()!=null) {
+			toolbar.setCss(getToolbarCss());
+		}
+		this.toolbarContainer.addOrReplace(getToolbar());
+		this.listItemContainer.addOrReplace(toolbarContainer);
+		this.listItemContainer.add(new AttributeModifier("class", this.getListPanelMode().getCss() + (this.isToolbar() ? " hastoolbar" : "")));
+
+	}
+
+	public String getToolbarCss() {
+		return null;
+	}
+
+	/**
+	 * Factory method of the toolbar (wicket id must be "toolbar"). Subclasses can
+	 * override to provide a custom {@link ListPanelToolbar}.
+	 */
+	protected ListPanelToolbar newToolbar(AjaxPagingNavigator navigator, NavDropDownMenu<Void> settingsMenu) {
+		return new ListPanelToolbar("toolbar", navigator, settingsMenu) {
 			private static final long serialVersionUID = 1L;
+
 			public Integer getTotal() {
 				return ListPanel.this.getTotalItems();
 			};
@@ -339,13 +361,6 @@ public class ListPanel<T> extends BasePanel {
 				refresh(target);
 			}
 		};
-
-		setToolbar(toolbar);
-
-		this.toolbarContainer.addOrReplace(getToolbar());
-		this.listItemContainer.addOrReplace(toolbarContainer);
-		this.listItemContainer.add(new AttributeModifier("class", this.getListPanelMode().getCss() + (this.isToolbar() ? " hastoolbar" : "")));
-
 	}
 
 	protected WebMarkupContainer getListItemExpandedPanel(IModel<T> model, ListPanelMode mode) {
@@ -673,6 +688,13 @@ public class ListPanel<T> extends BasePanel {
 			@Override
 			protected void populateItem(ListItem<IModel<T>> item) {
 
+				 if (getListGroupItemCss() != null) {
+				        item.add(AttributeModifier.replace("class", getListGroupItemCss()));
+				 
+				        logger.debug(getListGroupItemCss());
+				 
+				 }
+				 
 				if (hasExpander()) {
 
 					Panel mainPanel = getListItemPanel(item.getModelObject());
@@ -692,6 +714,10 @@ public class ListPanel<T> extends BasePanel {
 			}
 		};
 
+		
+		this.listView.setOutputMarkupId(true);
+	 	
+		
 		this.listItemContainer.addOrReplace(this.listView);
 
 		ErrorPanel nitems = new ErrorPanel("noItems", null, getLabel("no-items")) {
@@ -706,8 +732,29 @@ public class ListPanel<T> extends BasePanel {
 				return "pt-2 pb-2 mb-0 alert border rounded-top-0";
 			}
 		};
+		
+		
+		if (getListGroupItemCss() != null)
+			this.listView.add(new AttributeModifier("class", getListGroupItemCss()));
+		
 
 		this.listItemContainer.addOrReplace(nitems);
+	}
+
+
+	
+	Boolean bBorder = Boolean.valueOf(true);
+	
+	public void setBorder(boolean b) {
+		this.bBorder = Boolean.valueOf(b);
+	}
+	
+	public boolean isBorder() {
+		return bBorder.booleanValue();
+	}
+
+	protected String getListGroupItemCss() {
+		return "list-group-item " + ( isBorder() ? "" : " border-0");
 	}
 
 	private void setDefaults() {

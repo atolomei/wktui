@@ -1,0 +1,19 @@
+<wicket:panel>
+
+	<!-- hamburger toggle (place the MainMenu panel inside the top bar) -->
+	<button wicket:id="toggle" type="button"
+		class="mainMenu btn btn-link text-light main-menu-toggle p-0 border-0"
+		aria-label="Menu" aria-expanded="false">
+		<i class="fa-solid fa-bars fa-lg"></i>
+	</button>
+
+	<!-- sliding side menu -->
+	<div wicket:id="menu" class="main-menu bg-dark text-light">
+		<ul class="main-menu-list list-unstyled m-0 p-0">
+			<li wicket:id="items" class="main-menu-entry">
+				<wicket:container wicket:id="item" />
+			</li>
+		</ul>
+	</div>
+
+</wicket:panel>

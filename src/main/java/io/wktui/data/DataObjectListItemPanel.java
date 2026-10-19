@@ -14,16 +14,16 @@ public abstract class DataObjectListItemPanel<T> extends ObjectListItemPanel<T> 
 		super(id, model, mode);
 	}
 
-	protected IModel<String> getObjectTitle() {
+	public IModel<String> getObjectTitle() {
 			return new Model<String>(getModel().getObject().toString());
 	}
 
 	@Override
-	protected boolean isEqual(T o1, T o2) {
+	public boolean isEqual(T o1, T o2) {
 		return o1.hashCode() == DataObjectListItemPanel.this.getModel().getObject().hashCode();
 	}
 
-	protected IModel<String> getInfo() {
+	public IModel<String> getInfo() {
 		return new Model<String>(getModel().getObject().toString());
 	}
 

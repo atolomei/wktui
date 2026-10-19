@@ -13,7 +13,7 @@ public class ListItemPanel<T> extends ModelPanel<T> {
 	private static final long serialVersionUID = 1L;
 
 	
-	ListPanelMode mode;
+	private ListPanelMode mode;
 	
 	public ListItemPanel(String id, IModel<T> model, ListPanelMode mode) {
 		super(id, model);
